@@ -1,0 +1,52 @@
+<?php
+
+/**
+ * @file
+ * Main module file for HomeCoop
+ * 
+ * Local Consumer Cooperatives Web Ordering System
+ */
+
+/**
+ * Implement hook_help().
+ */
+function homecoop_help($path, $args) {
+  if ($path == 'admin/help#homecoop') {
+    return t('Local Consumer Cooperatives Web Ordering System');
+  }
+}
+
+/**
+ * Implements hook_menu()
+ */
+function homecoop_menu() {
+  $items = array();
+
+  return $items;
+}
+
+/*
+ * Implements hook_views_api()
+ */
+function homecoop_views_api() {
+  $vpath = drupal_get_path('module', 'homecoop') . '/views';
+  return array(
+    'api' => 3,
+    'path' => $vpath,
+    'template path' => $vpath,
+  );
+}
+
+/**
+ * Implements hook_permission()
+ */
+function homecoop_permission() {
+  return array(
+  );
+}
+
+/*
+ * Implements hook_cron()
+ */
+function homecoop_cron() {
+}

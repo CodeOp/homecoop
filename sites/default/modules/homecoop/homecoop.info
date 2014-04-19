@@ -1,0 +1,10 @@
+name = HomeCoop
+description = Local Consumer Cooperatives Web Ordering System
+core = 7.x
+package = HomeCoop
+php = 5.3
+
+; ----------
+; Dependencies
+; ----------
+
