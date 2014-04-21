@@ -11,6 +11,8 @@ define('POST_ELM_LOGOUT','hidLogout');
 
 $g_oMemberSession = new UserSession ( );
 
+global $g_sRootRelativePath;
+
 if ($_SERVER[ 'REQUEST_METHOD'] == 'POST')
 {
     //basic referer check for each post in the system
@@ -35,7 +37,6 @@ if ($_SERVER[ 'REQUEST_METHOD'] == 'POST')
 //authenticate user by checking session data
 if (! $g_oMemberSession->Authenticate( ) )
 {
-    global $g_sRootRelativePath;
     //not authenticated yet: add to login url a redirect instruction to desired page after login
     RedirectPage::To( $g_sRootRelativePath . Consts::URL_LOGIN ); // . "?redr=" .  urlencode($_SERVER['PHP_SELF'] . "?" . $_SERVER['QUERY_STRING'] ) );
     exit;

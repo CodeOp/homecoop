@@ -73,6 +73,17 @@ function homecoop_include_app_file($path) {
   require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'homecoop') . "/app/$language->language/$path.php");
 }
 
+function homecoop_add_js_file($JsScriptFile) {
+  $path = drupal_get_path('module', 'homecoop');
+  $options = array(
+     'group' => JS_LIBRARY,
+     'cache' => FALSE,
+     'preprocess' => FALSE,
+     'defer' => TRUE,
+  );
+  drupal_add_js($path . '/js/' . $JsScriptFile);
+}
+
 function homecoop_check_if_authenticated() {
   global $g_oMemberSession;
   if (isset($g_oMemberSession)) {
@@ -115,6 +126,7 @@ function homecoop_header_block() {
   $HelloMessage = '';
   $sBalance = '';
   $sBalanceLink = '';
+  $sThemePath = drupal_get_path('theme',$GLOBALS['theme']);
   
   homecoop_include_app_file('settings');
   
@@ -139,7 +151,8 @@ function homecoop_header_block() {
     }
 
     if ($sBalance != '') {
-        $sBalanceLink = '<a class="tooltiphelp mobilemenu balancelink" href="#"><img class="homecoop-emblem-money" border="0" />‎' . $sBalance;
+        $sBalanceLink = '<a class="tooltiphelp mobilemenu balancelink" href="#"><img border="0" src="' . 
+            $sThemePath . '/img/emblem-money.png" class="homecoop-emblem-money"/>‎' . $sBalance;
     }
 
     $sBalanceLink .= '<span>' . $HelloMessage . '</span>';
@@ -150,7 +163,8 @@ function homecoop_header_block() {
   
   $arrContent = array(
     '#prefix' => '<table cellspacing="0" cellpadding="0" class="fullwidth">',
-    'markup' => array ('#markup' => '<input type="hidden" id="hidLogout" name="hidLogout" />'),
+    'markup' => array ('#markup' => '<form class="homecoop_header_form" name="frmhcheader" id="frmhcheader" target="self" method="post" accept-charset="UTF-8">' . 
+      '<input type="hidden" id="hidLogout" name="hidLogout" /></form>'),
     '#suffix' => '</table>',
   );
   
@@ -171,8 +185,11 @@ function homecoop_header_block() {
       '#suffix' => '</td>',
     );
 
-    if (isset($sHeaderAdditionToLogo)) {
-      $hc_header_addition['markup']['#markup'] = $sHeaderAdditionToLogo;
+    if (current_path() == 'hcfront') {
+      $hc_header_addition['markup']['#prefix'] = '<a href="#" class="facetmobileexpander mobiledisplay" onclick="JavaScript:ToggleMobileExpand();">';
+      $hc_header_addition['markup']['#markup'] = '<img alt="' . t('Pickup Locations') . 
+          '" id="imgFacetMobileExpandArrow" src="' . $sThemePath . '/img/filter.png"/>';
+      $hc_header_addition['markup']['#suffix'] = '</a>';
     }
     
     $hc_mobile_menu['hc_header_addition'] = $hc_header_addition;
@@ -233,18 +250,55 @@ function homecoop_header_block() {
     );
   }
   $hc_user_menu['#prefix'] .= ' class="usermenucell"><nav id="navUser" class="nav-collapse"><ul>';
+  
+  $hc_user_menu['langauge'] = homecoop_language_links();
 
-  $arrContent['hc_user_menu'] = $hc_user_menu;
- 
   if ($bIsAuthenticated) {
-    $arrContent['hc_logout'] = array(
+    $hc_user_menu['hc_logout'] = array(
       '#prefix' => '<li>',
       'markup' => array ('#markup' => '<span class="usermenulabel"><a href="#" onclick="JavaScript:Logout()" >' . t('Logout') . '</a></span>'),
       '#suffix' => '</li>',
     );
   }
-   
+  
+  $arrContent['hc_user_menu'] = $hc_user_menu;
+  
   return array('hc_header' => $arrContent);
+}
+
+function homecoop_language_links() {
+  $langs = language_list();
+  
+  $content = array(
+    '#prefix' => '<li>',
+    '#suffix' => '</li>',
+  );
+
+  if (count($langs) > 1) {
+    global $language, $base_url;
+    
+    $sUrl = current_path();
+    $sDefaultLanguage = language_default('language');
+  
+    foreach($langs as $lkey => $oLang) {
+      if ($language->language == $lkey) { //skip link to current language
+        continue;
+      }
+      $content['links'][$lkey]['#prefix'] = '<span class="usermenulabel">';
+      $content['links'][$lkey]['#markup'] = '<a href="#" class="subtlelink" onclick="JavaScript: ChangeLanguage(\'' .
+          $base_url . '/';
+
+      if ($sDefaultLanguage != $lkey) {
+        $content['links'][$lkey]['#markup'] .= $lkey . '/';
+      }
+
+      $content['links'][$lkey]['#markup'] .=  $sUrl . '\');" >' . $oLang->native . '</a>';
+
+      $content['links'][$lkey]['#suffix'] = '</span>';
+    } 
+  }
+  
+  return $content;
 }
 
 function homecoop_coord_menu() {
