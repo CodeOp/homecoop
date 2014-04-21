@@ -21,6 +21,18 @@ function homecoop_help($path, $args) {
  */
 function homecoop_menu() {
   $items = array();
+    
+  $items["hcfront"] = array(
+    'page callback' => 'homecoop_page_front',
+    'access callback' => 'homecoop_public_access',
+    'file' => 'pages/home.inc',
+  );
+  
+  $items["hclogin"] = array(
+    'page callback' => 'homecoop_page_login',
+    'access callback' => 'homecoop_public_access',
+    'file' => 'pages/login.inc',
+  );
 
   return $items;
 }
@@ -49,4 +61,199 @@ function homecoop_permission() {
  * Implements hook_cron()
  */
 function homecoop_cron() {
+}
+
+function homecoop_public_access() {
+  return TRUE;
+}
+
+function homecoop_include_app_file($path) {
+  global $language;
+  
+  require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'homecoop') . "/app/$language->language/$path.php");
+}
+
+function homecoop_check_if_authenticated() {
+  global $g_oMemberSession;
+  if (isset($g_oMemberSession)) {
+    return $g_oMemberSession->IsLoggedIn;
+  }
+  else {
+    $g_oMemberSession = new UserSession();
+    return $g_oMemberSession->Authenticate();
+  }
+}
+
+/**
+* Implements hook_block_info().
+*/
+function homecoop_block_info() {
+  $blocks = array();
+  
+  $blocks['homecoop_header'] = array(
+    'info' => t('HomeCoop header'),
+    'cache' => DRUPAL_CACHE_GLOBAL, //since this is a new form, we can cache it
+  );
+  
+  return $blocks;
+}
+
+/**
+* Implements hook_block_view().
+*/
+function homecoop_block_view($block_name = '') {
+  if ($block_name == 'homecoop_header') {    
+    $block = array(
+      'subject' => t('Header'),
+      'content' => homecoop_header_block(),
+    );
+    return $block;
+  }
+}
+
+function homecoop_header_block() {
+  $HelloMessage = '';
+  $sBalance = '';
+  $sBalanceLink = '';
+  
+  homecoop_include_app_file('settings');
+  
+  global $g_oMemberSession, $g_sRootRelativePath;
+  
+  $bIsAuthenticated = homecoop_check_if_authenticated();
+
+  if ($bIsAuthenticated) {
+    //display balance if different than zero or payment method is not at pickup
+    if ($g_oMemberSession->Balance != 0 || $g_oMemberSession->PaymentMethod != Consts::PAYMENT_METHOD_AT_PICKUP) {
+      $sBalance = $g_oMemberSession->Balance;
+      $HelloMessage .= t('Your balance: @balance', array('@balance' => $g_oMemberSession->Balance));
+
+      if ($g_oMemberSession->Balance != $g_oMemberSession->BalanceHeld) {
+        $HelloMessage .= ' ' . t('‎(in cachier: @balanceheld)‎', array('@balanceheld' => $g_oMemberSession->BalanceHeld));
+      }
+
+      $mMaxOrder = $g_oMemberSession->GetMaxOrder();
+      if ($mMaxOrder != NULL && $mMaxOrder != $g_oMemberSession->Balance) { //if not payment at pickup
+        $HelloMessage .= ' ' . t('Max. Order: @maxorder', array('@maxorder' => $mMaxOrder));
+      }
+    }
+
+    if ($sBalance != '') {
+        $sBalanceLink = '<a class="tooltiphelp mobilemenu balancelink" href="#"><img class="homecoop-emblem-money" border="0" />‎' . $sBalance;
+    }
+
+    $sBalanceLink .= '<span>' . $HelloMessage . '</span>';
+    if ($sBalance != '') {
+      $sBalanceLink .=  '</a>';
+    }
+  }
+  
+  $arrContent = array(
+    '#prefix' => '<table cellspacing="0" cellpadding="0" class="fullwidth">',
+    'markup' => array ('#markup' => '<input type="hidden" id="hidLogout" name="hidLogout" />'),
+    '#suffix' => '</table>',
+  );
+  
+  $hc_mobile_menu = array(
+        '#prefix' => '<tr class="mobiledisplay"><td><a id="tglUser" class="nav-toggle"></a></td>',
+        '#suffix' => '</tr>',
+      );
+  
+  if ($bIsAuthenticated) { 
+    $hc_mobile_menu['markup']['#prefix'] = '<td>';
+    if (!$g_oMemberSession->IsOnlyMember ) {
+      $hc_mobile_menu['markup']['#markup'] = '<a id="tglCoord" class="nav-toggle"></a>';
+    }
+    $hc_mobile_menu['markup']['#suffix'] = '</td>';
+
+    $hc_header_addition = array(
+      '#prefix' => '<td>',
+      '#suffix' => '</td>',
+    );
+
+    if (isset($sHeaderAdditionToLogo)) {
+      $hc_header_addition['markup']['#markup'] = $sHeaderAdditionToLogo;
+    }
+    
+    $hc_mobile_menu['hc_header_addition'] = $hc_header_addition;
+    
+    $hc_mobile_menu['hc_balance_link'] = array(
+      '#prefix' => '<td>',
+      'markup' => array ('#markup' => $sBalanceLink),
+      '#suffix' => '</td>',
+    );
+  }
+ 
+  $arrContent['hc_mobile_menu'] = $hc_mobile_menu;
+
+     if ($bIsAuthenticated && !$g_oMemberSession->IsOnlyMember )
+     {
+       $arrContent['hc_coord_menu'] = homecoop_coord_menu();
+     }
+
+  $hc_user_menu = array(
+    '#prefix' => '<tr class="usermenu"><td ',
+    '#suffix' => '</ul></nav></td></tr>',
+  );
+
+  if ($bIsAuthenticated) {
+    $hc_user_menu['#prefix'] .= ' colspan="4" ';
+    $hc_user_menu['hc_my_profile'] = array(
+      '#prefix' => '<li>',
+      'markup' => array ('#markup' => '<span class="usermenulabel" title="My Profile"><a href="' . $g_sRootRelativePath . 
+       'hcprofile">' . t('Hello, @name', array('@name' => $g_oMemberSession->Name)) . '</a></span>'),
+      '#suffix' => '</li>',
+    );
+
+    $hc_user_menu['hc_balance_link'] = array(
+      '#prefix' => '<li class="mobilehide">',
+      'markup' => array ('#markup' => $sBalanceLink),
+      '#suffix' => '</li>',
+    );
+    
+    if ( $g_oMemberSession->CanOrder) 
+    {
+      define('hcprmidMyOrder', 10);
+      $oPermissionBridgeSet = new PermissionBridgeSet();
+
+      if ($oPermissionBridgeSet->DefinePermissionBridge(hcprmidMyOrder, Consts::PERMISSION_AREA_ORDERS, Consts::PERMISSION_TYPE_MODIFY, 
+               Consts::PERMISSION_SCOPE_BOTH, 0, TRUE)) {
+        $hc_user_menu['hc_my_orders'] = array(
+          '#prefix' => '<li>',
+          'markup' => array ('#markup' => '<span class="usermenulabel"><a href="' . $g_sRootRelativePath . 'hcorders">' . t('My Orders') . '</a></span>'),
+          '#suffix' => '</li>',
+        );
+      }
+    }
+    
+    $hc_user_menu['hc_catalog'] = array(
+      '#prefix' => '<li>',
+      'markup' => array ('#markup' => '<span class="usermenulabel"><a href="' . $g_sRootRelativePath . 'hccatalog">' . t('Products Catalog') . '</a></span>'),
+      '#suffix' => '</li>',
+    );
+  }
+  $hc_user_menu['#prefix'] .= ' class="usermenucell"><nav id="navUser" class="nav-collapse"><ul>';
+
+  $arrContent['hc_user_menu'] = $hc_user_menu;
+ 
+  if ($bIsAuthenticated) {
+    $arrContent['hc_logout'] = array(
+      '#prefix' => '<li>',
+      'markup' => array ('#markup' => '<span class="usermenulabel"><a href="#" onclick="JavaScript:Logout()" >' . t('Logout') . '</a></span>'),
+      '#suffix' => '</li>',
+    );
+  }
+   
+  return array('hc_header' => $arrContent);
+}
+
+function homecoop_coord_menu() {
+  $arrContent = array(
+    '#prefix' => '<tr class="coordmenu"><td colspan="4" class="coordmenucell">',
+    '#suffix' => '</td></tr>',
+  );
+  
+  //todo
+  
+  return $arrContent;
 }

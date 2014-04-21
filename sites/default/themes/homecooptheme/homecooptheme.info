@@ -1,0 +1,9 @@
+name = HomeCoop Theme
+description = Home Coop Theme
+core = 7.x
+engine = phptemplate
+screenshot  = logo.png
+base theme = zen
+
+stylesheets[all][] = system.menus.css
+stylesheets[all][] = css/main.css
