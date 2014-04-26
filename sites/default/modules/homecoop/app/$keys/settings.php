@@ -30,7 +30,7 @@ global $g_aSupportedLanguages;
 $GLOBALS['g_nCountLanguages'] = is_array($g_aSupportedLanguages)? count($g_aSupportedLanguages): 0;
 
 global $base_url;
-$GLOBALS['HomeCoopThemePath'] = $base_url . '/' . drupal_get_path('theme',$GLOBALS['theme']);
+$GLOBALS['HomeCoopThemePath'] = $base_url . '/' . drupal_get_path('theme',$GLOBALS['theme']) . '/';
 
 //db access
 define('DB_HOST',  '127.0.01');

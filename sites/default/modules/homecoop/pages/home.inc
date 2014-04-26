@@ -6,6 +6,14 @@ function homecoop_page_front() {
   
   homecoop_prepare_facet();
   
+  global $HomeCoopThemePath;
+  
+   $hcsettings = array(
+    'ThemePath' => $HomeCoopThemePath,
+   );
+  
+  drupal_add_js(array('homecoop' => $hcsettings), 'setting');
+  
   homecoop_add_js_file('activeorders.js');
   homecoop_add_js_file('facet.js');
   
@@ -46,12 +54,11 @@ function homecoop_page_front_form($form, &$form_state) {
   global $HomeCoopThemePath, $g_aMemberPickupLocationIDs, $g_aMemberPickupLocations, $g_nMemberPickupLocationsRemoved;
   global $g_aMemberProducerIDs, $g_aMemberProducers, $g_nMemberProducersRemoved;
     
-  $form['hidfacetmblexpandstate'] = array('#type' => 'hidden', '#default_value' => 0, '#id' => 'hidfacetmblexpandstate');
-  $form['hidplfacetgrpexpandstate'] = array('#type' => 'hidden', '#default_value' => 0, '#id' => 'hidplfacetgrpexpandstate');
-  $form['hidprfacetgrpexpandstate'] = array('#type' => 'hidden', '#default_value' => 0, '#id' => 'hidprfacetgrpexpandstate');
-  $form['hidSelectedPLs'] = array('#type' => 'hidden', '#default_value' => '', '#id' => 'hidSelectedPLs');
-  $form['hidSelectedPRs'] = array('#type' => 'hidden', '#default_value' => '', '#id' => 'hidSelectedPRs');
-  
+  $form['hidfacetmblexpandstate'] = array('#type' => 'hidden', '#default_value' => 0, '#attributes' => array('id' => 'hidfacetmblexpandstate'));
+  $form['hidplfacetgrpexpandstate'] = array('#type' => 'hidden', '#default_value' => 0, '#attributes' => array('id' =>  'hidplfacetgrpexpandstate'));
+  $form['hidprfacetgrpexpandstate'] = array('#type' => 'hidden', '#default_value' => 0, '#attributes' => array('id' =>  'hidprfacetgrpexpandstate'));
+  $form['hidSelectedPLs'] = array('#type' => 'hidden', '#default_value' => '', '#attributes' => array('id' => 'hidSelectedPLs'));
+  $form['hidSelectedPRs'] = array('#type' => 'hidden', '#default_value' => '', '#attributes' => array('id' => 'hidSelectedPRs'));
   $form['facet'] = array(
     '#prefix' => '<div id="divPLFacet" class="facet mobilehide">',
     '#suffix' => '</div>',
@@ -68,7 +75,7 @@ function homecoop_page_front_form($form, &$form_state) {
     ),
     'plexpand' => array(
         '#prefix' => '<div id="plfacetgrp_expand" class="facetexpander" onclick="JavaScript:TogglePLExpand();">',
-        '#markup' => '<img id="imgPLFacetExpandArrow" src="' . $HomeCoopThemePath . '/img/arrow_down.gif"/>',
+        '#markup' => '<img id="imgPLFacetExpandArrow" src="' . $HomeCoopThemePath . 'img/arrow_down.gif"/>',
         '#suffix' => '</div>',
     ),
     'facetsep' => array(
@@ -87,7 +94,7 @@ function homecoop_page_front_form($form, &$form_state) {
     ),
     'prexpand' => array(
         '#prefix' => '<div id="prfacetgrp_expand" class="facetexpander" onclick="JavaScript:TogglePRExpand();">',
-        '#markup' => '<img id="imgPRFacetExpandArrow" src="' . $HomeCoopThemePath . '/img/arrow_down.gif"/>',
+        '#markup' => '<img id="imgPRFacetExpandArrow" src="' . $HomeCoopThemePath . 'img/arrow_down.gif"/>',
         '#suffix' => '</div>',
     ),
     'applyfilter' => array(
@@ -126,15 +133,17 @@ function homecoop_page_front_form_submit($form, &$form_state) {
         $bFacetLoad = TRUE;
   }
   
-  if ($bFacetLoad)
-    homecoop_prepare_facet(); //reload facet data
+  if ($bFacetLoad) {
+    $form_state['rebuild'] = TRUE;
+    //return homecoop_page_front(); //reload facet data
+  }
 }
 
 /*
  * Active Orders
  */
 function homecoop_activeorders() {
-  global $g_oMemberSession, $g_sRootRelativePath;
+  global $g_oMemberSession, $g_sRootRelativePath, $g_oTimeZone;
   //get active, in date, cooperative orders
   $oTable = new ActiveOrders;
   $recTable = NULL;
@@ -280,7 +289,7 @@ function homecoop_activeorders() {
 
         $arrOrderBox['deliverydate'] = array(
           '#prefix' => '<tr><td><span class="normalcolor" >',
-          '#markup' => t('Delivery‏:&nbsp;@date', array('@date' => $dDelivery->format('n.j.Y'))),
+          '#markup' => t('Delivery‏: @date', array('@date' => LanguageSupport::LANGUAGE_DIRECTION_MARK . $dDelivery->format('n.j.Y'))),
           '#suffix' => '</span></td></tr>',
         );
 
@@ -365,7 +374,7 @@ function homecoop_activeorders() {
 
            //% full
            if (HOME_PAGE_SHOW_PICKUP_LOCATION_CAPACITIES && $oCoopOrderPickupCapacity->SelectedType != CoopOrderCapacity::TypeNone) {
-              LanguageSupport::EchoInFixedOrder('&nbsp;', '(' . $oCoopOrderPickupCapacity->PercentRounded . '%)');
+              $sPL .= LanguageSupport::AppendInFixedOrder('&nbsp;', '(' . $oCoopOrderPickupCapacity->PercentRounded . '%)');
            }
 
            $recPickupLoc = $oPickUpLocs->fetch();
@@ -377,21 +386,25 @@ function homecoop_activeorders() {
         $nCountRecs = 0;
 
         //row: producers
-        echo '<tr><td><span class="listareatitle">Producer:‎</span><span class="normalcolor" >';
+        $arrProducers = array(
+          '#prefix' => '<tr><td><span class="listareatitle">' . t('Producer:‎') . '</span><span class="normalcolor" >',
+          '#suffix' => '</span></td></tr>',
+        );
 
         while ( $recProducer )
         {        
+          $sProducer = '';
           if ($nCountRecs > 0)
-            echo ',‎&nbsp';
+            $sProducer .= ',‎&nbsp';
 
           $nCountRecs++;
 
           if ($bCanCoord && $oTable->CheckProducerCoordPermissions($recPickupLoc["CoordinatingGroupID"]))
-            echo '<a class="LinkButton', $sHistoryButtonCssClass, '" href="coord/coproducer.php?coid=' , $recTable["CoopOrderKeyID"] , 
-                     '&pid=', $recProducer["ProducerKeyID"],
-                     '" >' , htmlspecialchars($recProducer["sProducer"]) , '</a>';
+            $sProducer .= '<a class="LinkButton' . $sHistoryButtonCssClass . '" href="coord/coproducer.php?coid=' . $recTable["CoopOrderKeyID"] . 
+                     '&pid=' . $recProducer["ProducerKeyID"] .
+                     '" >' . htmlspecialchars($recProducer["sProducer"]) . '</a>';
           else
-            echo htmlspecialchars($recProducer["sProducer"]);
+            $sProducer .= htmlspecialchars($recProducer["sProducer"]);
 
           $oCoopOrderProducerCapacity = new CoopOrderCapacity(
                                 $recProducer["fMaxBurden"], $recProducer["fBurden"], 
@@ -399,35 +412,34 @@ function homecoop_activeorders() {
 
           //% full
           if (HOME_PAGE_SHOW_PRODUCER_CAPACITIES && $oCoopOrderProducerCapacity->SelectedType != CoopOrderCapacity::TypeNone)
-            LanguageSupport::EchoInFixedOrder('&nbsp;', '(' . $oCoopOrderProducerCapacity->PercentRounded . '%)');
+            $sProducer .= LanguageSupport::AppendInFixedOrder('&nbsp;', '(' . $oCoopOrderProducerCapacity->PercentRounded . '%)');
 
           $recProducer = $oProducers->fetch();
+          $arrProducers['pr' . $recProducer["ProducerKeyID"]] = array('#markup' => $sProducer);
         }
 
-        echo '</span></td></tr>';
-
+        $arrOrderBox['producers'] = $arrProducers;
 
         //row: Coordinator extra links
         if ($bCanCoord)
         {
-          echo '<tr><td>';
+          $arrOrderBox['coordextra'] = array(
+            '#prefix' => '<tr><td>',
+            '#suffix' => '</td></tr>',
+          );
           if ($bHasProductsPermission)
-            echo '<a class="LinkButton headdata', $sHistoryButtonCssClass, '" href="coord/coproducts.php?id=' , $recTable["CoopOrderKeyID"] , '" >Products</a>&nbsp;';
+            $arrOrderBox['coordextra']['products']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass .
+              '" href="coord/coproducts.php?id=' . $recTable["CoopOrderKeyID"] . '" >' . t('Products') . '</a>&nbsp;';
 
           if ($bHasExportPermission)
-            echo '<a class="LinkButton headdata', $sHistoryButtonCssClass, '" href="coord/cooporderexport.php?coid=' , $recTable["CoopOrderKeyID"] , '" >Export</a>';
-          echo '</td></tr>';
+            $arrOrderBox['coordextra']['export']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . 
+              '" href="coord/cooporderexport.php?coid=' . $recTable["CoopOrderKeyID"] . '" >' . t('Export') . '</a>';
         }
-
-        echo '</table></div>';
         
-        $arrContent['orderbox'] = $arrOrderBox;
+        $arrContent['orderbox' . $recTable["CoopOrderKeyID"]] = $arrOrderBox;
 
         $recTable = $oTable->fetch();
     }
-
-    echo '</div></td></tr></table>';
-
   }
   catch(Exception $eao)
   {
@@ -520,9 +532,13 @@ function homecoop_RenderFacetList(&$aFacetIDs, &$aFacet, &$nFacetRemoved, $sName
         $sPrefix .= ' lastfacet';
     }
     
-    $arrContent[$sListItemIDPrefix] = array(
+    $sPrefix .= '">';
+    
+    $arrContent[$sListItemIDPrefix . $ID] = array(
       '#prefix' => $sPrefix,
       '#markup' => htmlspecialchars($Data[$sNameField]),
       '#suffix' => '</li>' );
   }
+  
+  return $arrContent;
 }

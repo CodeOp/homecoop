@@ -7,13 +7,13 @@ function ToggleFacetExpand(hidStateID, imgExpandID, ulID)
  {
  	sDisplay = 'block';
 	nExpandStatus = 1;
-        document.getElementById(imgExpandID).src = 'img/arrow_up.gif';
+        document.getElementById(imgExpandID).src = Drupal.settings.homecoop.ThemePath + 'img/arrow_up.gif';
  }
  else
  {
 	sDisplay = 'none';
 	nExpandStatus = 0;
-        document.getElementById(imgExpandID).src = 'img/arrow_down.gif';
+        document.getElementById(imgExpandID).src = Drupal.settings.homecoop.ThemePath + 'img/arrow_down.gif';
  }
 
  //get child nodes of plfacetgrp and toggle display of li elements with the class unselectedfacet
@@ -52,7 +52,7 @@ function ToggleMobileExpand()
          mobileHide(document.getElementById('tdMain'));
          
          nExpandStatus = 1;
-         document.getElementById('imgFacetMobileExpandArrow').src = 'img/document-close-3.png';
+         document.getElementById('imgFacetMobileExpandArrow').src = Drupal.settings.homecoop.ThemePath + 'img/document-close-3.png';
   }
   else
   {
@@ -60,7 +60,7 @@ function ToggleMobileExpand()
          mobileHide(document.getElementById('divPLFacet'));
          
          nExpandStatus = 0;
-         document.getElementById('imgFacetMobileExpandArrow').src = 'img/filter.png';
+         document.getElementById('imgFacetMobileExpandArrow').src = Drupal.settings.homecoop.ThemePath + 'img/filter.png';
   }
   
   ctlExpandState.value = nExpandStatus;

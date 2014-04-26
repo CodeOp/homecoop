@@ -639,7 +639,7 @@ table {
   /* line 60, ../sass/layouts/_responsive.scss */
   #main {
     /* Move all the children of #main down to make room. */
-    padding-top: 3em;
+    padding-top: 0;
     position: relative;
   }
 
@@ -648,7 +648,7 @@ table {
     /* Move the navbar up inside #main's padding. */
     position: absolute;
     top: 0;
-    height: 3em;
+    height: 0;
     width: 100%;
   }
 }

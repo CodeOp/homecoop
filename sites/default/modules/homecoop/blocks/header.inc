@@ -30,7 +30,7 @@ function homecoop_header_block() {
 
     if ($sBalance != '') {
         $sBalanceLink = '<a class="tooltiphelp mobilemenu balancelink" href="#"><img border="0" src="' . 
-            $HomeCoopThemePath . '/img/emblem-money.png" class="homecoop-emblem-money"/>‎' . $sBalance;
+            $HomeCoopThemePath . 'img/emblem-money.png" class="homecoop-emblem-money"/>‎' . $sBalance;
     }
 
     $sBalanceLink .= '<span>' . $HelloMessage . '</span>';
@@ -66,7 +66,7 @@ function homecoop_header_block() {
     if (current_path() == 'hcfront') {
       $hc_header_addition['markup']['#prefix'] = '<a href="#" class="facetmobileexpander mobiledisplay" onclick="JavaScript:ToggleMobileExpand();">';
       $hc_header_addition['markup']['#markup'] = '<img alt="' . t('Pickup Locations') . 
-          '" id="imgFacetMobileExpandArrow" src="' . $HomeCoopThemePath . '/img/filter.png"/>';
+          '" id="imgFacetMobileExpandArrow" src="' . $HomeCoopThemePath . 'img/filter.png"/>';
       $hc_header_addition['markup']['#suffix'] = '</a>';
     }
     
