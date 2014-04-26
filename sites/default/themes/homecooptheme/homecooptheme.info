@@ -14,6 +14,7 @@ stylesheets[all][] = system.theme.css
 stylesheets[all][] = css/styles.css
 ; HomeCoop stylesheet
 stylesheets[all][] = css/main.css
+stylesheets[all][] = css/facet.css
 
 scripts[] = js/css3-mediaqueries.js
 
@@ -41,7 +42,7 @@ features[] = secondary_menu
 
 settings[zen_breadcrumb]           = yes
 settings[zen_breadcrumb_separator] = ' › '
-settings[zen_breadcrumb_home]      = 1
+settings[zen_breadcrumb_home]      = 0
 settings[zen_breadcrumb_trailing]  = 0
 settings[zen_breadcrumb_title]     = 0
 settings[zen_skip_link_anchor]     = main-menu

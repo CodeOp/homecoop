@@ -3,7 +3,7 @@
 function homecoop_page_login() { 
   drupal_set_title(t('Login'), PASS_THROUGH);
   
-  homecoop_include_app_file('settings');
+  homecoop_any_page();
   
   return drupal_get_form('homecoop_page_login_form');
 }

@@ -113,52 +113,5 @@ function ApplySpecificFacetFilter(sGroupID, sHidSelectedIDs)
 function ApplyFacetFilter()
 {
  ApplySpecificFacetFilter('plfacetgrp', 'hidSelectedPLs');
- ApplySpecificFacetFilter('prfacetgrp', 'hidSelectedPRs'); 
- document.frmHome.submit();
+ ApplySpecificFacetFilter('prfacetgrp', 'hidSelectedPRs');
 }
-
-var nav = null;
-var nav2 = null;
-
-function CloseNavs()
-{
-  if (typeof nav !== 'undefined' && nav != null) {
-    nav.close();
-  }
-  if (typeof nav2 !== 'undefined' && nav2 != null) {
-    nav2.close();
-  }
-}
-
-jQuery(document).ready(function($) {
-  
-  nav = responsiveNav("#navUser", { 
-      animate: true,
-      transition: 400,
-      label: "", 
-      insert: "after",
-      customToggle: "tglUser",
-      openPos: "relative", 
-      jsClass: "js", 
-      init: function(){},
-      open: function(){},
-      close: function(){}
-    });
-  
-  if (Drupal.settings.homecoop.IsCoordUser) {
-    nav2 = responsiveNav("#navCoord", { 
-      animate: true, 
-      transition: 400,
-      label: "",
-      insert: "after",
-      customToggle: "tglCoord",
-      openPos: "relative",
-      jsClass: "js",
-      init: function(){},
-      open: function(){},
-      close: function(){}
-    });
-  }
-  
-  $("body").bind("click", CloseNavs);
-});

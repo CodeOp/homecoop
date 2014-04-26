@@ -20,12 +20,17 @@ ini_set('display_errors', '1');
 //falling language id (from db. language to look in when a string is not found in the current langauge)
 
 //SET TO NULL FOR NO LANGUAGE DIRS. Otherwise, the langauge key is added to the path.
-$g_aSupportedLanguages = array( 
+$GLOBALS['g_aSupportedLanguages'] = array( 
                     'he' => array('עברית', true, 'rtl',2, 1), 
                     'en' => array('English', true, 'ltr', 1, 0) 
  );
 
-$g_nCountLanguages = is_array($g_aSupportedLanguages)? count($g_aSupportedLanguages): 0;
+global $g_aSupportedLanguages;
+
+$GLOBALS['g_nCountLanguages'] = is_array($g_aSupportedLanguages)? count($g_aSupportedLanguages): 0;
+
+global $base_url;
+$GLOBALS['HomeCoopThemePath'] = $base_url . '/' . drupal_get_path('theme',$GLOBALS['theme']);
 
 //db access
 define('DB_HOST',  '127.0.01');
@@ -107,8 +112,10 @@ define("LANGUAGE_SWITCHER_VALUE_DROPDOWN", 1); //all languages will be displayed
 define("LANGUAGE_SWITCHER", LANGUAGE_SWITCHER_VALUE_LINKS );
 //----------------------
 
-$g_oTimeZone = new DateTimeZone(COOP_TIMEZONE);
-$g_dNow = new DateTime( "now", $g_oTimeZone );
+$GLOBALS['g_oTimeZone'] = new DateTimeZone(COOP_TIMEZONE);
+global $g_oTimeZone;
+$GLOBALS['g_dNow'] = new DateTime( "now", $g_oTimeZone );
+global $g_dNow;
 
 //language
 define('LANG_PARAM', 'lang' );
@@ -118,12 +125,16 @@ define('LANG_PARAM', 'lang' );
 //without knowing ahead which languages are supported
 //based on it, the relative path towards root, autoload function and language-switch capability are also defined
 
-$g_sRedirectAfterLangChange = '';
-$g_sLangDir = '';
-$g_sRootRelativePath = url('', array('absolute' => TRUE)) . '/';
-$g_sFilePathFromRoot = current_path();
-$g_nCurrentLanguageID = 0;
-$g_nFallingLanguageID = 0;
+//$g_sRedirectAfterLangChange = '';
+$GLOBALS['g_sRootRelativePath'] = url('', array('absolute' => TRUE)) . '/';
+global $g_sRootRelativePath;
+
+$GLOBALS['g_sFilePathFromRoot'] = current_path();
+
+$GLOBALS['g_nCurrentLanguageID'] = 0;
+$GLOBALS['g_nFallingLanguageID'] = 0;
+
+
 
 define('SITE_ROOT', DRUPAL_ROOT . '/' . drupal_get_path('module', 'homecoop') . "/app" );
 
@@ -177,8 +188,12 @@ if ($g_aSupportedLanguages !== NULL)
       $g_sRedirectAfterLangChange .= '?' . $_SERVER['QUERY_STRING'];
 }
 */
+$GLOBALS['g_sLangDir'] = '';
+if ($language->language != LANGUAGE_NONE) {
+  $GLOBALS['g_sLangDir'] = $language->language;
+}
 
-$g_sLangDir = $language->language;
+global $g_sLangDir;
 
 //set the root dir to be used in php includes
 define('APP_DIR', SITE_ROOT . "/$g_sLangDir" );
@@ -197,8 +212,8 @@ spl_autoload_register('homecoop_autoload_class');
 //set current and falling language ids (used in SQLBase)
 if ($g_sLangDir != '')
 {
-  $g_nCurrentLanguageID = $g_aSupportedLanguages[$g_sLangDir][Consts::IND_LANGUAGE_ID];
-  $g_nFallingLanguageID = $g_aSupportedLanguages[$g_sLangDir][Consts::IND_FALLING_LANGUAGE_ID];
+  $GLOBALS['g_nCurrentLanguageID'] = $g_aSupportedLanguages[$g_sLangDir][Consts::IND_LANGUAGE_ID];
+  $GLOBALS['g_nFallingLanguageID'] = $g_aSupportedLanguages[$g_sLangDir][Consts::IND_FALLING_LANGUAGE_ID];
 }
 
 //-------------- extract the current language - end
@@ -237,7 +252,7 @@ define ('COPY_ORDER_DEFAULT_DATE_JUMP', Consts::COPY_ORDER_JUMP_WEEK);
 define ('COPY_ORDER_JUMP', 5);
 
 //handles a persistant connection to the database
-$g_oDBAccess = new DBAccess();
+$GLOBALS['g_oDBAccess'] = new DBAccess();
 
 //handles exceptions/errors
-$g_oError = new ErrorHandler();
+$GLOBALS['g_oError'] = new ErrorHandler();
