@@ -20,21 +20,28 @@ function homecoop_help($path, $args) {
  * Implements hook_menu()
  */
 function homecoop_menu() {
-  $items = array();
-    
-  $items["hcfront"] = array(
-    'page callback' => 'homecoop_page_front',
-    'access callback' => 'homecoop_public_access',
-    'file' => 'pages/home.inc',
+  return array(
+    'hcfront' => array(
+      'page callback' => 'homecoop_page_front',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/home.inc',
+    ),
+    'hclogin' => array(
+      'page callback' => 'homecoop_page_login',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/login.inc',
+    ),
+    'hcorder' => array(
+      'page callback' => 'homecoop_page_order',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/order.inc',
+    ),
+    'hcaccessdenied' => array(
+      'page callback' => 'homecoop_page_accessdenied',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/accessdenied.inc',
+    ),
   );
-  
-  $items["hclogin"] = array(
-    'page callback' => 'homecoop_page_login',
-    'access callback' => 'homecoop_public_access',
-    'file' => 'pages/login.inc',
-  );
-
-  return $items;
 }
 
 /*
@@ -149,4 +156,53 @@ function homecoop_block_view($block_name = '') {
       );
       return $block;
   }
+}
+
+function homecoop_LoadSpecificFacet(&$oFacet, &$aFacet, &$aFacetIDs, &$nFacetRemoved, $sIDField)
+{
+  $aFacet = array();
+  $aFacetIDs = array();
+  $nFacetRemoved = 0;
+  
+  $arrTemp = $oFacet->GetTableForFacet();
+  
+  //add producer id as key
+  foreach ($arrTemp as $oTemp)
+  {
+    $aFacet[$oTemp[$sIDField]] = $oTemp;
+    if (!$oTemp['bDisabled'] && !$oTemp['bBlocked'])
+    {
+      if ($oTemp['bRemoved'])
+        $nFacetRemoved++;
+      else
+        $aFacetIDs[$oTemp[$sIDField]] = $oTemp[$sIDField];
+    }
+  }
+}
+
+function homecoop_prepare_pickup_facet() {
+  //prepare facet data
+  $GLOBALS['g_oMemberPickupLocations'] = NULL;
+  $GLOBALS['g_aMemberPickupLocations'] = NULL;
+  $GLOBALS['g_aMemberPickupLocationIDs'] = NULL;
+  $GLOBALS['g_nMemberPickupLocationsRemoved'] = 0;
+
+  global $g_oMemberPickupLocations, $g_aMemberPickupLocations, $g_aMemberPickupLocationIDs, $g_nMemberPickupLocationsRemoved;
+    
+  $g_oMemberPickupLocations = new MemberPickupLocations();
+  homecoop_LoadSpecificFacet($g_oMemberPickupLocations, $g_aMemberPickupLocations, $g_aMemberPickupLocationIDs, $g_nMemberPickupLocationsRemoved,
+      'PickupLocationKeyID');
+}
+
+function homecoop_prepare_producer_facet() {
+  $GLOBALS['g_oMemberProducers'] = NULL;
+  $GLOBALS['g_aMemberProducers'] = NULL;
+  $GLOBALS['g_aMemberProducerIDs'] = NULL;
+  $GLOBALS['g_nMemberProducersRemoved'] = 0;
+  
+  global $g_oMemberProducers, $g_aMemberProducers, $g_aMemberProducerIDs, $g_nMemberProducersRemoved;
+  
+  $g_oMemberProducers = new MemberProducers();
+  homecoop_LoadSpecificFacet($g_oMemberProducers, $g_aMemberProducers, $g_aMemberProducerIDs, $g_nMemberProducersRemoved,
+      'ProducerKeyID');
 }

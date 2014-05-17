@@ -46,13 +46,15 @@ function homecoop_page_front() {
   //close session opened in 'authenticate.php' when not required anymore
   UserSessionBase::Close();
   
-  return $arrContent; 
+  return $arrContent;
 }
 
 function homecoop_page_front_form($form, &$form_state) {
   
   global $HomeCoopThemePath, $g_aMemberPickupLocationIDs, $g_aMemberPickupLocations, $g_nMemberPickupLocationsRemoved;
   global $g_aMemberProducerIDs, $g_aMemberProducers, $g_nMemberProducersRemoved;
+  
+  $form['#id'] = 'homecoop_page_front-form';
     
   $form['hidfacetmblexpandstate'] = array('#type' => 'hidden', '#default_value' => 0, '#attributes' => array('id' => 'hidfacetmblexpandstate'));
   $form['hidplfacetgrpexpandstate'] = array('#type' => 'hidden', '#default_value' => 0, '#attributes' => array('id' =>  'hidplfacetgrpexpandstate'));
@@ -98,22 +100,24 @@ function homecoop_page_front_form($form, &$form_state) {
         '#suffix' => '</div>',
     ),
     'applyfilter' => array(
-      '#type' => 'button',
+      '#type' => 'submit',
       '#id' => 'btnFilter',
       '#prefix' => '<div id="divFacetFilter">',
       '#suffix' => '</div>',
-      '#disabled' => TRUE,
-      '#value' => t('Apply filter'),
       '#submit' => array('homecoop_page_front_form_submit'),
-      '#attributes' => array('class' => array('facetapply') , 'onclick' => array('JavaScript:ApplyFacetFilter();')),
+      '#value' => t('Apply filter'),
+      '#attributes' => array('class' => array('facetapply'),
+        'disabled' => array('true'), 'onclick' => array('JavaScript:ApplyFacetFilter();')),
     ),
   );
+  
+  $form['#submit'][] = 'homecoop_page_front_form_submit';
   
   return $form;
 }
 
 function homecoop_page_front_form_submit($form, &$form_state) {
-  global $g_oMemberPickupLocations;
+  global $g_oMemberPickupLocations, $g_oMemberProducers;
   $sSelectedPLS = '';
   $sSelectedPRS = '';
   $bFacetLoad = FALSE;
@@ -134,8 +138,7 @@ function homecoop_page_front_form_submit($form, &$form_state) {
   }
   
   if ($bFacetLoad) {
-    $form_state['rebuild'] = TRUE;
-    //return homecoop_page_front(); //reload facet data
+    return homecoop_page_front();
   }
 }
 
@@ -267,11 +270,11 @@ function homecoop_activeorders() {
 
         if ($bCanCoord) {
           if ($bHasOrdersPermission) {
-            $arrOrderBox['ordertitle']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . '" href="coord/orders.php?coid=' . $recTable["CoopOrderKeyID"] .
+            $arrOrderBox['ordertitle']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . '" href="coord/orders?coid=' . $recTable["CoopOrderKeyID"] .
               '" >' . htmlspecialchars($recTable["sCoopOrder"]) . '</a>&nbsp;';
           }
           else {
-            $arrOrderBox['ordertitle']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . '" href="coord/cooporder.php?id=' . $recTable["CoopOrderKeyID"] .
+            $arrOrderBox['ordertitle']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . '" href="coord/cooporder?id=' . $recTable["CoopOrderKeyID"] .
               '" >' . htmlspecialchars($recTable["sCoopOrder"]) . '</a>&nbsp;';
           }
         }
@@ -360,7 +363,7 @@ function homecoop_activeorders() {
           $nCountRecs++;
 
            if ($bCanCoord && $oTable->CheckPickupLocationCoordPermissions($recPickupLoc["CoordinatingGroupID"])) {
-             $sPL .= '<a class="LinkButton' . $sHistoryButtonCssClass . '" href="coord/copickuplocorders.php?coid=' . 
+             $sPL .= '<a class="LinkButton' . $sHistoryButtonCssClass . '" href="coord/copickuplocorders?coid=' . 
                  $recTable["CoopOrderKeyID"] . '&plid=' . $recPickupLoc["PickupLocationKeyID"] . '" >' . 
                  htmlspecialchars($recPickupLoc["sPickupLocation"]) . '</a>';
            }
@@ -400,7 +403,7 @@ function homecoop_activeorders() {
           $nCountRecs++;
 
           if ($bCanCoord && $oTable->CheckProducerCoordPermissions($recPickupLoc["CoordinatingGroupID"]))
-            $sProducer .= '<a class="LinkButton' . $sHistoryButtonCssClass . '" href="coord/coproducer.php?coid=' . $recTable["CoopOrderKeyID"] . 
+            $sProducer .= '<a class="LinkButton' . $sHistoryButtonCssClass . '" href="coord/coproducer?coid=' . $recTable["CoopOrderKeyID"] . 
                      '&pid=' . $recProducer["ProducerKeyID"] .
                      '" >' . htmlspecialchars($recProducer["sProducer"]) . '</a>';
           else
@@ -429,11 +432,11 @@ function homecoop_activeorders() {
           );
           if ($bHasProductsPermission)
             $arrOrderBox['coordextra']['products']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass .
-              '" href="coord/coproducts.php?id=' . $recTable["CoopOrderKeyID"] . '" >' . t('Products') . '</a>&nbsp;';
+              '" href="coord/coproducts?id=' . $recTable["CoopOrderKeyID"] . '" >' . t('Products') . '</a>&nbsp;';
 
           if ($bHasExportPermission)
             $arrOrderBox['coordextra']['export']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . 
-              '" href="coord/cooporderexport.php?coid=' . $recTable["CoopOrderKeyID"] . '" >' . t('Export') . '</a>';
+              '" href="coord/cooporderexport?coid=' . $recTable["CoopOrderKeyID"] . '" >' . t('Export') . '</a>';
         }
         
         $arrContent['orderbox' . $recTable["CoopOrderKeyID"]] = $arrOrderBox;
@@ -454,49 +457,11 @@ function homecoop_activeorders() {
  */
 function homecoop_prepare_facet() {
   //prepare facet data
-  $GLOBALS['g_oMemberPickupLocations'] = NULL;
-  $GLOBALS['g_aMemberPickupLocations'] = NULL;
-  $GLOBALS['g_aMemberPickupLocationIDs'] = NULL;
-  $GLOBALS['g_nMemberPickupLocationsRemoved'] = 0;
-
-  $GLOBALS['g_oMemberProducers'] = NULL;
-  $GLOBALS['g_aMemberProducers'] = NULL;
-  $GLOBALS['g_aMemberProducerIDs'] = NULL;
-  $GLOBALS['g_nMemberProducersRemoved'] = 0;
-
-  global $g_oMemberPickupLocations, $g_aMemberPickupLocations, $g_aMemberPickupLocationIDs, $g_nMemberPickupLocationsRemoved;
-  global $g_oMemberProducers, $g_aMemberProducers, $g_aMemberProducerIDs, $g_nMemberProducersRemoved;
-  
-  $g_oMemberPickupLocations = new MemberPickupLocations();
-  homecoop_LoadSpecificFacet($g_oMemberPickupLocations, $g_aMemberPickupLocations, $g_aMemberPickupLocationIDs, $g_nMemberPickupLocationsRemoved,
-      'PickupLocationKeyID');
-  
-  $g_oMemberProducers = new MemberProducers();
-  homecoop_LoadSpecificFacet($g_oMemberProducers, $g_aMemberProducers, $g_aMemberProducerIDs, $g_nMemberProducersRemoved,
-      'ProducerKeyID');  
+  homecoop_prepare_pickup_facet();
+  homecoop_prepare_producer_facet();
 }
 
-function homecoop_LoadSpecificFacet(&$oFacet, &$aFacet, &$aFacetIDs, &$nFacetRemoved, $sIDField)
-{
-  $aFacet = array();
-  $aFacetIDs = array();
-  $nFacetRemoved = 0;
-  
-  $arrTemp = $oFacet->GetTableForFacet();
-  
-  //add producer id as key
-  foreach ($arrTemp as $oTemp)
-  {
-    $aFacet[$oTemp[$sIDField]] = $oTemp;
-    if (!$oTemp['bDisabled'] && !$oTemp['bBlocked'])
-    {
-      if ($oTemp['bRemoved'])
-        $nFacetRemoved++;
-      else
-        $aFacetIDs[$oTemp[$sIDField]] = $oTemp[$sIDField];
-    }
-  }
-}
+
 
 function homecoop_RenderFacetList(&$aFacetIDs, &$aFacet, &$nFacetRemoved, $sNameField, $sListItemIDPrefix, $sStateID)
 {

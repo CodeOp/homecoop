@@ -9,7 +9,7 @@ class Consts
 {
     //pages and folders used repeatedly (path from root)
     const URL_LOGIN = 'hclogin';
-    const URL_ACCESS_DENIED = 'AccessDenied.php';
+    const URL_ACCESS_DENIED = 'hcaccessdenied';
     const URL_HOME = 'hcfront';
     const URL_CACHE_DIR = 'cache';
        
