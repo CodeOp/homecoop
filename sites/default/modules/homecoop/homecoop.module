@@ -104,6 +104,7 @@ function homecoop_any_page() {
 }
 
 function homecoop_authenticated_page() {
+  drupal_get_messages(); //clear all previous erros from the queue
   homecoop_include_app_file('settings');
   homecoop_include_app_file('authenticate');
   

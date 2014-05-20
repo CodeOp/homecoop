@@ -1,7 +1,6 @@
 <?php
 
 function homecoop_page_front() {
-  drupal_get_messages('warning'); //clear all previous warnings from the queue (used in Notifications)
   homecoop_authenticated_page();
   
   homecoop_prepare_facet();

@@ -5,15 +5,22 @@ function homecoop_page_order() {
   
   global $HomeCoopThemePath, $g_sRootRelativePath, $g_oError, $g_oMemberSession;
   
-  $hcsettings = array(
-    'ThemePath' => $HomeCoopThemePath,
-    'ConfirmDelete' => t('Please confirm or cancel the delete operation'),
-  );
   
-  drupal_add_js(array('homecoop' => $hcsettings), 'setting');
-  homecoop_add_js_file('order.js');
   
   $oRecord = new Order;
+  $oPickupLocs = NULL;
+  $oMembers = NULL;
+  $arrPickupLocs = NULL;
+  $arrMembers = NULL;
+  $oTabInfo = NULL;
+  $oOrderTabInfo = NULL;
+  $oPLTabInfo = NULL;
+  $arrCOContacts = NULL;
+  $arrPLContacts = NULL;
+  $arrPaymentMethods = NULL;
+  $bHasCoordPermission = FALSE;
+  
+  
   if (isset($_GET['id']))
   {
     if(!$oRecord->LoadRecord( intval($_GET['id'])) )
@@ -36,6 +43,17 @@ function homecoop_page_order() {
       RedirectPage::To( $g_sRootRelativePath . Consts::URL_ACCESS_DENIED );
       exit;
   }
+  
+  $hcsettings = array(
+    'ConfirmDelete' => t('Please confirm or cancel the delete operation'),
+    'ConfirmMemberChange' => t('Attention: you have chosen to move this order from one member to another. To complete the operation confirm this message box and save the order'),
+    'MemberID' => $oRecord->MemberID,
+    'PostActionMemberChange' => Order::POST_ACTION_MEMBER_CHANGE,
+    'ThemePath' => $HomeCoopThemePath,
+  );
+  
+  drupal_add_js(array('homecoop' => $hcsettings), 'setting');
+  homecoop_add_js_file('order.js');
   
   $bHasCoordPermission = $oRecord->HasPermission(SQLBase::PERMISSION_COORD);
   if ( $oRecord->CanModify )
@@ -109,7 +127,7 @@ function homecoop_page_order() {
   //get contacts
   $oRecord->GetContacts($arrCOContacts, $arrPLContacts);
   
-  $GLOBALS['g_oFormExtraData'] = array(
+  $oFormExtraData = array(
     'record' => $oRecord,
     'ordertab' => $oOrderTabInfo,
     'pltab' => $oPLTabInfo,
@@ -117,10 +135,13 @@ function homecoop_page_order() {
     'pickuplocs' => $arrPickupLocs,
     'members' => $arrMembers,
     'hascoordpermission' => $bHasCoordPermission,
+    'paymethods' => $arrPaymentMethods,
+    'cocontacts' => $arrCOContacts,
+    'plcontacts' => $arrPLContacts,
   );
   
   $arrContent = array(
-    'orderform' => drupal_get_form('homecoop_page_order_form'),
+    'orderform' => drupal_get_form('homecoop_page_order_form', $oFormExtraData),
   );
   
   //close session opened in 'authenticate.php' when not required anymore
@@ -129,14 +150,15 @@ function homecoop_page_order() {
   return $arrContent;
 }
 
-function homecoop_page_order_form($form, &$form_state) {
-  global $g_oError, $g_oFormExtraData;
-  if (!isset($g_oFormExtraData)) {
+function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
+  global $g_oError;
+  if (!isset($oFormExtraData)) {
     return array();
   }
+  $bHasCoordPermission = $oFormExtraData['hascoordpermission'];
+  $oRecord = $oFormExtraData['record'];
   
-  $oRecord = $g_oFormExtraData['record'];
-  
+  $form['#id'] = 'homecoop_page_order_form';
   $form['hidOriginalData'] = array('#type' => 'hidden', '#default_value' => $oRecord->GetSerializedOriginalData(), 
     '#attributes' => array('id' => 'hidOriginalData'));
   $form['hidPostAction'] = array('#type' => 'hidden', '#default_value' => '', 
@@ -162,7 +184,7 @@ function homecoop_page_order_form($form, &$form_state) {
         '#type' => 'submit',
         '#id' => 'btn_save',
         '#submit' => array('homecoop_page_order_form_save'),
-        '#value' => $oRecord->ID > 0 ? t('Save Order Header') : t('Create Order'),
+        '#value' => $oRecord->ID > 0 ? t('Save Order Header') : t('Open New Order'),
         '#disabled' => $oRecord->CanModify ? FALSE: TRUE,
         '#attributes' => array('class' => array('order')),
         '#suffix' => '&nbsp;',
@@ -171,12 +193,27 @@ function homecoop_page_order_form($form, &$form_state) {
     ),
     'controlstable' => array(
       '#weight' => 50,
+      'maxorder' => array(
+        '#prefix' => '<label>' . t('Max. Order') . '</label><span>',
+        '#markup' => $oRecord->MaxOrder,
+        '#suffix' => '</span>',
+        '#weight' => 70,
+      ),
+      'membercomments' => array(
+        '#type' => 'textarea',
+        '#max_length' => Order::MAX_LENGTH_MEMBER_COMMENTS,
+        '#rows' => 3,
+        '#default_value' => check_plain($oRecord->MemberComments),
+        '#disabled' => $oRecord->CanModify ? false: true,
+        '#weight' => 80,
+        '#attributes' => array('placeholder' => t('Any comments?')),
+      )
     ),
   );
 
   if ($oRecord->CanModify && $oRecord->ID > 0 && $oRecord->HasPermission(SQLBase::PERMISSION_DELETE)) {
     $form['maintable']['buttons']['delete'] = array(
-      'type' => 'submit',
+        '#type' => 'submit',
         '#id' => 'btnDelete',
         '#submit' => array('homecoop_page_front_form_delete'),
         '#value' => t('Delete @title', array('@title' => $oRecord->PageTitleSuffix)),
@@ -189,20 +226,91 @@ function homecoop_page_order_form($form, &$form_state) {
     );
   }
   
-  if ($oRecord->CanModify)
-  {
+  if ($oRecord->CanModify) {
     $form['maintable']['controlstable']['pickuploc'] = array(
-       '#type' => 'select',
+        '#type' => 'select',
         '#key_type' => 'associative',
         '#title' => t('Location Name'),
-        '#options' => $g_oFormExtraData['pickuplocs'],
+        '#options' => $oFormExtraData['pickuplocs'],
         '#default_value' => $oRecord->PickupLocationID,
         '#weight' => 10,
         '#required' => TRUE,
      );
+    
+    if ($bHasCoordPermission) {
+      if ($oRecord->HasPermission(Order::PERMISSION_SET_MAX_ORDER)) {
+        $form['maintable']['controlstable']['balance'] = array(
+          '#prefix' => '<label>' . t('Balance') . '</label><span>',
+          '#markup' => $oRecord->Balance,
+          '#suffix' => '</span>',
+          '#weight' => 40,
+        );
+        $form['maintable']['controlstable']['paymethod'] = array(
+          '#type' => 'select',
+          '#key_type' => 'associative',
+          '#title' => t('Payment Method'),
+          '#options' => $oFormExtraData['paymethods'],
+          '#default_value' => $oRecord->PaymentMethodID,
+          '#weight' => 50,
+          '#required' => TRUE,
+          '#disabled' => $oRecord->CanModify ? false: true,
+       );
+
+        $form['maintable']['controlstable']['percentoverbalance'] = array(
+          '#type' => 'textfield',
+          '#title' => t('% Over Balance'),
+          '#description' => t('The percentage in which a member\'s order can exceed hir balance. This rule is being applied only when the member\'s payment method allows a percentage over balance.'),
+          '#size' => 5,
+          '#max_length' => 5,
+          '#default_value' => $oRecord->PercentOverBalance,
+          '#weight' => 60,
+          '#disabled' => $oRecord->CanModify ? false: true,
+          '#rules' => array('decimal'),
+        );
+      }
+      
+      $form['maintable']['controlstable']['selMemberID'] = array(
+        '#type' => 'select',
+        '#id' => 'selMemberID',
+        '#key_type' => 'associative',
+        '#title' => ($oRecord->ID > 0)? t('Move order to') : t('Member'),
+        '#options' => $oFormExtraData['members'],
+        '#default_value' => $oRecord->MemberID,
+        '#weight' => 90,
+        '#required' => TRUE,
+        '#attributes' => array(
+          'onchange' => 'MemberChange();',
+          'id' => 'selMemberID',
+        ),
+      );
+      
+      //if member found in select list
+      if (isset($oFormExtraData['members'][$oRecord->MemberID])) {
+        $form['maintable']['controlstable']['loginname'] = array(
+          '#prefix' => '<label>' . t('Login name') . '</label><span>',
+          '#markup' => check_plain($oRecord->LoginName),
+          '#suffix' => '</span>',
+          '#weight' => 100,
+        );
+        
+        $sEmail = $oRecord->EMail;
+        if ( $oRecord->EMail2 != NULL )
+          $sEmail .= ', ' . $oRecord->EMail2;
+        if ( $oRecord->EMail3 != NULL )
+          $sEmail .= ', ' . $oRecord->EMail3;
+        if ( $oRecord->EMail4 != NULL )
+          $sEmail .= ', ' . $oRecord->EMail4;
+        
+        $form['maintable']['controlstable']['email'] = array(
+          '#prefix' => '<label>' . t('Email address‏') . '</label><span>',
+          '#markup' => check_plain($sEmail),
+          '#suffix' => '</span>',
+          '#weight' => 110,
+        );
+      }
+    }
   }
-  else
-  {
+  else {
     $form['maintable']['controlstable']['pickuploc'] = array(
         '#prefix' => '<label>' . t('Location Name') . '</label><span>',
         '#markup' => check_plain($oRecord->PickupLocationName),
@@ -212,195 +320,49 @@ function homecoop_page_order_form($form, &$form_state) {
   }
   
   if ($oRecord->ID > 0) {
-     $form['maintable']['controlstable']['pickupaddress'] = array(
-        '#prefix' => '<label>' . t('Address') . '</label><span>',
-        '#markup' => check_plain($oRecord->PickupLocationAddress),
-        '#suffix' => '</span>',
-        '#weight' => 20,
-     );
-     $form['maintable']['controlstable']['pickupinstruct'] = array(
-        '#prefix' => '<label>' . t('Pickup Instructions') . '</label><span>',
-        '#markup' => check_plain($oRecord->PublishedComments),
-        '#suffix' => '</span>',
-        '#weight' => 30,
-     );
+    $form['maintable']['controlstable']['pickupaddress'] = array(
+       '#prefix' => '<label>' . t('Address') . '</label><span>',
+       '#markup' => check_plain($oRecord->PickupLocationAddress),
+       '#suffix' => '</span>',
+       '#weight' => 20,
+    );
+    $form['maintable']['controlstable']['pickupinstruct'] = array(
+       '#prefix' => '<label>' . t('Pickup Instructions') . '</label><span>',
+       '#markup' => check_plain($oRecord->PublishedComments),
+       '#suffix' => '</span>',
+       '#weight' => 30,
+    );
+     
+    homecoop_page_order_display_contacts('cocontacts', $oFormExtraData, $form, t('Order Coordinator(s)'), 120 );
+    homecoop_page_order_display_contacts('plcontacts', $oFormExtraData, $form, t('Pickup Location Coordinator(s)'), 130 );
+    
+    $form['maintable']['controlstable']['lastupdate'] = array(
+       '#markup' => '<label>' . t('Last update by @membername on @date at @time',
+            array(
+              '@membername' => $oRecord->ModifiedByMemberName,
+              '@date' => $oRecord->DateModified->format('n.j.Y'),
+              '@time' => $oRecord->DateModified->format('g:i A'),
+            )
+           ) . '</label>',
+       '#weight' => 140,
+    );
+    
+    $form['maintable']['controlstable']['created'] = array(
+       '#markup' => '<label>' . t('Created by @membername on @date at @time',
+            array(
+              '@membername' => $oRecord->CreatedByMemberName,
+              '@date' => $oRecord->DateCreated->format('n.j.Y'),
+              '@time' => $oRecord->DateCreated->format('g:i A'),
+            )
+           ) . '</label>',
+       '#weight' => 150,
+    );
   }
   
+  $form['#submit'][] = 'homecoop_page_order_form_submit';
+  
   return $form;
-                
- /*               
-                
-                  if ($oRecord->CanModify && $bHasCoordPermission && 
-                      $oRecord->HasPermission(Order::PERMISSION_SET_MAX_ORDER) )
-                  {
-                    echo '<tr>';
-                   
-                    $txtBalance = new HtmlTextLabel('Balance', 'txtBalance', $oRecord->Balance);
-                    $txtBalance->EchoHtml();
-                    unset($txtBalance);
-                 
-                    echo '<td></td>';
-                    echo '</tr>';
-                
-                    echo '<tr>';
-                
-                    $selPaymentMethod = new HtmlSelectArray('PaymentMethodKeyID', 'Payment Method', $arrPaymentMethods,
-                          $oRecord->PaymentMethodID);
-                    $selPaymentMethod->Required = TRUE;
-                    $selPaymentMethod->ReadOnly = !$oRecord->CanModify;
-                    $selPaymentMethod->EchoHtml();
-                    unset($selPaymentMethod);
-
-                    echo '<td></td>';
-                    echo '</tr>';
-
-                    echo '<tr>';
-                    $txtPOBalance = new HtmlTextEditNumeric('% Over Balance', 'txtPercentOverBalance', 
-                            $oRecord->PercentOverBalance);
-                    $txtPOBalance->ReadOnly = !$oRecord->CanModify;
-                    $txtPOBalance->EchoHtml();
-                    unset($txtPOBalance);
-                  
-                    echo '<td><a id="percentoverhlp" name="percentoverhlp" class="tooltiphelp" href="#percentoverhlp" >‏?‏<span class="helpspan">The percentage in which a member&#x27;s order can exceed hir balance. This rule is being applied only when the member&#x27;s payment method allows a percentage over balance.</span></a></td>';
-                    echo '</tr>';
-
-                  }
-                ?>
-                <tr>
-                  <?php
-                    $lblMaxOrder = new HtmlTextLabel('Max. Order', 'lblMaxOrder',$oRecord->MaxOrder);
-                    $lblMaxOrder->EchoHtml();
-                    unset($lblMaxOrder);
-                  ?>
-                  <td></td>
-                </tr>
-
-                <tr>
-                  <td><label for="txtMemberComments">Comments‏:‏</label></td>
-                  <?php 
-                    $txtMemberComments = new HtmlTextEdit('txtMemberComments', NULL , 
-                            HtmlTextEdit::TEXTAREA, $oRecord->MemberComments);
-                    $txtMemberComments->ReadOnly = !$oRecord->CanModify;
-                    $txtMemberComments->MaxLength = Order::MAX_LENGTH_MEMBER_COMMENTS;
-                    $txtMemberComments->EchoEditPartHtml();
-                  ?>
-                  <td></td>
-                </tr>
-                <?php 
-                  if ($bHasCoordPermission && $oRecord->CanModify)
-                  {
-                    echo '<tr>';
-                    
-                    $sMemberFieldLabel = NULL;
-                    
-                    //change the label of the member field, according to whether a new order or existing one
-                    if ($oRecord->ID > 0)
-                      $sMemberFieldLabel = 'Move order to';
-                    else
-                      $sMemberFieldLabel = 'Member';
-                    
-                    //select member
-                    $selMember = new HtmlSelectArray('MemberID', $sMemberFieldLabel, $arrMembers, $oRecord->MemberID);
-                    $selMember->OnChange = "JavaScript:MemberChange();";
-                    $selMember->Required = TRUE;
-                    $selMember->EmptyText = NULL; //remove empty row
-                    $selMember->EchoHtml();
-                    
-                    echo '<td><span id="spLoginName" name="spLoginName">';
-                    if ($selMember->ValueFound) //if member not found, don't show incorrect data
-                        echo sprintf('Login name: %s', htmlspecialchars( $oRecord->LoginName ));
-                    echo '</span></td>';
-                    
-                    echo '</tr>';
-                    
-                    echo '<tr>',
-                          '<td><label>Email address‏:‏</label></td>';
-                    
-                    echo '<td>';
-                    
-                    if ($selMember->ValueFound) //if member not found, don't show incorrect data
-                    {
-                      echo htmlspecialchars($oRecord->EMail);
-                      if ( $oRecord->EMail2 != NULL )
-                        echo ', ', htmlspecialchars($oRecord->EMail2);
-                      if ( $oRecord->EMail3 != NULL )
-                        echo ', ', htmlspecialchars($oRecord->EMail3);
-                      if ( $oRecord->EMail4 != NULL )
-                        echo ', ', htmlspecialchars($oRecord->EMail4);
-                    }
-                     
-                    echo '</td>';
-                   
-                    echo '<td></td>';
-                    
-                    echo '</tr>';
-                  }
-                ?>
-                <?php if ($oRecord->ID > 0) { 
-                  
-                  $sContacts = '';
-                  
-                  if ($arrCOContacts != NULL)
-                  {
-                    
-                    foreach($arrCOContacts as $arrCOValues)
-                    {
-                      $sContacts .= sprintf('%1$s, %2$s ', $arrCOValues["sName"], $arrCOValues["sEMail"]);
-                    }
-                    
-                    if ($sContacts != '')
-                    {
-                      $lblCOContacts = new HtmlTextLabel('Order Coordinator(s)','lblCOContacts', $sContacts);
-                      echo '<tr>';
-                      $lblCOContacts->EchoHtml(); 
-                      echo '<td></td></tr>';
-                    }
-                  }
-                  
-                  
-                  if ($arrPLContacts != NULL)
-                  {
-                    $sContacts = '';
-                    foreach($arrPLContacts as $arrPLValues)
-                    {
-                      $sContacts .= sprintf('%1$s, %2$s ', $arrPLValues["sName"], $arrPLValues["sEMail"]);
-                      
-                    }
-                    if ($sContacts != '')
-                    {
-                      $lblPLContacts = new HtmlTextLabel('Pickup Location Coordinator(s)','lblPLContacts', $sContacts);
-                      echo '<tr>';
-                      $lblPLContacts->EchoHtml();
-                      echo '<td></td></tr>';
-                    }
-                  }
-                  
-                  ?>
-                <tr><td colspan="3">&nbsp;</td></tr>
-                <tr>
-                  <td colspan="3">
-                    <?php
-                        echo(sprintf('Last update by %1$s on %2$s at %3$s',$oRecord->ModifiedByMemberName,
-                                $oRecord->DateModified->format('n.j.Y'),
-                                $oRecord->DateModified->format('g:i A')
-                                ));
-                    ?>
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="3">
-                    <?php
-                        echo(sprintf('Created by %1$s on %2$s at %3$s',$oRecord->CreatedByMemberName,
-                                $oRecord->DateCreated->format('n.j.Y'),
-                                $oRecord->DateCreated->format('g:i A')
-                                ));
-                    ?>
-                  </td>
-                </tr>
-                <?php } ?>*/
 }
-
-
 
 function homecoop_order_tab_cooporder() {
   return array('#markup' => '');
@@ -412,5 +374,49 @@ function homecoop_order_tab_order() {
   return array('#markup' => '');
 }
 
+/*
+ * Submit function for the save operation
+ */
 function homecoop_page_order_form_save($form, &$form_state) {
+  
 }
+
+/*
+ * Submit function for the delete operation
+ */
+function homecoop_page_front_form_delete($form, &$form_state) {
+  
+}
+
+/*
+ * Other submits, according to action (change of member)
+ */
+function homecoop_page_order_form_submit($form, &$form_state) {
+  if (!isset($form_state['values']['hidPostAction'])) {
+    return;
+  }
+  $nAction = intval($form_state['values']['hidPostAction']);
+  switch($nAction) {
+    case Order::POST_ACTION_MEMBER_CHANGE:
+      break;
+  }
+}
+
+function homecoop_page_order_display_contacts($sContactsKey, &$oFormExtraData, &$form, $sLabel, $Weight) {
+  if ($oFormExtraData[$sContactsKey] != NULL) {
+      $sContacts = '';
+      foreach($oFormExtraData[$sContactsKey] as $arrValues) {
+        $sContacts .= sprintf('%1$s, %2$s ', $arrValues["sName"], $arrValues["sEMail"]);
+      }
+
+      if ($sContacts != '') {
+        $form['maintable']['controlstable'][$sContactsKey] = array(
+          '#prefix' => '<label>' . $sLabel . '</label><span>',
+          '#markup' => check_plain($sContacts),
+          '#suffix' => '</span>',
+          '#weight' => $Weight,
+        );
+      }
+    }
+}
+
