@@ -147,6 +147,15 @@ class Order extends SQLBase {
         return parent::__get($name);
     }
   }
+  
+  public function GetAllProperties() {
+    return $this->m_aData + 
+        array(
+          self::PROPERTY_CAN_MODIFY => $this->CanModify,
+          self::PROPERTY_TOTAL_BURDEN => $this->OrderBurden,
+          self::PROPERTY_TOTAL_COOP_DELTA => $this->TotalCoopDelta,
+        );
+  }
 
   //limit properties that can be set
   public function __set( $name, $value ) {

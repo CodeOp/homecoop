@@ -313,19 +313,15 @@ function homecoop_activeorders() {
         //existing order button
         if ($recTable["OrderID"] != NULL) {
           $arrOrderStatusButtonCapacity['orderstatusandbutton']['button'] = array(
-            '#prefix' => '<button type="button" id="btnOrder" class="order" name="btnOrder" onclick="JavaScript:OpenOrder(\'' .
-            $g_sRootRelativePath . '\',' . $recTable["OrderID"] . ');" >',
-            '#markup' => t('My Order'),
-            '#suffix' => '</button>',
+            '#markup' => '<input type="button" id="btnOrder" class="order" value="' . t('My Order') . '" name="btnOrder" onclick="JavaScript:OpenOrder(\'' .
+            $g_sRootRelativePath . '\',' . $recTable["OrderID"] . ');" />',
           );
         }
         //new order button
         else if ($oActiveOrderStatus->Status == ActiveCoopOrderStatus::Open && $oCoopOrderCapacity->Percent < 100) {
           $arrOrderStatusButtonCapacity['orderstatusandbutton']['button'] = array(
-            '#prefix' => '<button type="button" id="btnOrder" class="order" name="btnOrder" onclick="JavaScript:NewOrder(\'' .
-            $g_sRootRelativePath . '\',' . $recTable["CoopOrderKeyID"] . ');" >',
-            '#markup' => t('Order Now'),
-            '#suffix' => '</button>',
+            '#markup' => '<input type="button" id="btnOrder" class="order" value="' . t('Order Now') . '" name="btnOrder" onclick="JavaScript:NewOrder(\'' .
+            $g_sRootRelativePath . '\',' . $recTable["CoopOrderKeyID"] . ');" />',
           );
         }
 

@@ -218,7 +218,7 @@ body.centered {
 }
 
 /* line 74, ../sass/main.scss */
-button {
+input[type='button'], input[type='submit'] {
   background-color: #F2DFC1;
   border: 1px solid #e4e4e4;
   border-bottom: 1px solid #b4b4b4;
@@ -243,29 +243,29 @@ button {
 }
 
 /* line 98, ../sass/main.scss */
-button:hover {
+input[type='button']:hover, input[type='submit']:hover {
   background-color: #E0C292;
 }
 
 /* line 102, ../sass/main.scss */
-button:disabled {
+input[type='button']:disabled, input[type='submit']:disabled {
   background-color: #F2DFC1;
   color: #A8A8A8;
   cursor: default;
 }
 
 /* line 108, ../sass/main.scss */
-button.order {
+input[type='button'].order, input[type='submit']:order {
   background-color: #F4B551;
 }
 
 /* line 112, ../sass/main.scss */
-button.order:hover {
+input[type='button'].order:hover, input[type='submit'].order:hover {
   background-color: #FB9C03;
 }
 
 /* line 116, ../sass/main.scss */
-button.order:disabled {
+input[type='button'].order:disabled, input[type='submit'].order:disabled {
   background-color: #F4B551;
 }
 

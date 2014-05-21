@@ -1,5 +1,5 @@
 /* line 2, ../sass/facet.scss */
-button.facetapply {
+input[type='button'].facetapply, input[type='submit'].facetapply {
   padding: 3px 12px;
   font-weight: bold;
   color: #000;
@@ -8,12 +8,12 @@ button.facetapply {
 }
 
 /* line 11, ../sass/facet.scss */
-button.facetapply:hover {
+input[type='button'].facetapply:hover, input[type='submit'].facetapply:hover {
   background-color: #FFF;
 }
 
 /* line 16, ../sass/facet.scss */
-button.facetapply:disabled {
+input[type='button'].facetapply:disabled, input[type='submit'].facetapply:disabled {
   color: #9E9E9F;
   border-color: #9E9E9F;
   cursor: default;

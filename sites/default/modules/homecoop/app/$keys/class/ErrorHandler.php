@@ -82,7 +82,7 @@ class ErrorHandler {
         form_set_error('', $sErr);
       }
       else {
-        drupal_set_message($sErr, $sType);
+        drupal_set_message($sErr, $sType, false);
       }
   }
 

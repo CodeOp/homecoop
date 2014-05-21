@@ -2,6 +2,7 @@ function ConfirmDelete()
 {
   return confirm(Drupal.settings.homecoop.ConfirmDelete);
 }
+
 function MemberChange()
 {
   if (Drupal.settings.homecoop.MemberID > 0) {

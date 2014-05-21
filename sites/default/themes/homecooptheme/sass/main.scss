@@ -71,7 +71,7 @@ body.centered
   left: 0px;
 }
 
-button{
+input[type='button'], input[type='submit']{
   background-color:#F2DFC1;
   border: 1px solid #e4e4e4;
   border-bottom: 1px solid #b4b4b4;
@@ -94,25 +94,25 @@ button{
   text-shadow: none;
   display: inline-block;
 }
-button:hover
+input[type='button']:hover, input[type='submit']:hover
 {
   background-color: #E0C292;
 }
-button:disabled
+input[type='button']:disabled, input[type='submit']:disabled
 {
   background-color:#F2DFC1;
   color:#A8A8A8;
   cursor: default;
 }
-button.order
+input[type='button'].order, input[type='submit']:order
 {
   background-color:#F4B551;
 }
-button.order:hover
+input[type='button'].order:hover, input[type='submit'].order:hover
 {
   background-color:#FB9C03;
 }
-button.order:disabled
+input[type='button'].order:disabled, input[type='submit'].order:disabled
 {
   background-color:#F4B551;
 }

@@ -15,9 +15,9 @@ class Notifications {
     if (    $g_oMemberSession->Balance == 0 
             && $g_oMemberSession->PaymentMethod != Consts::PAYMENT_METHOD_AT_PICKUP )
     {
-        drupal_set_message('<!$MSG_ZERO_BALNACE_LINE1$!>', 'warning');
-        drupal_set_message('<!$MSG_ZERO_BALNACE_LINE2$!>', 'warning');
-        drupal_set_message(sprintf('<!$MSG_ZERO_BALNACE_LINE4$!>', COOP_ADDRESS_MEMBER_BALANCE ), 'warning');
+        drupal_set_message('<!$MSG_ZERO_BALNACE_LINE1$!>', 'warning', false);
+        drupal_set_message('<!$MSG_ZERO_BALNACE_LINE2$!>', 'warning', false);
+        drupal_set_message(sprintf('<!$MSG_ZERO_BALNACE_LINE4$!>', COOP_ADDRESS_MEMBER_BALANCE ), 'warning', false);
     }    
   }
 }

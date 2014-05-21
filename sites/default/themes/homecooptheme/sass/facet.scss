@@ -1,4 +1,4 @@
-button.facetapply
+input[type='button'].facetapply, input[type='submit'].facetapply
 {
   padding: 3px 12px;
   font-weight: bold;
@@ -7,12 +7,12 @@ button.facetapply
   border-color: #000;
 }
 
-button.facetapply:hover
+input[type='button'].facetapply:hover, input[type='submit'].facetapply:hover
 {
   background-color: #FFF;
 }
 
-button.facetapply:disabled
+input[type='button'].facetapply:disabled, input[type='submit'].facetapply:disabled
 {
   color:#9E9E9F;
   border-color: #9E9E9F;

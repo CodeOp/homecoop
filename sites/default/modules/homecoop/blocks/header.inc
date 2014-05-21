@@ -156,6 +156,20 @@ function homecoop_language_links() {
     global $language, $base_url;
     
     $sUrl = current_path();
+    
+    $arrParams = drupal_get_query_parameters();
+    $sQuery = '';
+    $bFirst = true;
+    if (count($arrParams) > 0) {
+      foreach($arrParams as $key => $value) {
+        if (!$bFirst) {
+          $sQuery .= '&';
+          $bFirst = false;
+        }
+        $sQuery .= $key . '=' . urlencode($value);
+      }
+      $sQuery = '?' . $sQuery;
+    }
   
     foreach($langs as $lkey => $oLang) {
       if ($language->language == $lkey) { //skip link to current language
@@ -163,7 +177,7 @@ function homecoop_language_links() {
       }
       $content['links'][$lkey]['#prefix'] = '<span class="usermenulabel">';
       $content['links'][$lkey]['#markup'] = '<a href="#" class="subtlelink" onclick="JavaScript: ChangeLanguage(\'' .
-          $base_url . '/' . $lkey . '/' . $sUrl . '\');" >' . $oLang->native . '</a>';
+          $base_url . '/' . $lkey . '/' . $sUrl . $sQuery . '\');" >' . $oLang->native . '</a>';
 
       $content['links'][$lkey]['#suffix'] = '</span>';
     } 
