@@ -8,7 +8,7 @@ function homecoop_header_block() {
   homecoop_include_app_file('settings');
   
   global $HomeCoopThemePath;
-  global $g_oMemberSession, $g_sRootRelativePath;
+  global $g_oMemberSession;
   
   $bIsAuthenticated = homecoop_check_if_authenticated();
 
@@ -95,8 +95,8 @@ function homecoop_header_block() {
     $hc_user_menu['#prefix'] .= ' colspan="4" class="usermenucell" ';
     $hc_user_menu['hc_my_profile'] = array(
       '#prefix' => '<li>',
-      'markup' => array ('#markup' => '<span class="usermenulabel" title="My Profile"><a href="' . $g_sRootRelativePath . 
-       'hcprofile">' . t('Hello, @name', array('@name' => $g_oMemberSession->Name)) . '</a></span>'),
+      'markup' => array ('#markup' => '<span class="usermenulabel" title="My Profile"><a href="' . url('hcprofile') . 
+       '">' . t('Hello, @name', array('@name' => $g_oMemberSession->Name)) . '</a></span>'),
       '#suffix' => '</li>',
     );
 
@@ -115,7 +115,7 @@ function homecoop_header_block() {
                Consts::PERMISSION_SCOPE_BOTH, 0, TRUE)) {
         $hc_user_menu['hc_my_orders'] = array(
           '#prefix' => '<li>',
-          'markup' => array ('#markup' => '<span class="usermenulabel"><a href="' . $g_sRootRelativePath . 'hcorders">' . t('My Orders') . '</a></span>'),
+          'markup' => array ('#markup' => '<span class="usermenulabel"><a href="' . url('hcorders') . '">' . t('My Orders') . '</a></span>'),
           '#suffix' => '</li>',
         );
       }
@@ -123,7 +123,7 @@ function homecoop_header_block() {
     
     $hc_user_menu['hc_catalog'] = array(
       '#prefix' => '<li>',
-      'markup' => array ('#markup' => '<span class="usermenulabel"><a href="' . $g_sRootRelativePath . 'hccatalog">' . t('Products Catalog') . '</a></span>'),
+      'markup' => array ('#markup' => '<span class="usermenulabel"><a href="' . url('hccatalog') . '">' . t('Products Catalog') . '</a></span>'),
       '#suffix' => '</li>',
     );
   }
@@ -187,7 +187,6 @@ function homecoop_language_links() {
 }
 
 function homecoop_coord_menu() {
-  global $g_sRootRelativePath;
   $arrContent = array(
     '#prefix' => '<tr class="coordmenu"><td colspan="4" class="coordmenucell"><nav id="navCoord" class="nav-collapse"><ul>',
     '#suffix' => '</ul></nav></td></tr>',
@@ -213,7 +212,7 @@ function homecoop_coord_menu() {
   {
     $arrContent['cooporders'] = array(
       '#prefix' => '<li><span class="coordmenulabel">',
-      '#markup' => '<a href="' . $g_sRootRelativePath . 'hccooporders">' . t('Cooperative Orders') . '</a>',
+      '#markup' => '<a href="' . url('hccooporders') . '">' . t('Cooperative Orders') . '</a>',
       '#suffix' => '</span></li>',
     );
   }   
@@ -225,7 +224,7 @@ function homecoop_coord_menu() {
   {
     $arrContent['producers'] = array(
       '#prefix' => '<li><span class="coordmenulabel">',
-      '#markup' => '<a href="' . $g_sRootRelativePath . 'hccoord/producers">' . t('Producers') . '</a>',
+      '#markup' => '<a href="' . url('hccoord/producers') . '">' . t('Producers') . '</a>',
       '#suffix' => '</span></li>',
     );
   }
@@ -237,7 +236,7 @@ function homecoop_coord_menu() {
   {
     $arrContent['products'] = array(
         '#prefix' => '<li><span class="coordmenulabel">',
-        '#markup' => '<a href="' . $g_sRootRelativePath . 'hccoord/products">' . t('Products') . '</a>',
+        '#markup' => '<a href="' . url('hccoord/products') . '">' . t('Products') . '</a>',
         '#suffix' => '</span></li>',
       );  
   }
@@ -247,7 +246,7 @@ function homecoop_coord_menu() {
   {
     $arrContent['pickuplocs'] = array(
         '#prefix' => '<li><span class="coordmenulabel">',
-        '#markup' => '<a href="' . $g_sRootRelativePath . 'hccoord/pickuplocs">' . t('Pickup Locations') . '</a>',
+        '#markup' => '<a href="' . url('hccoord/pickuplocs') . '">' . t('Pickup Locations') . '</a>',
         '#suffix' => '</span></li>',
       );
   }
@@ -257,7 +256,7 @@ function homecoop_coord_menu() {
   {
     $arrContent['cachier'] = array(
         '#prefix' => '<li><span class="coordmenulabel">',
-        '#markup' => '<a href="' . $g_sRootRelativePath . 'hccoord/cachier">' . t('Cashier Totals') . '</a>',
+        '#markup' => '<a href="' . url('hccoord/cachier') . '">' . t('Cashier Totals') . '</a>',
         '#suffix' => '</span></li>',
       );
   }
@@ -269,7 +268,7 @@ function homecoop_coord_menu() {
   {
     $arrContent['members'] = array(
         '#prefix' => '<li><span class="coordmenulabel">',
-        '#markup' => '<a href="' . $g_sRootRelativePath . 'hccoord/members">' . t('Members') . '</a>',
+        '#markup' => '<a href="' . url('hccoord/members') . '">' . t('Members') . '</a>',
         '#suffix' => '</span></li>',
       );
   }

@@ -145,19 +145,17 @@ function homecoop_page_order_prepareform(&$oRecord) {
   $oRecord->GetContacts($arrCOContacts, $arrPLContacts);
   
   return array(
-    'ordertab' => $oOrderTabInfo,
-    'pltab' => $oPLTabInfo,
-    'cooptab' => $oTabInfo,
-    'pickuplocs' => $arrPickupLocs,
-    'members' => $arrMembers,
-    'hascoordpermission' => $bHasCoordPermission,
-    'hassetmaxpermission' => $oRecord->HasPermission(Order::PERMISSION_SET_MAX_ORDER),
-    'hasdeletepermission' => $oRecord->HasPermission(SQLBase::PERMISSION_DELETE),
-    'paymethods' => $arrPaymentMethods,
-    'cocontacts' => $arrCOContacts,
-    'plcontacts' => $arrPLContacts,
-    'OriginalData' => $oRecord->GetSerializedOriginalData(),
-  ) + $oRecord->GetAllProperties();
+      'pickuplocs' => $arrPickupLocs,
+      'members' => $arrMembers,
+      'hascoordpermission' => $bHasCoordPermission,
+      'hassetmaxpermission' => $oRecord->HasPermission(Order::PERMISSION_SET_MAX_ORDER),
+      'hasdeletepermission' => $oRecord->HasPermission(SQLBase::PERMISSION_DELETE),
+      'paymethods' => $arrPaymentMethods,
+      'cocontacts' => $arrCOContacts,
+      'plcontacts' => $arrPLContacts,
+      'OriginalData' => $oRecord->GetSerializedOriginalData(),
+    ) + homecoop_get_tabs_info($oTabInfo, $oOrderTabInfo, $oPLTabInfo, $bHasCoordPermission) 
+      + $oRecord->GetAllProperties();
 }
 
 function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
@@ -185,15 +183,15 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
     '#attributes' => array('id' => 'hidPostValue'));
   $form['maintable'] = array(
     'coopordertab' => array(
-      'tab' => homecoop_order_tab_cooporder(),
+      'tab' => homecoop_tab_cooporder($oFormExtraData),
       '#weight' => 10,
     ),
     'copickuploctab' => array(
-      'tab' => homecoop_order_tab_copickuploc(),
+      'tab' => homecoop_tab_copickuploc($oFormExtraData),
       '#weight' => 20,
     ),
     'ordertab' => array(
-      'tab' => homecoop_order_tab_order(),
+      'tab' => homecoop_tab_order($oFormExtraData),
       '#weight' => 30,
     ),
     'buttons' => array(
@@ -382,15 +380,6 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
   return $form;
 }
 
-function homecoop_order_tab_cooporder() {
-  return array('#markup' => '');
-}
-function homecoop_order_tab_copickuploc() {
-  return array('#markup' => '');
-}
-function homecoop_order_tab_order() {
-  return array('#markup' => '');
-}
 
 /*
  * Submit function for the save operation

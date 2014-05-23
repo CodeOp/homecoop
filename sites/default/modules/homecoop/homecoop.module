@@ -207,3 +207,422 @@ function homecoop_prepare_producer_facet() {
   homecoop_LoadSpecificFacet($g_oMemberProducers, $g_aMemberProducers, $g_aMemberProducerIDs, $g_nMemberProducersRemoved,
       'ProducerKeyID');
 }
+
+function homecoop_tab_cooporder(&$oFormExtraData) {
+  if (!isset($oFormExtraData['cooptab']) || empty($oFormExtraData['cooptab']) || !$oFormExtraData['coopordertabaccess']) {
+    return array();
+  }
+  
+  $oTabInfo = $oFormExtraData['cooptab'];
+  $arrContent = array(
+    '#prefix' => '<table cellpadding="0" cellspacing="0" border="0" width="100%" >',
+    '#suffix' => '</table>',
+  );
+  
+  if ($oTabInfo->ID > 0) {
+    $arrSums = array(
+      '#prefix' => '<tr><td align="center"><table cellpadding="2" cellspacing="0" border="0" ><tr>',
+      '#suffix' => '</tr></table></td></tr>',
+    );
+
+    if ($oFormExtraData['hassumspermission']) {
+      $arrSums['totalcoop'] = array(
+        'totalcooplabel' => array(
+          '#prefix' => '<td class="headmainlabel">',
+          '#markup' => t('Total Coop:&nbsp;'),
+          '#suffix' => '</td>',
+        ),
+         'totalcoopdata' => array(
+          '#prefix' => '<td class="headmaindata">',
+          '#markup' => $oTabInfo->CoopTotal,
+          '#suffix' => '</td>',
+        ),
+      );
+    }
+    
+    $arrSums['sep1'] = array(
+      '#markup' => '<td>&nbsp;&nbsp;</td>',
+    );
+
+    if ($oTabInfo->Capacity != NULL) {
+      $arrSums['capacity'] = array(
+        '#prefix' => '<td class="headmaindata">',
+        '#markup' => t('@percent&nbsp;Full', array('@percent' => $oTabInfo->Capacity)),
+        '#suffix' => '</td>',
+      );
+    }
+    
+    $arrSums['sep2'] = array(
+      '#markup' => '<td>&nbsp;&nbsp;</td>',
+    );
+    
+    if ($oTabInfo->StatusObj != NULL) {
+      $arrSums['status'] = array(
+        '#prefix' => '<td nowrap class="headmaindata">',
+        '#markup' => $oTabInfo->StatusObj->StatusName,
+        '#suffix' => '</td>',
+      );
+    }
+    $arrContent['sums'] = $arrSums;
+  }
+  
+  //Main TAB
+  $arrContent['maintab'] = array(
+    '#prefix' => '<tr><td><ul class="tabrow">',
+    '#suffix' => '</ul></td></tr>',
+  );
+  
+  $sCoopOrderTabSelected = '';
+  $sPickupLocationTabSelected = '';
+  $sOrderTabSelected = '';
+  $sCurrentMainTab = '';
+  $sCurrentMainTabItem = '';
+  
+  $bHasOrder = $oFormExtraData['hasorder'];
+  $bHasPickupLocation = (isset($oFormExtraData['pltab']) && !empty($oFormExtraData['pltab']) &&  $oFormExtraData['pltab']->PickupLocationID > 0 
+      && $oFormExtraData['pltab']->IsExistingRecord);
+
+  if ($bHasOrder) {
+    $sOrderTabSelected = 'class="selected"';
+    $sCurrentMainTab = 'tabOrder';
+  }
+  elseif ($bHasPickupLocation) {
+    $sPickupLocationTabSelected = 'class="selected"';
+    $sCurrentMainTab = 'tabPickupLocation';
+  }
+  else {
+    $sCoopOrderTabSelected = 'class="selected"';
+    $sCurrentMainTab = 'tabCoopOrder';
+  }
+  
+  $arrContent['hidCurrentMainTab'] = array('#type' => 'hidden', '#default_value' => $sCurrentMainTab, 
+    '#attributes' => array('id' => 'hidCurrentMainTab'));
+
+  $arrContent['maintab']['coopordertabanchor'] = array(
+    '#prefix' => '<li id="tabCoopOrderItem" onclick="javascript:ToggleTabDisplay(\'tabCoopOrder\');" ' . $sCoopOrderTabSelected  . ' title="' .
+      t('Cooperative Order') . '">',
+    '#markup' => $oTabInfo->CoopOrderTitle,
+    '#suffix' => '</li>',
+  );
+
+  if ($bHasPickupLocation) {
+    $arrContent['maintab']['pltabanchor'] = array(
+      '#prefix' => '<li id="tabPickupLocationItem" onclick="javascript:ToggleTabDisplay(\'tabPickupLocation\');"  ' . $sPickupLocationTabSelected . 
+      ' title="' . t('Location Name') . '">',
+      '#markup' => $oFormExtraData['pltab']->MainTabName,
+      '#suffix' => '</li>',
+    );
+  }
+
+  if ($bHasOrder) {
+    $arrContent['maintab']['ordertabanchor'] = array(
+      '#prefix' => '<li id="tabOrderItem" onclick="javascript:ToggleTabDisplay(\'tabOrder\');"  ' . $sOrderTabSelected . '>',
+      '#markup' => $oFormExtraData['ordertab']->MainTabName,
+      '#suffix' => '</li>',
+    );
+  }
+  
+  $arrContent['coopordertab'] = array(
+    '#prefix' => '<tr><td><table cellpadding="0" cellspacing="0" border="0" width="100%" ><tr><td><ul id="tabCoopOrder" class="tabrow subtabrow"' .
+      ($bHasOrder || $bHasPickupLocation ? ' style="display: none;" >' : '>'),
+    '#suffix' => '</ul></td></tr></table></td></tr>',
+  );
+  
+  $arrContent['coopordertab']['headeranchor'] = homecoop_tab_cooporder_write_element($oTabInfo, t('Header'), 
+      url('hccoord/cooporder', 
+          array('query' => 
+                  array('id' => $oTabInfo->ID),
+          )), $oTabInfo->Page == CoopOrderTabInfo::PAGE_ENTRY);
+
+  if ($oTabInfo->ID > 0) { //existing record
+    $arrContent['coopordertab']['planchor'] = homecoop_tab_cooporder_write_element($oTabInfo, t('Pickup Locations'),
+        url('hccoord/copickuplocs', 
+          array('query' => 
+                  array('id' => $oTabInfo->ID),
+          )), $oTabInfo->Page == CoopOrderTabInfo::PAGE_PICKUP);
+    
+    if ($oFormExtraData['hasproducerspermission']) {
+      $arrContent['coopordertab']['producersanchor'] = homecoop_tab_cooporder_write_element($oTabInfo, t('Producers'),
+          url('hccoord/coproducers', 
+          array('query' => 
+                  array('id' => $oTabInfo->ID),
+          )), $oTabInfo->Page == CoopOrderTabInfo::PAGE_PRODUCERS);
+    }
+    
+    if ($oFormExtraData['hasproductspermission']) {
+      $arrContent['coopordertab']['productssanchor'] = homecoop_tab_cooporder_write_element($oTabInfo, t('Products'),
+          url('hccoord/coproducts', 
+          array('query' => 
+                  array('id' => $oTabInfo->ID),
+          )), $oTabInfo->Page == CoopOrderTabInfo::PAGE_PRODUCTS);
+    }
+    
+    if ($oFormExtraData['hasorderspermission']) {
+      $arrContent['coopordertab']['orderssanchor'] = homecoop_tab_cooporder_write_element($oTabInfo, t('Member Orders'),
+          url('hccoord/orders', 
+          array('query' => 
+                  array('id' => $oTabInfo->ID),
+          )), $oTabInfo->Page == CoopOrderTabInfo::PAGE_ORDERS);
+    }
+    
+    $arrContent['coopordertab']['exportanchor'] = homecoop_tab_cooporder_write_element($oTabInfo, t('Export Data'),
+        url('hccoord/cooporderexport', 
+          array('query' => 
+                  array('id' => $oTabInfo->ID),
+          )), $oTabInfo->Page == CoopOrderTabInfo::PAGE_EXPORT_DATA);
+    
+    if ($oFormExtraData['hascopypermission']) {
+      $arrContent['coopordertab']['copyanchor'] = homecoop_tab_cooporder_write_element($oTabInfo, t('Copy'),
+          url('hccoord/coopordercopy', 
+          array('query' => 
+                  array('id' => $oTabInfo->ID),
+          )), FALSE);
+    }
+    
+    if ($oFormExtraData['hascoordsetpermission']) {
+      $query = array('rid' => $oTabInfo->ID,
+        'pa' => Consts::PERMISSION_AREA_COOP_ORDERS,
+        );
+
+      if ($oTabInfo->CoordinatingGroupID > 0) {
+        $query['id'] = $oTabInfo->CoordinatingGroupID;
+      }
+    
+      $arrContent['coopordertab']['coordsetanchor'] = homecoop_tab_cooporder_write_element($oTabInfo, t('Coordination'),
+        url('hccoord/coordinate', $query), FALSE);
+    }
+  }
+  
+  return $arrContent;
+}
+
+function homecoop_tab_copickuploc(&$oFormExtraData) {
+   if (!isset($oFormExtraData['pltab']) || empty($oFormExtraData['pltab']) ||
+       $oFormExtraData['pltab']->PickupLocationID == 0 || !$oFormExtraData['pltab']->IsExistingRecord
+       || !$oFormExtraData['coopordertabaccess'] || !$oFormExtraData['pltabaccess']
+       ) {
+    return array();
+  }
+  
+  $oPLTabInfo = $oFormExtraData['pltab'];
+  
+  $arrContent = array(
+    'tabs' => array(
+      '#prefix' => '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul id="tabPickupLocation" class="tabrow subtabrow" ' .
+      ($oFormExtraData['hasorder']? ' style="display: none;" >' : '>'),
+      '#suffix' => '</ul></td></tr></table>',
+      'plheadertab' => homecoop_tab_cooporder_pickuploc_write_element($oPLTabInfo, $oPLTabInfo->MainTabName,
+          url('hccoord/copickuploc', array(
+            'query' => array(
+              'coid' => $oPLTabInfo->CoopOrderID,
+              'plid' => $oPLTabInfo->PickupLocationID,
+            )
+          )), $oPLTabInfo->Page == CoopOrderPickupLocationTabInfo::PAGE_PICKUP_LOCATION),
+    ),
+  );
+  
+  if ($oFormExtraData['hasplproducerpermission']) {
+    $arrContent['tabs']['plproducerstab'] = homecoop_tab_cooporder_pickuploc_write_element($oPLTabInfo, t('Producers'),
+          url('hccoord/copickuplocproducers', array(
+            'query' => array(
+              'coid' => $oPLTabInfo->CoopOrderID,
+              'plid' => $oPLTabInfo->PickupLocationID,
+            )
+          )), $oPLTabInfo->Page == CoopOrderPickupLocationTabInfo::PAGE_PRODUCERS);
+  }
+  
+  if ($oFormExtraData['hasplproductspermission']) {
+    $arrContent['tabs']['plproductstab'] = homecoop_tab_cooporder_pickuploc_write_element($oPLTabInfo, t('Products'),
+          url('hccoord/copickuplocproducts', array(
+            'query' => array(
+              'coid' => $oPLTabInfo->CoopOrderID,
+              'plid' => $oPLTabInfo->PickupLocationID,
+            )
+          )), $oPLTabInfo->Page == CoopOrderPickupLocationTabInfo::PAGE_PRODUCTS);
+  }
+  
+  if ($oFormExtraData['hasplorderspermission']) {
+    $arrContent['tabs']['plorderstab'] = homecoop_tab_cooporder_pickuploc_write_element($oPLTabInfo, t('Orders'),
+          url('hccoord/copickuplocorders', array(
+            'query' => array(
+              'coid' => $oPLTabInfo->CoopOrderID,
+              'plid' => $oPLTabInfo->PickupLocationID,
+            )
+          )), $oPLTabInfo->Page == CoopOrderPickupLocationTabInfo::PAGE_ORDERS);
+  }
+  
+  return $arrContent;
+}
+
+function homecoop_tab_order(&$oFormExtraData) {
+   if (!isset($oFormExtraData['ordertab']) || empty($oFormExtraData['ordertab'])) {
+    return array();
+  }
+  
+  $oOrderTabInfo = $oFormExtraData['ordertab'];
+  
+  $arrContent = array(
+    'tabs' => array(
+      '#prefix' => '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul id="tabOrder" class="tabrow subtabrow">',
+      '#suffix' => '</ul></td></tr></table>',
+    ),
+  );
+  
+  $arrContent['tabs']['orderheadertab'] = homecoop_tab_order_write_element($oOrderTabInfo, t('Header'),
+      url('hcorder', 
+          array('query' => 
+                  array('id' => $oOrderTabInfo->ID),
+          )), $oOrderTabInfo->Page == OrderTabInfo::PAGE_ENTRY);
+  
+  if ($oOrderTabInfo->ID > 0) {
+    $arrContent['tabs']['orderitemstab'] = homecoop_tab_order_write_element($oOrderTabInfo, t('Order Items'),
+        url('hcorderitems', 
+          array('query' => 
+                  array('id' => $oOrderTabInfo->ID),
+          )), $oOrderTabInfo->Page == OrderTabInfo::PAGE_ITEMS);
+  }
+  
+  $nCoopTotal = $oOrderTabInfo->CoopTotal;
+  $sOrderSumClass = '';
+  if ($oOrderTabInfo->StatusObj->Status == ActiveCoopOrderStatus::Open) {
+    $sOrderSumClass = " opensum";
+  }
+  else {
+    $sOrderSumClass = " closedsum";
+  }
+  
+  $arrContent['tabs']['ordersummary'] = array(
+    '#prefix' => '<div class="ordersummary' . $sOrderSumClass . '">',
+    '#suffix' => '</div>',
+  );
+  
+  if ($oOrderTabInfo->OrderCoopFee != NULL && $oOrderTabInfo->OrderCoopFee != 0) {
+    $nCoopTotal += $oOrderTabInfo->OrderCoopFee;
+    $arrContent['tabs']['ordersummary']['totalproducts'] = array(
+      '#prefix' => '<div class="headlabel" >' . t('Total Products‏:‏‎&nbsp;'),
+      '#markup' => $oOrderTabInfo->CoopTotal,
+      '#suffix' => '</div>',
+    );
+    $arrContent['tabs']['ordersummary']['ordercoopfee'] = array(
+      '#prefix' => '<div class="headlabel" >' . t('Coop Fee‏‏:‏‎&nbsp;'),
+      '#markup' => $oOrderTabInfo->OrderCoopFee,
+      '#suffix' => '</div>',
+    );
+  }
+  
+  $arrContent['tabs']['ordersummary']['totalamount'] = array(
+    '#prefix' => '<div class="headlabel" >' . t('Total Amount‏:‏‎&nbsp;'),
+    '#markup' => $nCoopTotal,
+    '#suffix' => '</div>',
+  );
+  
+  if ($oOrderTabInfo->StatusObj->StatusName != NULL) {
+    $arrContent['tabs']['ordersummary']['status'] = array(
+      '#prefix' => '<div class="headlabel" >',
+      '#markup' => $oOrderTabInfo->StatusObj->StatusName,
+      '#suffix' => '</div>',
+    );
+  }
+  
+  if ($oOrderTabInfo->Capacity != NULL) {
+    $arrContent['tabs']['ordersummary']['capacity'] = array(
+      '#prefix' => '<div class="headlabel" >',
+      '#markup' => t('@percent&nbsp;Full', array('@percent' => $oOrderTabInfo->Capacity)),
+      '#suffix' => '</div>',
+    );
+  }
+  
+  return $arrContent;
+}
+
+function homecoop_tab_cooporder_write_element($oTabInfo, $sText, $sLink, $bIsOnPage)
+{
+  $arrContent = array();
+  if ($sText == '') {
+      return $arrContent;
+  }
+  
+  $arrContent['#prefix'] = '<li';
+  $arrContent['#suffix'] = '</li>';
+  
+  if ($bIsOnPage) {
+    $arrContent['#prefix'] .= ' class="selected" ';
+  }
+   
+  if (!$bIsOnPage || $oTabInfo->IsSubPage) {
+    $arrContent['#prefix'] .=  ' onclick="javascript:location.href = \'' . $sLink . '\';"';
+  }
+  $arrContent['#prefix'] .= '>';
+  
+  $arrContent['#markup'] = $sText;
+  return $arrContent;
+}
+
+function homecoop_tab_order_write_element($oOrderTabInfo, $sText, $sLink, $bIsOnPage)
+{      
+  $arrContent = array(
+    '#prefix' => '<li',
+    '#markup' => ' >' . $sText,
+    '#suffix' => '</li>',
+  );
+  
+  if ($bIsOnPage) {
+    $arrContent['#prefix'] .= ' class="selected" ';
+  }
+  elseif ($oOrderTabInfo->ID > 0) {
+    $arrContent['#prefix'] .= ' onclick="javascript:location.href = \'' . $sLink . '\';"'; 
+  }
+  
+  return $arrContent;
+} 
+
+function homecoop_tab_cooporder_pickuploc_write_element($oPLTabInfo, $sText, $sLink, $bIsOnPage)
+{    
+  $arrContent = array(
+    '#prefix' => '<li',
+    '#markup' => ' >' . $sText,
+    '#suffix' => '</li>',
+  );
+  
+  if ($bIsOnPage) {
+    $arrContent['#prefix'] .= ' class="selected" ';
+  }
+  
+  if (!$bIsOnPage || $oPLTabInfo->IsSubPage) {
+    $arrContent['#prefix'] .= ' onclick="javascript:location.href = \'' . $sLink . '\';"';
+  }
+  
+  return $arrContent;
+}
+
+function homecoop_get_tabs_info($oTabInfo, $oOrderTabInfo, $oPLTabInfo, $bHasCoordPermission) {
+  $arrData = array(
+    'ordertab' => $oOrderTabInfo,
+    'hasorder' => (isset($oOrderTabInfo) && !empty($oOrderTabInfo)),
+    'pltab' => $oPLTabInfo,
+    'cooptab' => $oTabInfo,
+   );
+  
+  if ($oTabInfo != NULL) {
+    $arrData += array(
+      'coopordertabaccess' => $oTabInfo->CheckAccess(),
+      'hassumspermission' => $oTabInfo->CheckCoopOrderSumsPermission(),
+      'hasproducerspermission' => $oTabInfo->CheckCoopOrderProducersPermission(),
+      'hasproductspermission' => $oTabInfo->CheckCoopOrderProductsPermission(),
+      'hasorderspermission' => $oTabInfo->CheckCoopOrderOrdersPermission(),
+      'hascopypermission' => $bHasCoordPermission && $oTabInfo->CheckCoopOrderCopyPermission(),
+      'hascoordsetpermission' => $oTabInfo->CheckCoopOrderSetCoordPermission(),
+      );
+  }
+  
+  if ($oPLTabInfo != NULL) {
+    $arrData += array(
+      'pltabaccess' => $oPLTabInfo->CheckAccess(),
+      'hasplproducerpermission' => $oPLTabInfo->CheckProducersPermission(),
+      'hasplproductspermission' => $oPLTabInfo->CheckProductsPermission(),
+      'hasplorderspermission' => $oPLTabInfo->CheckOrdersPermission(),
+      );
+  }
+  
+  return $arrData;
+}

@@ -269,12 +269,12 @@ function homecoop_activeorders() {
 
         if ($bCanCoord) {
           if ($bHasOrdersPermission) {
-            $arrOrderBox['ordertitle']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . '" href="coord/orders?coid=' . $recTable["CoopOrderKeyID"] .
-              '" >' . htmlspecialchars($recTable["sCoopOrder"]) . '</a>&nbsp;';
+            $arrOrderBox['ordertitle']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . '" href="' . 
+                url('hccoord/orders', array('query' => array('coid' => $recTable["CoopOrderKeyID"]))) . '" >' . htmlspecialchars($recTable["sCoopOrder"]) . '</a>&nbsp;';
           }
           else {
-            $arrOrderBox['ordertitle']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . '" href="coord/cooporder?id=' . $recTable["CoopOrderKeyID"] .
-              '" >' . htmlspecialchars($recTable["sCoopOrder"]) . '</a>&nbsp;';
+            $arrOrderBox['ordertitle']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . '" href="' . 
+                url('hccoord/cooporder', array('query' => array('coid' => $recTable["CoopOrderKeyID"])))  . '" >' . htmlspecialchars($recTable["sCoopOrder"]) . '</a>&nbsp;';
           }
         }
         else {
@@ -358,8 +358,9 @@ function homecoop_activeorders() {
           $nCountRecs++;
 
            if ($bCanCoord && $oTable->CheckPickupLocationCoordPermissions($recPickupLoc["CoordinatingGroupID"])) {
-             $sPL .= '<a class="LinkButton' . $sHistoryButtonCssClass . '" href="coord/copickuplocorders?coid=' . 
-                 $recTable["CoopOrderKeyID"] . '&plid=' . $recPickupLoc["PickupLocationKeyID"] . '" >' . 
+             $sPL .= '<a class="LinkButton' . $sHistoryButtonCssClass . '" href="' .
+                 url('hccoord/copickuplocorders', array('query' => array('coid' => $recTable["CoopOrderKeyID"],
+                                                                          'plid' => $recPickupLoc["PickupLocationKeyID"]))) . '" >' . 
                  htmlspecialchars($recPickupLoc["sPickupLocation"]) . '</a>';
            }
            else {
@@ -398,9 +399,9 @@ function homecoop_activeorders() {
           $nCountRecs++;
 
           if ($bCanCoord && $oTable->CheckProducerCoordPermissions($recPickupLoc["CoordinatingGroupID"]))
-            $sProducer .= '<a class="LinkButton' . $sHistoryButtonCssClass . '" href="coord/coproducer?coid=' . $recTable["CoopOrderKeyID"] . 
-                     '&pid=' . $recProducer["ProducerKeyID"] .
-                     '" >' . htmlspecialchars($recProducer["sProducer"]) . '</a>';
+            $sProducer .= '<a class="LinkButton' . $sHistoryButtonCssClass . '" href="' .
+              url('hccoord/coproducer', array('query' => array('coid' => $recTable["CoopOrderKeyID"],
+                                                                'pid' => $recProducer["ProducerKeyID"]))) . '" >' . htmlspecialchars($recProducer["sProducer"]) . '</a>';
           else
             $sProducer .= htmlspecialchars($recProducer["sProducer"]);
 
@@ -427,11 +428,12 @@ function homecoop_activeorders() {
           );
           if ($bHasProductsPermission)
             $arrOrderBox['coordextra']['products']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass .
-              '" href="coord/coproducts?id=' . $recTable["CoopOrderKeyID"] . '" >' . t('Products') . '</a>&nbsp;';
+              '" href="hccoord/coproducts?id=' . $recTable["CoopOrderKeyID"] . '" >' . t('Products') . '</a>&nbsp;';
 
           if ($bHasExportPermission)
             $arrOrderBox['coordextra']['export']['#markup'] = '<a class="LinkButton headdata' . $sHistoryButtonCssClass . 
-              '" href="coord/cooporderexport?coid=' . $recTable["CoopOrderKeyID"] . '" >' . t('Export') . '</a>';
+              '" href="' . 
+              url('hccoord/cooporderexport', array('query' => array('coid' => $recTable["CoopOrderKeyID"]))) . '" >' . t('Export') . '</a>';
         }
         
         $arrContent['orderbox' . $recTable["CoopOrderKeyID"]] = $arrOrderBox;
