@@ -18,6 +18,7 @@ stylesheets[all][] = css/facet.css
 
 scripts[] = js/css3-mediaqueries.js
 
+regions[topheader]         = Top Header
 regions[header]         = Header
 regions[navigation]     = Navigation bar
 regions[highlighted]    = Highlighted

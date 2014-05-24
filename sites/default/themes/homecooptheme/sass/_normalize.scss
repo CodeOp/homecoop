@@ -540,6 +540,6 @@ table {
   /* Prevent cramped-looking tables */
   /* width: 100%; */
   /* Add vertical rhythm margins. */
-  @include leader(1);
-  @include trailer(1);
+  /*@include leader(1);
+  @include trailer(1);*/
 }

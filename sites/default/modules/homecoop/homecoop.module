@@ -134,14 +134,12 @@ function homecoop_check_if_authenticated() {
 * Implements hook_block_info().
 */
 function homecoop_block_info() {
-  $blocks = array();
-  
-  $blocks['homecoop_header'] = array(
-    'info' => t('HomeCoop header'),
-    'cache' => DRUPAL_CACHE_GLOBAL, //since this is a new form, we can cache it
+  return array(
+    'homecoop_header' => array(
+      'info' => t('HomeCoop header'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
   );
-  
-  return $blocks;
 }
 
 /**
@@ -323,8 +321,8 @@ function homecoop_tab_cooporder(&$oFormExtraData) {
   }
   
   $arrContent['coopordertab'] = array(
-    '#prefix' => '<tr><td><table cellpadding="0" cellspacing="0" border="0" width="100%" ><tr><td><ul id="tabCoopOrder" class="tabrow subtabrow"' .
-      ($bHasOrder || $bHasPickupLocation ? ' style="display: none;" >' : '>'),
+    '#prefix' => '<tr id="tabCoopOrder" ' . ($bHasOrder || $bHasPickupLocation ? ' style="display: none;" >' : '>') .
+      '<td><table cellpadding="0" cellspacing="0" border="0" width="100%" ><tr><td><ul class="tabrow subtabrow">',
     '#suffix' => '</ul></td></tr></table></td></tr>',
   );
   
@@ -408,8 +406,8 @@ function homecoop_tab_copickuploc(&$oFormExtraData) {
   
   $arrContent = array(
     'tabs' => array(
-      '#prefix' => '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul id="tabPickupLocation" class="tabrow subtabrow" ' .
-      ($oFormExtraData['hasorder']? ' style="display: none;" >' : '>'),
+      '#prefix' => '<table id="tabPickupLocation" ' . ($oFormExtraData['hasorder']? ' style="display: none;" ' : '') . 
+        ' cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul class="tabrow subtabrow" >',
       '#suffix' => '</ul></td></tr></table>',
       'plheadertab' => homecoop_tab_cooporder_pickuploc_write_element($oPLTabInfo, $oPLTabInfo->MainTabName,
           url('hccoord/copickuploc', array(
@@ -463,7 +461,7 @@ function homecoop_tab_order(&$oFormExtraData) {
   
   $arrContent = array(
     'tabs' => array(
-      '#prefix' => '<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul id="tabOrder" class="tabrow subtabrow">',
+      '#prefix' => '<table id="tabOrder" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul class="tabrow subtabrow">',
       '#suffix' => '</ul></td></tr></table>',
     ),
   );
@@ -491,33 +489,33 @@ function homecoop_tab_order(&$oFormExtraData) {
     $sOrderSumClass = " closedsum";
   }
   
-  $arrContent['tabs']['ordersummary'] = array(
+  $arrContent['ordersummary'] = array(
     '#prefix' => '<div class="ordersummary' . $sOrderSumClass . '">',
     '#suffix' => '</div>',
   );
   
   if ($oOrderTabInfo->OrderCoopFee != NULL && $oOrderTabInfo->OrderCoopFee != 0) {
     $nCoopTotal += $oOrderTabInfo->OrderCoopFee;
-    $arrContent['tabs']['ordersummary']['totalproducts'] = array(
+    $arrContent['ordersummary']['totalproducts'] = array(
       '#prefix' => '<div class="headlabel" >' . t('Total Products‏:‏‎&nbsp;'),
       '#markup' => $oOrderTabInfo->CoopTotal,
       '#suffix' => '</div>',
     );
-    $arrContent['tabs']['ordersummary']['ordercoopfee'] = array(
+    $arrContent['ordersummary']['ordercoopfee'] = array(
       '#prefix' => '<div class="headlabel" >' . t('Coop Fee‏‏:‏‎&nbsp;'),
       '#markup' => $oOrderTabInfo->OrderCoopFee,
       '#suffix' => '</div>',
     );
   }
   
-  $arrContent['tabs']['ordersummary']['totalamount'] = array(
+  $arrContent['ordersummary']['totalamount'] = array(
     '#prefix' => '<div class="headlabel" >' . t('Total Amount‏:‏‎&nbsp;'),
     '#markup' => $nCoopTotal,
     '#suffix' => '</div>',
   );
   
   if ($oOrderTabInfo->StatusObj->StatusName != NULL) {
-    $arrContent['tabs']['ordersummary']['status'] = array(
+    $arrContent['ordersummary']['status'] = array(
       '#prefix' => '<div class="headlabel" >',
       '#markup' => $oOrderTabInfo->StatusObj->StatusName,
       '#suffix' => '</div>',
@@ -525,7 +523,7 @@ function homecoop_tab_order(&$oFormExtraData) {
   }
   
   if ($oOrderTabInfo->Capacity != NULL) {
-    $arrContent['tabs']['ordersummary']['capacity'] = array(
+    $arrContent['ordersummary']['capacity'] = array(
       '#prefix' => '<div class="headlabel" >',
       '#markup' => t('@percent&nbsp;Full', array('@percent' => $oOrderTabInfo->Capacity)),
       '#suffix' => '</div>',

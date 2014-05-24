@@ -572,8 +572,8 @@ table {
   /* Prevent cramped-looking tables */
   /* width: 100%; */
   /* Add vertical rhythm margins. */
-  margin-top: 1.5em;
-  margin-bottom: 1.5em;
+  /*@include leader(1);
+  @include trailer(1);*/
 }
 
 /* Layout rules */
@@ -1559,6 +1559,12 @@ html.js #user-login-form li.openid-link,
 /**
  * Drupal admin tables.
  */
+/* line 675, ../sass/components/_misc.scss */
+form {
+  /*tbody {
+    border-top: 1px solid #ccc;
+  }*/
+}
 /* line 676, ../sass/components/_misc.scss */
 form th {
   text-align: left;
@@ -1566,10 +1572,6 @@ form th {
   padding-right: 1em;
   /* LTR */
   border-bottom: 3px solid #ccc;
-}
-/* line 681, ../sass/components/_misc.scss */
-form tbody {
-  border-top: 1px solid #ccc;
 }
 /* line 684, ../sass/components/_misc.scss */
 form table ul {
