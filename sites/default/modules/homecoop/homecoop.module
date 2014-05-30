@@ -36,6 +36,11 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/order.inc',
     ),
+    'hcorderitems' => array(
+      'page callback' => 'homecoop_page_orderitems',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/orderitems.inc',
+    ),
     'hcaccessdenied' => array(
       'page callback' => 'homecoop_page_accessdenied',
       'access callback' => 'homecoop_public_access',

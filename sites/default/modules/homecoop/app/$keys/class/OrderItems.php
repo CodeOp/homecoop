@@ -40,7 +40,7 @@ class OrderItems extends SQLBase {
     $this->m_aData = $this->m_aDefaultData;
     $this->m_aOriginalData = $this->m_aDefaultData;
   }
-   
+  
   //set the Order class to be used for calculations and validations
   public function SetOrder(&$oOrder)
   {

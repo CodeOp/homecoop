@@ -122,6 +122,10 @@ abstract class SQLBase
           E_USER_NOTICE);
     }
     
+    public function GetAllProperties() {
+      return $this->m_aData;
+    }
+    
     public function GetSerializedData()
     {
       if ($this->m_aData == NULL)
