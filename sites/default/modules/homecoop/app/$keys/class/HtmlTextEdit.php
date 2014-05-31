@@ -167,6 +167,95 @@ class HtmlTextEdit {
       echo '</td>';
   }
   
+  //echo directly to html document to save some string concats/retrieval
+  public function GetEditPartHtml()
+  {  
+    $sControl = '';
+    $sValuePrefix = '';
+    $sValueSuffix = '';
+    $sMaxLength = '';
+    $sCssClass = '';
+    $nEncodingFlag = ENT_COMPAT;
+    //requireddata
+    switch($this->m_aData[self::PROPERTY_TYPE])
+    {
+      case self::TEXTBOX:
+        $sMaxLength = '<!$MAX_LENGTH_NAME$!>';
+        $sControl = '<input type="text" ';
+        $sValuePrefix = ' value="';
+        $sValueSuffix = '" />';
+        break;
+      case self::PASSWORD:
+        $sMaxLength = '<!$MAX_LENGTH_NAME$!>';
+        $sControl = '<input type="password" ';
+        $sValuePrefix = ' value="';
+        $sValueSuffix = '" />';
+        break;
+      case self::TEXTAREA:
+        $sMaxLength = '<!$MAX_LENGTH_LONGTEXT$!>';
+        $sControl = '<textarea ';
+        if ($this->m_aData[self::PROPERTY_TEXTAREA_ROWS] != NULL)
+          $sControl .= ' rows="' . $this->m_aData[self::PROPERTY_TEXTAREA_ROWS] . '" ';
+        $sValuePrefix = '>';
+        $nEncodingFlag = ENT_NOQUOTES;
+        $sValueSuffix = '</textarea>';
+        break;
+    }
+    if ( $this->m_aData[self::PROPERTY_MAX_LENGTH] != NULL )
+      $sMaxLength = $this->m_aData[self::PROPERTY_MAX_LENGTH];
+    
+    $arrContent = array('texteditpart' => array());
+    
+    if ($this->m_aData[self::PROPERTY_ENCLOSE_IN_HTML_CELL]) {
+      $arrContent['texteditpart']['#prefix'] = '<td>';
+      $arrContent['texteditpart']['#suffix'] = '</td>';
+    }
+    
+    $arrContent['texteditpart']['#markup'] = $sControl . ' maxlength="' . $sMaxLength . '" ';
+
+    if ($this->m_aData[self::PROPERTY_DIR]  != NULL) {
+      $arrContent['texteditpart']['#markup'] .=  ' dir="' . $this->m_aData[self::PROPERTY_DIR] . '" ';
+    }
+    
+    if ($this->m_aData[self::PROPERTY_READ_ONLY]) {
+      $arrContent['texteditpart']['#markup'] .=  ' readonly="1" ';
+    }
+    
+    $arrContent['texteditpart']['#markup'] .= ' id="' . $this->m_aData[self::PROPERTY_ID] . '" name="' . 
+        $this->m_aData[self::PROPERTY_ID] . '" ';
+    
+    if ( $this->m_aData[self::PROPERTY_ON_CHANGE] != NULL) {
+         $arrContent['texteditpart']['#markup'] .= ' onchange="' . $this->m_aData[self::PROPERTY_ON_CHANGE] . '" ';
+    }
+    
+    if ( is_array($this->m_aData[self::PROPERTY_PROPERTIES]) && count($this->m_aData[self::PROPERTY_PROPERTIES]) > 0) {
+      foreach($this->m_aData[self::PROPERTY_PROPERTIES] as $propkey => $propval)
+        $arrContent['texteditpart']['#markup'] .= ' ' . $propkey . '="' . $propval . '" ';      
+    }
+    
+    if ( $this->m_aData[self::PROPERTY_REQUIRED] ) {
+      $arrContent['texteditpart']['#markup'] .= 'required="required" ';
+      $sCssClass = ' class="requireddata" ';
+    }
+    else {
+      $sCssClass = ' class="dataentry" ';
+    }   
+    
+    if ($this->m_aData[self::PROPERTY_CSS_CLASS] !== NULL) {
+      $sCssClass = ' class="' . $this->m_aData[self::PROPERTY_CSS_CLASS] . '" ';
+    }
+    
+    $arrContent['texteditpart']['#markup'] .= $sCssClass . $sValuePrefix;
+      
+    if ($this->m_aData[self::PROPERTY_VALUE] !== NULL) {
+      $arrContent['texteditpart']['#markup'] .= htmlspecialchars( $this->m_aData[self::PROPERTY_VALUE] , $nEncodingFlag);
+    }
+    
+    $arrContent['texteditpart']['#markup'] .= $sValueSuffix;
+    
+    return $arrContent;
+  }
+  
 }
 
 ?>

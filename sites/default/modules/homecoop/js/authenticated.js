@@ -4,9 +4,9 @@ function Logout()
     document.forms['frmhcheader'].submit();
 }
 
-function OpenProductOverview(sPathToRoot, CoopOrderID, ProductID)
+function OpenProductOverview(sUrl)
 {
-  var sUrl = sPathToRoot + 'product.php?prd=' + ProductID + "&coid=" + CoopOrderID;
+  //var sUrl = sPathToRoot + 'product.php?prd=' + ProductID + "&coid=" + CoopOrderID;
   var nLeft = screen.availWidth/2 - screen.availWidth/4;
   if (nLeft < 0) nLeft = 0;
 

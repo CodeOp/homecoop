@@ -42,6 +42,11 @@ function homecoop_page_orderitems() {
       return;
   }
   
+  $hcsettings = array(
+    'ConfirmChanges' => t('It seems you have made changes and did not save them. If you proceed in changing the products view mode, these changes will be lost. Proceed?'),
+  );
+  
+  drupal_add_js(array('homecoop' => $hcsettings), 'setting');
   homecoop_add_js_file('orderitems.js');
   
   $oFormExtraData = homecoop_page_orderitems_prepareform($oRecord, $oTable);
@@ -74,6 +79,7 @@ function homecoop_page_orderitems_prepareform(&$oRecord, &$oTable) {
   $oRecord->BuildPageTitle();
   drupal_set_title($oRecord->PageTitle);
   $oOrderTabInfo->MainTabName = $oRecord->PageTitleSuffix;
+  $oTabInfo = new CoopOrderTabInfo;
   $oTabInfo->CoordinatingGroupID = $oRecord->CoordinatingGroupID;
   $oTabInfo->ID = $oRecord->CoopOrderID;
   if ( $oTabInfo->CheckAccess() ) {
@@ -147,7 +153,7 @@ function homecoop_page_orderitems_form($form, &$form_state, $oFormExtraData) {
     ),
   );
   
-  if ($oRecord->CanModify) {
+  if ($oFormExtraData['order']['CanModify']) {
     $form['maintable']['buttons'] = array(
       '#weight' => 40,
       'btn_save' => array(
@@ -159,7 +165,7 @@ function homecoop_page_orderitems_form($form, &$form_state, $oFormExtraData) {
         '#attributes' => array('class' => array('order'),
           ),
         '#prefix' => '<div class="inlineblock">',
-        '#suffix' => '</div>',
+        '#suffix' => '&nbsp;</div>',
         '#weight' => 10, 
       ),
       'selProductsView' => array(
@@ -184,191 +190,321 @@ function homecoop_page_orderitems_form($form, &$form_state, $oFormExtraData) {
       '#suffix' => '</div>',
       '#weight' => 10,
     );
+    
+    return $form;
   }
   
   $bPrintedHeaders = false;
   $sJoinedItemsTooltipID = '';
-  $bItemReadOnly = FALSE;
+  $bItemReadOnly = FALSE;  
+  $nRowWeight = 20;
+  $sRow = '';
+  $sClass = '';
+  $sName = '';
+  $sUrl = '';
   
-  
-  /*
-  foreach($arrItems as $oItem)
+  foreach($oFormExtraData['OrderItems'] as $oItem)
   {
-      if (!$oItem->Visible)
+      if (!$oItem['Visible'])
         continue;
+      
+      $sRow = 'row' . $oItem['ProductID'];
 
-      $bItemReadOnly = $oItem->DisabledProduct || !$oRecord->CanModify;
+      $bItemReadOnly = $oItem['DisabledProduct'] || !$oFormExtraData['order']['CanModify'];
 
-      if ($oItem->InvalidEntry)
+      if ($oItem['InvalidEntry'])
       {
         //show validation message
-        echo '<div class="resgridrow"><span class="message">' , $oItem->ValidationMessage  , '</span></div>',
-         '<div class="resgridrow orderiteminvalidrow">';
+        $form['maintable']['controlstable']['validationmessage'] = array(
+          '#prefix' => '<div class="resgridrow"><span class="message">',
+          '#markup' => $oItem['ValidationMessage'],
+          '#suffix' => '</span></div>',
+          '#weight' => 10,
+        );
+        //set row class
+        $form['maintable']['controlstable'][$sRow] = array(
+          '#prefix' => '<div class="resgridrow orderiteminvalidrow">',
+          '#suffix' => '</div>',
+          '#weight' => $nRowWeight,
+        );
       }
-      else if ($oItem->ChangedByCoordinator)
+      else if ($oItem['ChangedByCoordinator'])
       {
-        echo '<div class="resgridrow ';
-        if ($oItem->DisabledProduct)
-          echo 'orderitemcancelledrow" ';
-        else
-          echo 'changedrow" ';
-        echo '>';
+        $sClass = 'resgridrow ';
+        if ($oItem['DisabledProduct']) {
+          $sClass .= 'orderitemcancelledrow';
+        }
+        else {
+          $sClass .= 'changedrow';
+        }
+        $form['maintable']['controlstable'][$sRow] = array(
+          '#prefix' => '<div class="' . $sClass . '">',
+          '#suffix' => '</div>',
+          '#weight' => $nRowWeight,
+        );
       }
-      else if ($oItem->DisabledProduct)
+      else if ($oItem['DisabledProduct']) {
         continue;
-      else
-        echo '<div class="resgridrow">';
+      }
+      else {
+        $form['maintable']['controlstable'][$sRow] = array(
+          '#prefix' => '<div class="resgridrow">',
+          '#suffix' => '</div>',
+          '#weight' => $nRowWeight,
+        );
+      }
 
-      $oProductPackage = new ProductPackage($oItem->ProductItems, $oItem->ProductItemQuantity, 
-                $oItem->ItemUnitAbbrev, $oItem->UnitInterval, $oItem->UnitAbbrev, $oItem->PackageSize, 
-                $oItem->ProductQuantity, $oItem->ProductMaxCoopOrder, $oItem->ProductTotalCoopOrderQuantity,
-           'tooltiphelp', 'ProductPackage' . $oItem->ProductID);
+      $oProductPackage = new ProductPackage($oItem['ProductItems'], $oItem['ProductItemQuantity'], 
+                $oItem['ItemUnitAbbrev'], $oItem['UnitInterval'], $oItem['UnitAbbrev'], $oItem['PackageSize'], 
+                $oItem['ProductQuantity'], $oItem['ProductMaxCoopOrder'], $oItem['ProductTotalCoopOrderQuantity'],
+           'tooltiphelp', 'ProductPackage' . $oItem['ProductID']);
 
       //1. ProductName + link to product screen + hidden order item id to identify existing records
-      echo '<div class="resgridcell">';
-      HtmlDivTable::EchoTitle($bPrintedHeaders, 'Product');
-      echo '<div class="resgriddatalong">';
-
-      if ($oProductPackage->HasTooltip)
-      {
-        echo '<a class="tooltiphelprel" href="#" onclick="JavaScript:OpenProductOverview(\'' , $g_sRootRelativePath, '\', ',
-              $oRecord->CoopOrderID, ',', $oItem->ProductID, ');" >', htmlspecialchars($oItem->ProductName), 
-              '<span>';
-        $oProductPackage->EchoTooltip();
-        echo       '</span></a>';
+      $form['maintable']['controlstable'][$sRow]['product'] = array(
+        '#prefix' => '<div class="resgridcell">',
+        '#suffix' => '</div>',
+        '#weight' => 10,
+      );
+      
+      $sClass = 'resgridtitle';
+      if ($bPrintedHeaders)
+        $sClass .= ' mobiledisplay';
+      
+      $form['maintable']['controlstable'][$sRow]['product']['title'] = array(
+        '#prefix' => '<div class="' . $sClass . '">',
+        '#markup' => t('Product'),
+        '#suffix' => '</div>',
+        '#weight' => 10,
+      );
+      
+      $form['maintable']['controlstable'][$sRow]['product']['data'] = array(
+        '#prefix' => '<div class="resgriddatalong">',
+        '#suffix' => '</div>',
+        '#weight' => 20,
+      );
+      
+      $sUrl = url('hcproduct', array('query' => array(
+              'prd' => $oItem['ProductID'], 'coid' => $oFormExtraData['order']['CoopOrderID'],
+            )));
+      if ($oProductPackage->HasTooltip) {
+        $form['maintable']['controlstable'][$sRow]['product']['data']['link'] = array(
+          '#prefix' => '<a class="tooltiphelprel" href="#" onclick="JavaScript:OpenProductOverview(\'' . $sUrl . '\');" >',
+          '#markup' => check_plain($oItem['ProductName']) . '<span>' . $oProductPackage->Tooltip . '</span>',
+          '#suffix' => '</a>',
+        );
       }
-      else
-        echo '<span class="link" onclick="JavaScript:OpenProductOverview(\'' , $g_sRootRelativePath, '\', ',
-              $oRecord->CoopOrderID, ',', $oItem->ProductID, ');" >', htmlspecialchars($oItem->ProductName), '</span>';
-
-      echo  '<input type="hidden" id="' , OrderItems::CTL_PREFIX_ID , $oItem->ProductID , '" name="' ,
-                OrderItems::CTL_PREFIX_ID , $oItem->ProductID , '" value="' , $oItem->OrderItemID , '" />';
-
-      echo  '</div></div>';
-
+      else {
+        $form['maintable']['controlstable'][$sRow]['product']['data']['link'] = array(
+          '#prefix' => '<span class="link" onclick="JavaScript:OpenProductOverview(\'' . $sUrl . '\');" >',
+          '#markup' => check_plain($oItem['ProductName']),
+          '#suffix' => '</span>',
+        );
+      }
+       
+      //hidden orderitem id
+      $sName = OrderItems::CTL_PREFIX_ID . $oItem['ProductID'];
+      $form['maintable']['controlstable'][$sRow][$sName] = array('#type' => 'hidden', '#default_value' => $oItem['OrderItemID'], 
+       '#attributes' => array('id' => $sName));
+      
+      
       //2. Producer
-      $cellProducer = new HtmlGridCellText($oItem->ProducerName, HtmlGridCellText::CELL_TYPE_NORMAL);
-      echo '<div class="resgridcell">';
-      HtmlDivTable::EchoTitle($bPrintedHeaders, 'Producer');
-      echo '<div class="resgriddatahlong">';
-      echo $cellProducer->EchoHtml();
-      echo "</div></div>";
+      $cellProducer = new HtmlGridCellText($oItem['ProducerName'], HtmlGridCellText::CELL_TYPE_NORMAL);      
+      $form['maintable']['controlstable'][$sRow]['producer'] = array(
+        '#prefix' => '<div class="resgridcell">',
+        'title' => array(
+          '#prefix' => '<div class="' . $sClass . '">',
+          '#markup' => t('Producer'),
+          '#suffix' => '</div>',
+        ),
+        'data' => array(
+          '#prefix' => '<div class="resgriddatahlong">',
+          'producermarkup' => $cellProducer->GetHtml(),
+          '#suffix' => '</div>',
+        ),
+        '#suffix' => '</div>',
+        '#weight' => 20,
+      );
       unset($cellProducer);
 
       //3. Product Package
-      echo '<div class="resgridcell">';
-      HtmlDivTable::EchoTitle($bPrintedHeaders, 'Quantity');
-      echo '<div class="resgriddatashort">';
       $oProductPackage->SuppressTooltip = TRUE;
-      $oProductPackage->EchoHtml();
-      echo '</div></div>';
-
+      $form['maintable']['controlstable'][$sRow]['productpackage'] = array(
+        '#prefix' => '<div class="resgridcell">',
+        'title' => array(
+          '#prefix' => '<div class="' . $sClass . '">',
+          '#markup' => t('Quantity'),
+          '#suffix' => '</div>',
+        ),
+        'data' => array(
+          '#prefix' => '<div class="resgriddatashort">',
+          '#markup' => $oProductPackage->Html,
+          '#suffix' => '</div>',
+        ),
+        '#suffix' => '</div>',
+        '#weight' => 30,
+      );
+      
       //4. Coop Price
-      echo '<div class="resgridcell">';
-      HtmlDivTable::EchoTitle($bPrintedHeaders, 'Price');
-      echo '<div class="resgriddatatiny">';
-      echo $oItem->ProductCoopPrice , '</div>';
-      echo '</div>';
-
+      $form['maintable']['controlstable'][$sRow]['price'] = array(
+        '#prefix' => '<div class="resgridcell">',
+        'title' => array(
+          '#prefix' => '<div class="' . $sClass . '">',
+          '#markup' => t('Price'),
+          '#suffix' => '</div>',
+        ),
+        'data' => array(
+          '#prefix' => '<div class="resgriddatatiny">',
+          '#markup' => $oItem['ProductCoopPrice'],
+          '#suffix' => '</div>',
+        ),
+        '#suffix' => '</div>',
+        '#weight' => 40,
+      );
+      
       //5. Member Order
-      $txtMemberOrder = new HtmlTextEditNumericRange(OrderItems::CTL_PREFIX_QUANTITY . $oItem->ProductID,
-          'ltr', HtmlTextEdit::TEXTBOX, $oItem->Quantity, $oItem->GetAllowedInterval() );
+      $txtMemberOrder = new HtmlTextEditNumericRange(OrderItems::CTL_PREFIX_QUANTITY . $oItem['ProductID'],
+          'ltr', HtmlTextEdit::TEXTBOX, $oItem['Quantity'], $oItem['allowedinterval'] );
       $txtMemberOrder->ReadOnly = $bItemReadOnly;
       $txtMemberOrder->MaxLength = HtmlTextEditNumeric::NUMBER_DEFAULT_MAX_LENGTH;
       $txtMemberOrder->CssClass = "orderitemqentry";
       $txtMemberOrder->OnChange = "JavaScript:SetDirty();";
-      if ($oItem->ChangedByCoordinator)
-      {
-        $txtMemberOrder->SubsequentText = sprintf('&nbsp;(%.2F)', $oItem->MemberLastQuantity);
+      if ($oItem['ChangedByCoordinator']) {
+        $txtMemberOrder->SubsequentText = sprintf('&nbsp;(%.2F)', $oItem['MemberLastQuantity']);
       }
-      if ($oItem->ProductMaxUserOrder != NULL)
-        $txtMemberOrder->MaxValue = $oItem->ProductMaxUserOrder;
-
-      echo '<div class="resgridcell">';
-      HtmlDivTable::EchoTitle($bPrintedHeaders, 'Order');
-      echo '<div class="resgriddatatiny">';
-      $txtMemberOrder->EchoHtml();
-      echo '</div></div>';
+      if ($oItem['ProductMaxUserOrder'] != NULL) {
+        $txtMemberOrder->MaxValue = $oItem['ProductMaxUserOrder'];
+      }
+      
+      $form['maintable']['controlstable'][$sRow]['memberorder'] = array(
+        '#prefix' => '<div class="resgridcell">',
+        'title' => array(
+          '#prefix' => '<div class="' . $sClass . '">',
+          '#markup' => t('Order'),
+          '#suffix' => '</div>',
+        ),
+        'data' => array(
+          '#prefix' => '<div class="resgriddatatiny">',
+          'orderbox' => $txtMemberOrder->GetHtml(),
+          '#suffix' => '</div>',
+        ),
+        '#suffix' => '</div>',
+        '#weight' => 50,
+      );
 
       //6. Max Fix Addition
-      echo '<div class="resgridcell">';
-      echo '<div class="resgridtitle'; 
-      if ($bPrintedHeaders)
-        echo ' mobiledisplay';
-      echo '"><a id="additionhlp_' , $oItem->ProductID ,'" name="additionhlp_' , 
-        $oItem->ProductID ,'" class="tooltiphelp" href="#additionhlp_' , $oItem->ProductID ,
-        '" >Add<span>The maximum quantity the cooperative order coordinator will be allowed to *add* to your order for completing partial orders to the package size. For instance, if a package size is 2lb, and you wish to order only 0.5lb, by entering 0.5lb in this field you may specify that you are ready to go up to 1lb.</span></a></div>';
-
-
-      echo '<div class="resgriddatatiny">';
-
-      if (  ($oItem->MemberMaxFixQuantityAddition != NULL && $oItem->MemberMaxFixQuantityAddition != 0)
-        || Product::AllowsPartialOrders($oItem->ProductUnitID, $oItem->ProductQuantity, $oItem->UnitInterval, $oItem->PackageSize))
-      {
-        $txtMemberMaxFixQuantityAddition = new HtmlTextEditNumericRange(OrderItems::CTL_PREFIX_MAX_FIX_QUANTITY_ADDITION . $oItem->ProductID,
-            'ltr', HtmlTextEdit::TEXTBOX, $oItem->MemberMaxFixQuantityAddition, $oItem->GetAllowedInterval() );
+      $form['maintable']['controlstable'][$sRow]['addition'] = array(
+        '#prefix' => '<div class="resgridcell">',
+        'title' => array(
+          '#prefix' => '<div class="' . $sClass . '">',
+          'tooltip' => array(
+            '#prefix' => '<a id="additionhlp_' . $oItem['ProductID'] . '" name="additionhlp_' .
+              $oItem['ProductID'] . '" class="tooltiphelp" href="#additionhlp_' . $oItem['ProductID'] . '" >',
+            '#markup' => t('Add') . '<span>' . 
+              t('The maximum quantity the cooperative order coordinator will be allowed to *add* 
+                to your order for completing partial orders to the package size. For instance, 
+                if a package size is 2lb, and you wish to order only 0.5lb, 
+                by entering 0.5lb in this field you may specify that you are ready to go up to 1lb.') . '</span>',
+            '#suffix' => '</a>',
+          ),
+          '#suffix' => '</div>',
+        ),
+        'data' => array(
+          '#prefix' => '<div class="resgriddatatiny">',
+          '#suffix' => '</div>',
+        ),
+        '#suffix' => '</div>',
+        '#weight' => 60,
+      );
+      
+      if (  ($oItem['MemberMaxFixQuantityAddition'] != NULL && $oItem['MemberMaxFixQuantityAddition'] != 0)
+        || Product::AllowsPartialOrders($oItem['ProductUnitID'], $oItem['ProductQuantity'], $oItem['UnitInterval'], $oItem['PackageSize'])) {
+        $txtMemberMaxFixQuantityAddition = new HtmlTextEditNumericRange(OrderItems::CTL_PREFIX_MAX_FIX_QUANTITY_ADDITION . $oItem['ProductID'],
+            'ltr', HtmlTextEdit::TEXTBOX, $oItem['MemberMaxFixQuantityAddition'], $oItem['allowedinterval'] );
         $txtMemberMaxFixQuantityAddition->ReadOnly = $bItemReadOnly;
         $txtMemberMaxFixQuantityAddition->MaxLength = HtmlTextEditNumeric::NUMBER_DEFAULT_MAX_LENGTH;
-        if ($oItem->PackageSize != NULL)
-          $txtMemberMaxFixQuantityAddition->MaxValue = $oItem->PackageSize;
+        if ($oItem['PackageSize'] != NULL)
+          $txtMemberMaxFixQuantityAddition->MaxValue = $oItem['PackageSize'];
         else
-          $txtMemberMaxFixQuantityAddition->MaxValue = $oItem->ProductQuantity;
+          $txtMemberMaxFixQuantityAddition->MaxValue = $oItem['ProductQuantity'];
         $txtMemberMaxFixQuantityAddition->CssClass = "orderitemqentry";
         $txtMemberMaxFixQuantityAddition->OnChange = "JavaScript:SetDirty();";
-
-        $txtMemberMaxFixQuantityAddition->EchoHtml();
+        
+        $form['maintable']['controlstable'][$sRow]['addition']['data']['additionbox'] = 
+            $txtMemberMaxFixQuantityAddition->GetHtml();
       }
-      echo '</div></div>';
-
+      
       //7. Total Price
-      echo '<div class="resgridcell">';
-      HtmlDivTable::EchoTitle($bPrintedHeaders, 'Total');
-      echo '<div class="resgriddatatiny">';
-      if ($oItem->JoinedItems > 0)
-      {
-        $fOriginalAmount = ($oItem->Quantity/$oItem->ProductQuantity) * $oItem->ProductCoopPrice;
-        $fAmountSaved = $fOriginalAmount - $oItem->CoopTotal;
+      $form['maintable']['controlstable'][$sRow]['totalprice'] = array(
+        '#prefix' => '<div class="resgridcell">',
+        'title' => array(
+          '#prefix' => '<div class="' . $sClass . '">',
+          '#markup' => t('Total'),
+          '#suffix' => '</div>',
+        ),
+        'data' => array(
+          '#prefix' => '<div class="resgriddatatiny">',
+          '#suffix' => '</div>',
+        ),
+        '#suffix' => '</div>',
+        '#weight' => 70,
+      );
+      
+      if ($oItem['JoinedItems'] > 0) {
+        $fOriginalAmount = ($oItem['Quantity']/$oItem['ProductQuantity']) * $oItem['ProductCoopPrice'];
+        $fAmountSaved = $fOriginalAmount - $oItem['CoopTotal'];
 
-        $sJoinedItemsTooltipID = 'joinitemhlp_' . $oItem->OrderItemID;
+        $sJoinedItemsTooltipID = 'joinitemhlp_' . $oItem['OrderItemID'];
 
-        echo '<a id="', $sJoinedItemsTooltipID, '" name="', $sJoinedItemsTooltipID, '" class="tooltiphelprel" href="#', 
-            $sJoinedItemsTooltipID, '" >',$oItem->CoopTotal,'<span>', 
-              sprintf('%1$d items were joined to the product %2$s. As a result a sum of %3$s was saved.',$oItem->JoinedItems,
-                   $oItem->JoinToProductName, $fAmountSaved),'</span></a>';
+        $form['maintable']['controlstable'][$sRow]['totalprice']['data']['totallink'] = array(
+          '#prefix' => '<a id="' . $sJoinedItemsTooltipID . '" name="'. $sJoinedItemsTooltipID . '" class="tooltiphelprel" href="#' .
+          $sJoinedItemsTooltipID . '" >',
+          '#markup' => $oItem['CoopTotal'] . '<span>' . 
+          t('@itemsjoined items were joined to the product @product. As a result a sum of @sum was saved.', 
+              array('@itemsjoined' => $oItem['JoinedItems'], '@product' => $oItem['JoinToProductName'], '@sum' => $fAmountSaved)) . '</span>',
+          '#suffix' => '</a>',
+        );
       }
-      else
-        echo $oItem->CoopTotal;
-
-      echo '</div></div>';
-
+      else {
+        $form['maintable']['controlstable'][$sRow]['totalprice']['data']['#markup'] = $oItem['CoopTotal'];
+      }
+      
       //8. Member Comments
-
-      echo '<div class="resgridcell">';
-      HtmlDivTable::EchoTitle($bPrintedHeaders, 'Comments');
-      if ($oItem->DisabledProduct)
-      {
-        echo '<div class="resgriddatalong">This product is cancelled</div>';
+      $form['maintable']['controlstable'][$sRow]['comments'] = array(
+        '#prefix' => '<div class="resgridcell">',
+        'title' => array(
+          '#prefix' => '<div class="' . $sClass . '">',
+          '#markup' => t('Comments'),
+          '#suffix' => '</div>',
+        ),
+        'data' => array(
+          '#prefix' => '<div class="resgriddatalong">',
+          '#suffix' => '</div>',
+        ),
+        '#suffix' => '</div>',
+        '#weight' => 80,
+      );
+      
+      if ($oItem['DisabledProduct']) {
+        $form['maintable']['controlstable'][$sRow]['comments']['data']['#markup'] = t('This product is cancelled');
       }
-      else
-      {
-        echo '<div class="resgriddatalong">';
-        $txtOrderItemComments = new HtmlTextEdit(OrderItems::CTL_PREFIX_COMMENTS . $oItem->ProductID,
-          NULL, HtmlTextEdit::TEXTAREA, $oItem->MemberComments);
-        $txtOrderItemComments->ReadOnly = $bItemReadOnly;
-        $txtOrderItemComments->MaxLength = OrderItems::MAX_LENGTH_MEMBER_COMMENTS;
-        $txtOrderItemComments->CssClass = "orderitemcentry";
-        $txtOrderItemComments->Rows = 1;
-        $txtOrderItemComments->OnChange = "JavaScript:SetDirty();";
-        $txtOrderItemComments->EncloseInHtmlCell = FALSE;
-        $txtOrderItemComments->EchoEditPartHtml();
-        echo '</div>';
+      else {
+        $form['maintable']['controlstable'][$sRow]['comments']['data']['commentsctl'] = array(
+          '#type' => 'textarea',
+          '#max_length' => OrderItems::MAX_LENGTH_MEMBER_COMMENTS,
+          '#rows' => 1,
+          '#id' => OrderItems::CTL_PREFIX_COMMENTS . $oItem['ProductID'],
+          '#default_value' => check_plain($oItem['MemberComments']),
+          '#disabled' => $bItemReadOnly,
+          '#weight' => 80,
+          '#attributes' => array('placeholder' => t('Any comments?'),
+            'onchange' => 'JavaScript:SetDirty();',
+            'class' => array('orderitemcentry')),
+        );        
       }
-      echo '</div>';
-
-      echo '</div>';
 
       $bPrintedHeaders = true;
-  }*/
+      $nRowWeight += 10;
+  }
   
   return $form;
 }

@@ -95,6 +95,25 @@ class HtmlGridCellText {
       echo htmlspecialchars($this->m_aData[self::PROPERTY_TEXT]); //width is long enough
     
   }
+  
+  public function GetHtml()
+  {
+    if ($this->m_aData[self::PROPERTY_WIDTH] <= 0 || $this->m_aData[self::PROPERTY_TEXT] == NULL) {
+      return array('#markup' => $this->m_aData[self::PROPERTY_TEXT]); //return text untruncated, if no valid width was specified
+    }
+    
+    $nSpaceInLetters = intval($this->m_aData[self::PROPERTY_WIDTH] / Consts::GRID_COLUMN_PIXELS_PER_LETTER);
+       
+    $nLen = strlen( $this->m_aData[self::PROPERTY_TEXT] );
+
+    if ($nLen > $nSpaceInLetters) {
+      return array('#markup' => '<abbr title="' . check_plain( $this->m_aData[self::PROPERTY_TEXT] ) . '" >' . 
+            check_plain(trim(substr( $this->m_aData[self::PROPERTY_TEXT], 0, $nSpaceInLetters ) ) ) . '</abbr>');
+    }
+    else {
+      return array('#markup' => check_plain($this->m_aData[self::PROPERTY_TEXT])); //width is long enough
+    }
+  }
 
 }
 

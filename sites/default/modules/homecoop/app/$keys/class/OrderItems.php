@@ -41,6 +41,21 @@ class OrderItems extends SQLBase {
     $this->m_aOriginalData = $this->m_aDefaultData;
   }
   
+  public function GetAllProperties() {
+    $arrProps = array(
+      self::PROPERTY_PRODUCTS_VIEW_MODE => $this->m_aData[self::PROPERTY_PRODUCTS_VIEW_MODE],
+      self::PROPERTY_ORDER_ITEMS => array(),
+    );
+    
+    foreach($this->m_aData[self::PROPERTY_ORDER_ITEMS] as $key => $oOrderItem) {
+      $arrProps[self::PROPERTY_ORDER_ITEMS][$key] = array(
+        'allowedinterval' => $oOrderItem->GetAllowedInterval(),
+      ) + $oOrderItem->GetAllProperties();
+    }
+    
+    return $arrProps;
+  }
+  
   //set the Order class to be used for calculations and validations
   public function SetOrder(&$oOrder)
   {

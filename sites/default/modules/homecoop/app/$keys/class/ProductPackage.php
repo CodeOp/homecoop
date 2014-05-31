@@ -108,11 +108,11 @@ class ProductPackage {
     if ($name == self::PROPERTY_HTML)
     {
       if (($this->m_aData[self::PROPERTY_SUPPRESS_TOOLTIP]) || !($this->m_aData[self::PROPERTY_HAS_TOOLTIP]))
-        return $this->m_sResult;
+        return check_plain($this->m_sResult);
       
       $sHelpID = "hlp" . $this->m_aData[self::PROPERTY_ID];
       
-      return '<a id="'. $sHelpID . '" name="'. $sHelpID . '" class="' . $this->m_aData[self::PROPERTY_TOOLTIP_CSS_CLASS] . '" href="#'. $sHelpID . '" >' . htmlspecialchars($this->m_sResult) . '<span>' .
+      return '<a id="'. $sHelpID . '" name="'. $sHelpID . '" class="' . $this->m_aData[self::PROPERTY_TOOLTIP_CSS_CLASS] . '" href="#'. $sHelpID . '" >' . check_plain($this->m_sResult) . '<span>' .
             $this->m_sToolTipPackageSizeLine . $this->m_sToolTipQuantityIntervalLine . $this->m_sToolTipAvailableItems  . '</span></a>';
     }
     else if ($name == self::PROPERTY_TOOLTIP)
