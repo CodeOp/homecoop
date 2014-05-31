@@ -159,8 +159,6 @@ function homecoop_page_order_prepareform(&$oRecord) {
 }
 
 function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
-  global $g_oError;
-
   if (isset($form_state['homecoop_order'])) {
     $oFormExtraData = $form_state['homecoop_order'];
   }
