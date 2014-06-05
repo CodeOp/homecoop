@@ -1,10 +1,9 @@
 <?php
 
 function homecoop_page_front() {
+  
   homecoop_authenticated_page();
-  
-  homecoop_prepare_facet();
-  
+
   global $HomeCoopThemePath;
   
    $hcsettings = array(
@@ -27,6 +26,17 @@ function homecoop_page_front() {
     $g_oError->HandleException($e);
   }
   
+  $arrContent = homecoop_page_front_prepare_form();
+  
+  //close session opened in 'authenticate.php' when not required anymore
+  UserSessionBase::Close();
+  
+  return $arrContent;
+}
+
+function homecoop_page_front_prepare_form() {
+  homecoop_prepare_facet();
+  
   $arrContent = array(
     '#prefix' => '<table cellspacing="0" cellpadding="0" width="100%"><tr>',
     'tdFacet' => array(
@@ -41,9 +51,6 @@ function homecoop_page_front() {
     ),
     '#suffix' => '</tr></table>',
   );
-  
-  //close session opened in 'authenticate.php' when not required anymore
-  UserSessionBase::Close();
   
   return $arrContent;
 }
@@ -137,7 +144,7 @@ function homecoop_page_front_form_submit($form, &$form_state) {
   }
   
   if ($bFacetLoad) {
-    return homecoop_page_front();
+    return homecoop_page_front_prepare_form();
   }
 }
 

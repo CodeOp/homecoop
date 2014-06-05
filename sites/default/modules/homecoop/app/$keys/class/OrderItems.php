@@ -29,6 +29,8 @@ class OrderItems extends SQLBase {
   protected $m_aProductsChanged = NULL;
   protected $m_bFirstSave = TRUE;
   protected $m_aStorageAreasBurden = array();
+  
+  protected $m_form_state = NULL;
 
   public function __construct()
   {
@@ -230,7 +232,7 @@ class OrderItems extends SQLBase {
  }
 
  //outmost save operation
- public function Save()
+ public function Save(&$form_state)
  {
     global $g_oMemberSession;
         
@@ -256,6 +258,8 @@ class OrderItems extends SQLBase {
     
     $this->m_aData[Order::PROPERTY_ID] = $this->m_oOrder->ID;
     
+    $this->m_form_state = &$form_state;
+    
     //collect data for save
     $this->CollectData();
 
@@ -263,12 +267,16 @@ class OrderItems extends SQLBase {
     //(save button shouldn't have been displayed, so a "data not saved" - issued in orderitems.php when FALSE is returned here
     // will suffice in such case)
     //the CanModify flag is updated in Order::LoadRecord, already called before passing the object to this class
-    if (!$this->m_oOrder->CanModify)
+    if (!$this->m_oOrder->CanModify) {
+      unset($this->m_form_state);
       return FALSE;
+    }
     
     //validate data, EXIT if invalid
-    if (!$this->ValidateData())
+    if (!$this->ValidateData()) {
+      unset($this->m_form_state);
       return FALSE;
+    }
     
     //actual save data
     $this->SaveData();
@@ -277,6 +285,7 @@ class OrderItems extends SQLBase {
     if ($this->m_bFirstSave)
       $this->m_aData[self::PROPERTY_PRODUCTS_VIEW_MODE] = self::PRODUCTS_VIEW_MODE_ITEMS_ONLY;
     
+    unset($this->m_form_state);
     return TRUE;
  }
  
@@ -358,7 +367,7 @@ class OrderItems extends SQLBase {
  //collect data after postback from global $_POST variable
  protected function CollectData()
  {
-   global $_POST, $g_oMemberSession;
+   global $g_oMemberSession;
    
    $nProductID = 0;
    $bCurrentUser = ($this->m_oOrder->MemberID == $g_oMemberSession->MemberID);
@@ -376,7 +385,7 @@ class OrderItems extends SQLBase {
    $this->m_oOrder->OrderBurden = 0;
    $this->m_oOrder->HasItemComments = FALSE;
    
-   foreach($_POST as $key => $value)
+   foreach($this->m_form_state['values'] as $key => $value)
    {
      //if found in position 0
      if (strpos($key, self::CTL_PREFIX_ID) === 0)
@@ -538,7 +547,8 @@ class OrderItems extends SQLBase {
    if (!$bValidItems)
    {
      $bValid = FALSE;
-     $g_oError->AddError('<!$ORDER_ITEMS_VALIDATION_GENERAL_MESSAGE$!>');
+     //since we are not in validate, do not use form_set_error
+     drupal_set_message('<!$ORDER_ITEMS_VALIDATION_GENERAL_MESSAGE$!>', 'error', false);
    }
    
    //validate storage areas (must be after products data have been collected)
@@ -547,7 +557,7 @@ class OrderItems extends SQLBase {
     if ($aStorage['StorageAreaBurden'] > $aStorage['StorageAreaMaxBurden'])
     {
       $bValid = FALSE;
-      $g_oError->AddError(sprintf('<!$ORDER_ITEM_VALIDATION_BURDEN_EXCEEDS_STORAGE_BURDEN$!>', $aStorage['StorageAreaName']));
+      drupal_set_message(sprintf('<!$ORDER_ITEM_VALIDATION_BURDEN_EXCEEDS_STORAGE_BURDEN$!>', $aStorage['StorageAreaName']), 'error', false);
       //mark problematic items (has increased and in this storage area)
       foreach($this->m_aData[self::PROPERTY_ORDER_ITEMS] as $nProductID => $oOrderItem)
       {
@@ -564,8 +574,9 @@ class OrderItems extends SQLBase {
      }
    }
    
-   if (!$bValid)
-     $g_oError->PushError('<!$COMPLEX_SAVE_FAILURE$!>');
+   if (!$bValid) {
+     drupal_set_message('<!$COMPLEX_SAVE_FAILURE$!>', 'error', false);
+   }
    
    return $bValid;
  }
@@ -865,7 +876,7 @@ class OrderItems extends SQLBase {
         {
           //add error reason for coordinators
           if ($this->m_oOrder->HasPermission(SQLBase::PERMISSION_COORD))
-            $g_oError->AddError(sprintf('<!$ORDER_CANNOT_BE_ENLARGED_WHEN_PRODUCER_CAPACITY_IS_FULL_TOTAL_REASON$!>',$recProducer["sProducer"]));
+            drupal_set_message(sprintf('<!$ORDER_CANNOT_BE_ENLARGED_WHEN_PRODUCER_CAPACITY_IS_FULL_TOTAL_REASON$!>',$recProducer["sProducer"]), 'error', false);
           $bValid = FALSE;
         }
      }
@@ -886,14 +897,14 @@ class OrderItems extends SQLBase {
         {
           //add error reason for coordinators
           if ($this->m_oOrder->HasPermission(SQLBase::PERMISSION_COORD))
-            $g_oError->AddError(sprintf('<!$ORDER_CANNOT_BE_ENLARGED_WHEN_PRODUCER_CAPACITY_IS_FULL_BURDEN_REASON$!>',$recProducer["sProducer"]));
+            drupal_set_message(sprintf('<!$ORDER_CANNOT_BE_ENLARGED_WHEN_PRODUCER_CAPACITY_IS_FULL_BURDEN_REASON$!>',$recProducer["sProducer"]), 'error', false);
           $bValid = FALSE;
         }
      }
    }
    
    if (!$bValid)
-     $g_oError->AddError(sprintf('<!$ORDER_CANNOT_BE_ENLARGED_WHEN_PRODUCER_CAPACITY_IS_FULL$!>',$recProducer["sProducer"]));
+     drupal_set_message(sprintf('<!$ORDER_CANNOT_BE_ENLARGED_WHEN_PRODUCER_CAPACITY_IS_FULL$!>',$recProducer["sProducer"]), 'error', false);
    
    return $bValid;
  }

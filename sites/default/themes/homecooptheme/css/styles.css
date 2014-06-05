@@ -119,7 +119,7 @@ html {
   /* 2 */
   -webkit-text-size-adjust: 100%;
   /* 2 */
-  line-height: 1.5em;
+  /*@include adjust-leading-to(1);*/
 }
 
 /* Remove default margin. */
@@ -1456,7 +1456,7 @@ span.field-label {
 /* Wrapper for a form element (or group of form elements) and its label. */
 /* line 582, ../sass/components/_misc.scss */
 .form-item {
-  margin: 1.5em 0;
+  /*margin: rhythm(1) 0;*/
   /* Pack groups of checkboxes and radio buttons closer together. */
   /* Form items in a table. */
   /* Highlight the form elements that caused a form submission error. */

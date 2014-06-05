@@ -7,22 +7,17 @@ function homecoop_page_order() {
     
   $oRecord = new Order;
   
-
-  if (isset($_GET['id']))
-  {
-    if(!$oRecord->LoadRecord( intval($_GET['id'])) )
-    {
+  if (isset($_GET['id'])) {
+    if(!$oRecord->LoadRecord( intval($_GET['id'])) ) {
         drupal_goto(Consts::URL_ACCESS_DENIED);
         return;
     }
   }
-  else if (isset($_GET['coid']))
-  {
+  else if (isset($_GET['coid'])) {
     $oRecord->LoadCoopOrder(intval($_GET['coid']), $g_oMemberSession->MemberID);
   }
   
-  switch($oRecord->LastOperationStatus)
-  {
+  switch($oRecord->LastOperationStatus) {
     case SQLBase::OPERATION_STATUS_NO_SUFFICIENT_DATA_PROVIDED:
     case SQLBase::OPERATION_STATUS_NO_PERMISSION:
     case SQLBase::OPERATION_STATUS_LOAD_RECORD_FAILED:
@@ -52,7 +47,6 @@ function homecoop_page_order() {
   UserSessionBase::Close();
   
   return $arrContent;
-  
 }
 
 function homecoop_page_order_prepareform(&$oRecord) {
@@ -173,12 +167,15 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
   
   $form['#id'] = 'homecoop_page_order_form';
   $form['#attributes']['name'] = 'homecoop_page_order_form';
-  $form['hidOriginalData'] = array('#type' => 'hidden', '#default_value' => $oFormExtraData['OriginalData'], 
+  //internal values
+  $form['hidOriginalData'] = array('#type' => 'value', '#value' => $oFormExtraData['OriginalData'], 
     '#attributes' => array('id' => 'hidOriginalData'));
+  $form['hidPostValue'] = array('#type' => 'value', '#value' => $oFormExtraData['ID'], 
+    '#attributes' => array('id' => 'hidPostValue'));
+  //exposed value
   $form['hidPostAction'] = array('#type' => 'hidden', '#default_value' => '', 
     '#attributes' => array('id' => 'hidPostAction'));
-  $form['hidPostValue'] = array('#type' => 'hidden', '#default_value' => $oFormExtraData['ID'], 
-    '#attributes' => array('id' => 'hidPostValue'));
+  
   $form['maintable'] = array(
     'coopordertab' => array(
       'tab' => homecoop_tab_cooporder($oFormExtraData),

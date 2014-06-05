@@ -44,6 +44,9 @@ function homecoop_page_orderitems() {
   
   $hcsettings = array(
     'ConfirmChanges' => t('It seems you have made changes and did not save them. If you proceed in changing the products view mode, these changes will be lost. Proceed?'),
+    'PostActionViewChange' => OrderItems::POST_ACTION_SWITCH_VIEW_MODE,
+    'PostActionShowAll' => OrderItems::PRODUCTS_VIEW_MODE_SHOW_ALL,
+    'PostActionItemOnly' => OrderItems::PRODUCTS_VIEW_MODE_ITEMS_ONLY,
   );
   
   drupal_add_js(array('homecoop' => $hcsettings), 'setting');
@@ -124,14 +127,16 @@ function homecoop_page_orderitems_form($form, &$form_state, $oFormExtraData) {
   
   $form['#id'] = 'homecoop_page_orderitems_form';
   $form['#attributes']['name'] = 'homecoop_page_orderitems_form';
-  $form['hidOriginalData'] = array('#type' => 'hidden', '#default_value' => $oFormExtraData['OriginalData'], 
+  //internal values
+  $form['hidOriginalData'] = array('#type' => 'value', '#value' => $oFormExtraData['OriginalData'], 
     '#attributes' => array('id' => 'hidOriginalData'));
+  $form['hidPostValue'] = array('#type' => 'value', '#value' => $oFormExtraData['order']['ID'], 
+    '#attributes' => array('id' => 'hidPostValue'));
+  //exposed values
   $form['hidPostAction'] = array('#type' => 'hidden', '#default_value' => '', 
     '#attributes' => array('id' => 'hidPostAction'));
   $form['hidDirty'] = array('#type' => 'hidden', '#default_value' => '0', 
     '#attributes' => array('id' => 'hidDirty'));
-  $form['hidPostValue'] = array('#type' => 'hidden', '#default_value' => $oFormExtraData['order']['ID'], 
-    '#attributes' => array('id' => 'hidPostValue'));
   
   $form['maintable'] = array(
     'coopordertab' => array(
@@ -162,7 +167,7 @@ function homecoop_page_orderitems_form($form, &$form_state, $oFormExtraData) {
         '#id' => 'btn_save',
         '#submit' => array('homecoop_page_orderitems_form_submit'),
         '#value' => t('Save Ordered Products'),
-        '#attributes' => array('class' => array('order'),
+        '#attributes' => array('onclick' => 'Save();',  'class' => array('order'),
           ),
         '#prefix' => '<div class="inlineblock">',
         '#suffix' => '&nbsp;</div>',
@@ -174,11 +179,15 @@ function homecoop_page_orderitems_form($form, &$form_state, $oFormExtraData) {
         '#id' => 'selProductsView',
         '#key_type' => 'associative',
         '#options' => $oFormExtraData['arrProductsView'],
-        '#default_value' => $oFormExtraData['ProductsViewMode'],
+        '#default_value' => $oFormExtraData['ProductsViewMode'], //re-setting the actual value of this control
         '#prefix' => '<div class="inlineblock">',
         '#suffix' => '</div>',
         '#weight' => 20,
         '#required' => TRUE,
+        '#attributes' => array(
+          'onchange' => 'SwitchViewMode();',
+          'id' => 'selProductsView',
+        ),
       ),
     );
   }
@@ -301,9 +310,9 @@ function homecoop_page_orderitems_form($form, &$form_state, $oFormExtraData) {
         );
       }
        
-      //hidden orderitem id
+      //internal orderitem id
       $sName = OrderItems::CTL_PREFIX_ID . $oItem['ProductID'];
-      $form['maintable']['controlstable'][$sRow][$sName] = array('#type' => 'hidden', '#default_value' => $oItem['OrderItemID'], 
+      $form['maintable']['controlstable'][$sRow][$sName] = array('#type' => 'value', '#value' => $oItem['OrderItemID'], 
        '#attributes' => array('id' => $sName));
       
       
@@ -484,15 +493,18 @@ function homecoop_page_orderitems_form($form, &$form_state, $oFormExtraData) {
         '#weight' => 80,
       );
       
+      
       if ($oItem['DisabledProduct']) {
         $form['maintable']['controlstable'][$sRow]['comments']['data']['#markup'] = t('This product is cancelled');
       }
       else {
-        $form['maintable']['controlstable'][$sRow]['comments']['data']['commentsctl'] = array(
+        $sName = OrderItems::CTL_PREFIX_COMMENTS . $oItem['ProductID'];
+        $form['maintable']['controlstable'][$sRow]['comments']['data'][$sName] = array(
           '#type' => 'textarea',
           '#max_length' => OrderItems::MAX_LENGTH_MEMBER_COMMENTS,
           '#rows' => 1,
-          '#id' => OrderItems::CTL_PREFIX_COMMENTS . $oItem['ProductID'],
+          '#name' => $sName,
+          '#id' => $sName,
           '#default_value' => check_plain($oItem['MemberComments']),
           '#disabled' => $bItemReadOnly,
           '#weight' => 80,
@@ -507,4 +519,76 @@ function homecoop_page_orderitems_form($form, &$form_state, $oFormExtraData) {
   }
   
   return $form;
+}
+
+function homecoop_page_orderitems_form_submit($form, &$form_state) {
+  $oRecord = new Order;
+  $oTable = new OrderItems;
+  
+  if ( isset( $form_state['values']['hidPostValue'] ) && !empty($form_state['values']['hidPostValue']) )
+    $oRecord->ID = intval($form_state['values']['hidPostValue']);
+
+  if ( isset( $form_state['values']['hidOriginalData'] ) )
+    $oTable->SetSerializedOriginalData( $form_state['values']["hidOriginalData"] );
+
+  $oRecord->SuppressMessages = TRUE; //so messages won't displayed twice
+  //get order for permissions check
+  if (!$oRecord->LoadRecord( $oRecord->ID ) )
+  {
+    drupal_goto(Consts::URL_ACCESS_DENIED );
+    return;
+  }
+
+  $oTable->SetOrder($oRecord);
+
+  if ( isset( $form_state['values']['selProductsView'] ) ) {
+    $oTable->ProductsViewMode = intval($form_state['values']['selProductsView']);
+  }
+  $nMode = $oTable->ProductsViewMode;
+
+  if (!$oRecord->CanModify)
+    $oTable->ProductsViewMode = OrderItems::PRODUCTS_VIEW_MODE_ITEMS_ONLY;
+  
+  if ($form_state['values']['hidPostAction'] == OrderItems::POST_ACTION_SWITCH_VIEW_MODE) {
+    homecoop_page_orderitems_post_submit_reload($form_state, $oRecord, $oTable);
+    return;
+  }
+  
+  $bSuccess = $oTable->Save($form_state);  
+  
+  //if mode has changed regardless of user's choice, set its value on load
+  if ($nMode != $oTable->ProductsViewMode) {
+    drupal_add_js('jQuery(document).ready(function () { document.getElementById("selProductsView").selectedIndex = ' . 
+        $oTable->ProductsViewMode . '; });', 'inline');
+  }
+
+  //always reload order record after save (but suppress messages)
+  $oRecord->LoadRecord( $oRecord->ID );
+
+  if ($bSuccess) {
+    drupal_set_message('Ordered products were saved successfully.', 'status', FALSE);
+    homecoop_page_orderitems_post_submit_reload($form_state, $oRecord, $oTable);
+  }
+  else {
+    $form_state['homecoop_orderitems'] = homecoop_page_orderitems_prepareform($oRecord, $oTable);
+    $form_state['rebuild'] = true;    
+  }
+}
+
+function homecoop_page_orderitems_post_submit_reload(&$form_state, &$oRecord, &$oTable) {
+  //always reload table to get latest storage areas values
+  $oTable->LoadTable();
+  
+  switch($oTable->LastOperationStatus)
+  {
+    case SQLBase::OPERATION_STATUS_NO_SUFFICIENT_DATA_PROVIDED:
+    case SQLBase::OPERATION_STATUS_NO_PERMISSION:
+    case SQLBase::OPERATION_STATUS_LOAD_RECORD_FAILED:
+    case SQLBase::OPERATION_STATUS_COORDINATION_GROUP_VERIFY_FAILED:
+      drupal_goto(Consts::URL_ACCESS_DENIED);
+      return;
+  }
+  
+  $form_state['homecoop_orderitems'] = homecoop_page_orderitems_prepareform($oRecord, $oTable);
+  $form_state['rebuild'] = true;
 }
