@@ -23,7 +23,23 @@ function homecoop_views_data() {
           'field' => array(       
             'handler' => 'views_handler_field_numeric',       
             'click sortable' => FALSE,     
-           ),   
+          ),
+          'relationship' => array(
+            'title' => t('Coop Order Name'),
+            'lable' => t('Coop Order Name'),
+            'base' => 'Tlng_String',
+            'base field' => 'KeyID',
+          ),
+          'argument' => array(
+            'handler' => 'views_handler_argument_many_to_one',
+            'numeric' => TRUE,
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
         ),   
         'dStart' => array(     
               'title' => t('Opening'),     
@@ -71,23 +87,38 @@ function homecoop_views_data() {
           'title' => t('Cooperative Fee'),     
           'help' => t('A fixed amount that is paid by each member per order, in addition to the sum cost of the products, to cover expenses'),     
           'field' => array(       
-          'handler' => 'views_handler_field_numeric',       
+            'handler' => 'views_handler_field_numeric',       
             'click sortable' => FALSE,     
-          ),   
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
         ),   
         'mSmallOrder' => array(     
           'title' => t('Small Order'),   
           'help' => t('Defines a small member\'s order, that has a reduced cooperative fee attached to it'),    
           'field' => array(       
-          'handler' => 'views_handler_field_numeric',       
+            'handler' => 'views_handler_field_numeric',       
             'click sortable' => FALSE,     
-          ),   
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
         ),   
         'mSmallOrderCoopFee' => array(     
           'title' => t('Small Order Coop Fee'), 
           'help' => t('A reduced cooperative fee, for a small order'),
           'field' => array(       'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
           ),
         ),
         'fCoopFee' => array(     
@@ -97,6 +128,12 @@ function homecoop_views_data() {
             'handler' => 'views_handler_field',
             'click sortable' => FALSE,
           ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
         ),
         'ModifiedByMemberID' => array(     
           'title' => t('Last Updated By'), 
@@ -105,13 +142,35 @@ function homecoop_views_data() {
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
           ),
+          'relationship' => array(
+            'title' => t('Coop Order Modified By Member'),
+            'lable' => t('Coop Order Modified By Member'),
+            'base' => 'T_Member',
+            'base field' => 'MemberID',
+          ),
+          'argument' => array(
+            'handler' => 'views_handler_argument_many_to_one',
+            'numeric' => TRUE,
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
         ),
         'nStatus' => array(     
           'title' => t('Status'), 
           'help' => t('Coop. order status'), 
           'field' => array(       
             'handler' => 'views_handler_field_numeric',
-            'click sortable' => FALSE,
+            'click sortable' => TRUE,
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
           ),
         ),
         'CoordinatingGroupID' => array(     
@@ -121,6 +180,22 @@ function homecoop_views_data() {
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
           ),
+          'relationship' => array(
+            'title' => t('Coop Order Coordinating Group'),
+            'lable' => t('Coop Order Coordinating Group'),
+            'base' => 'T_CoordinatingGroup',
+            'base field' => 'CoordinatingGroupID',
+          ),
+          'argument' => array(
+            'handler' => 'views_handler_argument_many_to_one',
+            'numeric' => TRUE,
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
         ),
         'mMaxCoopTotal' => array(     
           'title' => t('Max. Coop Total'), 
@@ -128,6 +203,12 @@ function homecoop_views_data() {
           'field' => array(       
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
           ),
         ),
         'fMaxBurden' => array(     
@@ -140,6 +221,12 @@ function homecoop_views_data() {
             'handler' => 'views_handler_field',
             'click sortable' => FALSE,
           ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
         ),
         'fBurden' => array(     
           'title' => t('Total Burden'),
@@ -147,6 +234,12 @@ function homecoop_views_data() {
           'field' => array(       
             'handler' => 'views_handler_field',
             'click sortable' => FALSE,
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
           ),
         ),
         'mCoopTotal' => array(     
@@ -156,6 +249,12 @@ function homecoop_views_data() {
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
           ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
         ),
         'mProducerTotal' => array(     
           'title' => t('Total Producers'),
@@ -163,6 +262,12 @@ function homecoop_views_data() {
           'field' => array(       
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
           ),
         ),
         'mTotalDelivery' => array(     
@@ -172,6 +277,12 @@ function homecoop_views_data() {
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
           ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
         ),
         'bHasJoinedProducts' => array(     
           'title' => t('Has Joined Products'),
@@ -179,6 +290,9 @@ function homecoop_views_data() {
           'field' => array(   
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
           ),
         ),
         'fMaxStorageBurden' => array(     
@@ -188,6 +302,12 @@ function homecoop_views_data() {
             'handler' => 'views_handler_field',
             'click sortable' => FALSE,
           ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
         ),
         'fStorageBurden' => array(     
           'title' => t('Total storage full'),
@@ -195,6 +315,12 @@ function homecoop_views_data() {
           'field' => array(       
             'handler' => 'views_handler_field',
             'click sortable' => FALSE,
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
           ),
         ),
     );
@@ -216,6 +342,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coop Order Pickup Location - Coop Order'),
+          'lable' => t('Coop Order'),
+          'base' => 'T_CoopOrder',
+          'base field' => 'CoopOrderKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
       ),
       'PickupLocationKeyID' => array(     
         'title' => t('Pickup Location ID'),
@@ -224,6 +366,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coop Order Pickup Location - Pickup Location'),
+          'lable' => t('Pickup Location'),
+          'base' => 'T_PickupLocation',
+          'base field' => 'PickupLocationKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
       ),
       'fMaxBurden' => array(     
         'title' => t('Delivery Capacity'), 
@@ -234,6 +392,12 @@ function homecoop_views_data() {
             'handler' => 'views_handler_field',
             'click sortable' => FALSE,
           ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
+          ),
       ),
       'fBurden' => array(     
         'title' => t('Total Burden'),
@@ -241,6 +405,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'mMaxCoopTotal' => array(     
@@ -250,6 +420,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'mCoopTotal' => array(     
         'title' => t('Total Coop'),
@@ -257,6 +433,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'fMaxStorageBurden' => array(     
@@ -266,6 +448,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'fStorageBurden' => array(     
         'title' => t('Total storage full'),
@@ -273,6 +461,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     );
@@ -295,6 +489,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coop Order Pickup Location Producer - Coop Order'),
+          'lable' => t('Coop Order'),
+          'base' => 'T_CoopOrder',
+          'base field' => 'CoopOrderKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'ProducerKeyID' => array(     
@@ -303,6 +513,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Coop Order Pickup Location Producer - Producer'),
+          'lable' => t('Producer'),
+          'base' => 'T_Producer',
+          'base field' => 'ProducerKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -313,6 +539,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coop Order Pickup Location Producer - Pickup Location'),
+          'lable' => t('Pickup Location'),
+          'base' => 'T_PickupLocation',
+          'base field' => 'PickupLocationKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'mProducerTotal' => array(     
@@ -322,6 +564,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'mCoopTotal' => array(     
@@ -330,6 +578,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -351,6 +605,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coop Order Pickup Location Product - Coop Order'),
+          'lable' => t('Coop Order'),
+          'base' => 'T_CoopOrder',
+          'base field' => 'CoopOrderKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'ProductKeyID' => array(     
         'title' => t('Product ID'),
@@ -358,6 +628,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Coop Order Pickup Location Product - Product'),
+          'lable' => t('Product'),
+          'base' => 'T_Product',
+          'base field' => 'ProductKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'PickupLocationKeyID' => array(     
@@ -367,6 +653,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coop Order Pickup Location Product - Pickup Location'),
+          'lable' => t('Pickup Location'),
+          'base' => 'T_PickupLocation',
+          'base field' => 'PickupLocationKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'mProducerTotal' => array(     
         'title' => t('Total Producers'),
@@ -374,6 +676,12 @@ function homecoop_views_data() {
         'field' => array(     
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'mCoopTotal' => array(     
@@ -383,6 +691,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'fTotalCoopOrder' => array(     
         'title' => t('Total Quantity Ordered'),
@@ -390,6 +704,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -411,6 +731,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coop Order Producer - Coop Order'),
+          'lable' => t('Coop Order'),
+          'base' => 'T_CoopOrder',
+          'base field' => 'CoopOrderKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'ProducerKeyID' => array(     
         'title' => t('Producer ID'),
@@ -418,6 +754,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Producer'),
+          'lable' => t('Producer'),
+          'base' => 'T_Producer',
+          'base field' => 'ProducerKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'mMaxProducerOrder' => array(     
@@ -427,6 +779,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'mProducerTotal' => array(     
         'title' => t('Producer Total'),
@@ -434,6 +792,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'fDelivery' => array(     
@@ -443,6 +807,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'mDelivery' => array(     
         'title' => t('Fixed Delivery Fee'),
@@ -450,6 +820,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'mMinDelivery' => array(     
@@ -459,6 +835,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'mMaxDelivery' => array(     
         'title' => t('Max. Delivery Fee'),
@@ -466,6 +848,9 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'mTotalDelivery' => array(     
@@ -475,6 +860,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'fBurden' => array(     
         'title' => t('Total Burden'),
@@ -482,6 +873,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'fMaxBurden' => array(     
@@ -493,6 +890,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'mCoopTotal' => array(     
         'title' => t('Total Coop'),
@@ -500,6 +903,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -522,6 +931,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coop Order Product - Coop Order'),
+          'lable' => t('Coop Order'),
+          'base' => 'T_CoopOrder',
+          'base field' => 'CoopOrderKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'ProductKeyID' => array(     
@@ -530,6 +955,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Product'),
+          'lable' => t('Product'),
+          'base' => 'T_Product',
+          'base field' => 'ProductKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -540,6 +981,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'mCoopPrice' => array(     
@@ -548,6 +995,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -558,6 +1011,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fMaxCoopOrder' => array(     
@@ -566,6 +1025,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -576,6 +1041,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fTotalCoopOrder' => array(     
@@ -584,6 +1055,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -594,6 +1071,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'mProducerTotal' => array(     
@@ -602,6 +1085,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -612,6 +1101,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'bDisabled' => array(     
@@ -619,7 +1114,13 @@ function homecoop_views_data() {
         'help' => t('Is Disabled?'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
-          'click sortable' => FALSE,
+          'click sortable' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -641,6 +1142,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coop Order Product Storage - Coop Order'),
+          'lable' => t('Coop Order'),
+          'base' => 'T_CoopOrder',
+          'base field' => 'CoopOrderKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'ProductKeyID' => array(     
         'title' => t('Product ID'),
@@ -648,6 +1165,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Product'),
+          'lable' => t('Product'),
+          'base' => 'T_Product',
+          'base field' => 'ProductKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'PickupLocationKeyID' => array(     
@@ -657,6 +1190,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'StorageAreaKeyID' => array(     
         'title' => t('Storage Area ID'),
@@ -664,6 +1203,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Storage Area'),
+          'lable' => t('Storage Area'),
+          'base' => 'T_PickupLocationStorageArea',
+          'base field' => 'StorageAreaKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -685,6 +1240,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coop Order Storage - Coop Order'),
+          'lable' => t('Coop Order'),
+          'base' => 'T_CoopOrder',
+          'base field' => 'CoopOrderKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'StorageAreaKeyID' => array(     
@@ -693,6 +1264,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Storage Area'),
+          'lable' => t('Storage Area'),
+          'base' => 'T_PickupLocationStorageArea',
+          'base field' => 'StorageAreaKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       'fMaxBurden' => array(     
@@ -704,6 +1291,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'fBurden' => array(     
         'title' => t('Total Burden'),
@@ -711,6 +1304,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -732,6 +1331,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'sCoordinatingGroup' => array(     
         'title' => t('Coordinating Group'),
@@ -739,6 +1344,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
     );
@@ -761,6 +1372,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coordinating Group'),
+          'lable' => t('Coordinating Group'),
+          'base' => 'T_CoordinatingGroup',
+          'base field' => 'CoordinatingGroupID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'MemberID' => array(     
@@ -770,6 +1397,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Member'),
+          'lable' => t('Member'),
+          'base' => 'T_Member',
+          'base field' => 'MemberID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'bContactPerson' => array(     
@@ -778,6 +1421,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -800,6 +1449,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'sStringKey' => array(     
@@ -808,6 +1463,15 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_string',
         ),
       ),
     ); 
@@ -828,6 +1492,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Measure Name'),
+          'lable' => t('Measure Name'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -855,21 +1535,25 @@ function homecoop_views_data() {
            'numeric' => TRUE,
            'validate type' => 'MemberID',
          ),
+         'sort' => array(
+            'handler' => 'views_handler_sort',
+         ),
+         'filter' => array(
+           'handler' => 'views_handler_filter_numeric',
+         ),
         ),
       'sLoginName' => array(     
         'title' => t('Login name'),
         'help' => t('Login name'),
         'field' => array(       
           'handler' => 'views_handler_field',
-          'click sortable' => FALSE,
+          'click sortable' => TRUE,
         ),
-      ),
-      'sPassword' => array(     
-        'title' => t('Password'),
-        'help' => t('Password'),
-        'field' => array(       
-          'handler' => 'views_handler_field',
-          'click sortable' => FALSE,
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
 
@@ -878,7 +1562,13 @@ function homecoop_views_data() {
         'help' => t('Email address'),
         'field' => array(       
           'handler' => 'views_handler_field',
-          'click sortable' => FALSE,
+          'click sortable' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
       
@@ -888,6 +1578,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('PaymentMethod'),
+          'lable' => t('PaymentMethod'),
+          'base' => 'T_PaymentMethod',
+          'base field' => 'PaymentMethodKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
       
@@ -911,7 +1617,13 @@ function homecoop_views_data() {
         'help' => t('Effective balance for orders limits'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
-          'click sortable' => FALSE,
+          'click sortable' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -920,7 +1632,13 @@ function homecoop_views_data() {
         'help' => t('Name'),
         'field' => array(       
           'handler' => 'views_handler_field',
-          'click sortable' => FALSE,
+          'click sortable' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
 
@@ -932,6 +1650,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'sEMail2' => array(     
@@ -940,6 +1664,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
 
@@ -950,6 +1680,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
       ),
 
       'sEMail4' => array(     
@@ -959,6 +1695,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
       ),
       
       'bDisabled' => array(     
@@ -966,7 +1708,13 @@ function homecoop_views_data() {
         'help' => t('Is disabled?'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
-          'click sortable' => FALSE,
+          'click sortable' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -977,6 +1725,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
       ),
 
       'mBalanceInvested' => array(     
@@ -985,6 +1739,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -995,6 +1755,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'nExportFormat' => array(     
@@ -1004,14 +1770,11 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
-      ),
-
-      'sPasswordForMigration' => array(     
-        'title' => t('Password For Migration'),
-        'help' => t('Clear password for migration'),
-        'field' => array(       
-          'handler' => 'views_handler_field',
-          'click sortable' => FALSE,
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     );
@@ -1033,6 +1796,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Member'),
+          'lable' => t('Member'),
+          'base' => 'T_Member',
+          'base field' => 'MemberID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'PickupLocationKeyID' => array(     
@@ -1041,6 +1820,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Pickup Location'),
+          'lable' => t('Pickup Location'),
+          'base' => 'T_PickupLocation',
+          'base field' => 'PickupLocationKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1051,6 +1846,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'bRemoved' => array(     
@@ -1059,6 +1860,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -1080,6 +1887,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Member'),
+          'lable' => t('Member'),
+          'base' => 'T_Member',
+          'base field' => 'MemberID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'ProducerKeyID' => array(     
@@ -1088,6 +1911,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Producer'),
+          'lable' => t('Producer'),
+          'base' => 'T_Producer',
+          'base field' => 'ProducerKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1098,6 +1937,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'bRemoved' => array(     
@@ -1106,6 +1951,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -1127,6 +1978,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Member'),
+          'lable' => t('Member'),
+          'base' => 'T_Member',
+          'base field' => 'MemberID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'RoleKeyID' => array(     
@@ -1135,6 +2002,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Role'),
+          'lable' => t('Role'),
+          'base' => 'T_Role',
+          'base field' => 'RoleKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -1156,6 +2039,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'CoopOrderKeyID' => array(     
         'title' => t('Coop Order ID'),
@@ -1163,6 +2052,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Coop Order'),
+          'lable' => t('Coop Order'),
+          'base' => 'T_CoopOrder',
+          'base field' => 'CoopOrderKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1183,6 +2088,9 @@ function homecoop_views_data() {
            'handler' => 'views_handler_argument_many_to_one',
            'numeric' => TRUE,
          ),
+         'filter' => array(
+           'handler' => 'views_handler_filter_numeric',
+         ),
        ),
 
       'PickupLocationKeyID' => array(     
@@ -1191,6 +2099,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Pickup Location'),
+          'lable' => t('Pickup Location'),
+          'base' => 'T_PickupLocation',
+          'base field' => 'PickupLocationKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1231,6 +2155,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'CreatedByMemberID' => array(     
@@ -1239,6 +2169,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Created By'),
+          'lable' => t('Created By'),
+          'base' => 'T_Member',
+          'base field' => 'MemberID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1249,6 +2195,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Modified By'),
+          'lable' => t('Modified By'),
+          'base' => 'T_Member',
+          'base field' => 'MemberID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'mProducerTotal' => array(     
@@ -1257,6 +2219,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1267,6 +2235,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'mCoopFee' => array(     
@@ -1275,6 +2249,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1285,6 +2265,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fBurden' => array(     
@@ -1293,6 +2279,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1303,6 +2295,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'PaymentMethodKeyID' => array(     
@@ -1312,6 +2310,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Payment Method'),
+          'lable' => t('Payment Method'),
+          'base' => 'T_PaymentMethod',
+          'base field' => 'PaymentMethodKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fPercentOverBalance' => array(     
@@ -1320,6 +2334,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -1342,6 +2362,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'OrderID' => array(     
@@ -1350,6 +2376,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Order'),
+          'lable' => t('Order'),
+          'base' => 'T_Order',
+          'base field' => 'OrderID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1360,6 +2402,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Product'),
+          'lable' => t('Product'),
+          'base' => 'T_Product',
+          'base field' => 'ProductKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fQuantity' => array(     
@@ -1368,6 +2426,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1378,6 +2442,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'mProducerPrice' => array(     
@@ -1386,6 +2456,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1396,6 +2472,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fMaxFixQuantityAddition' => array(     
@@ -1404,6 +2486,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1414,6 +2502,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fUnjoinedQuantity' => array(     
@@ -1423,6 +2517,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'nJoinedItems' => array(     
@@ -1431,6 +2531,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -1453,6 +2559,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'OrderID' => array(     
@@ -1461,6 +2573,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Order'),
+          'lable' => t('Order'),
+          'base' => 'T_Order',
+          'base field' => 'OrderID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1471,6 +2599,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+       'relationship' => array(
+          'title' => t('Product'),
+          'lable' => t('Product'),
+          'base' => 'T_Product',
+          'base field' => 'ProductKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fQuantity' => array(     
@@ -1479,6 +2623,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1489,6 +2639,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'mProducerPrice' => array(     
@@ -1497,6 +2653,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1507,6 +2669,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fMaxFixQuantityAddition' => array(     
@@ -1515,6 +2683,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1525,6 +2699,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
       ),
 
       'fUnjoinedQuantity' => array(     
@@ -1533,6 +2713,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1543,6 +2729,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'DeletedBy' => array(     
@@ -1551,6 +2743,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Deleted By'),
+          'lable' => t('Deleted By'),
+          'base' => 'T_Member',
+          'base field' => 'MemberID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -1572,6 +2780,22 @@ function homecoop_views_data() {
         'field' => array(       'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Payment Method Name'),
+          'lable' => t('Payment Method Name'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
     ); 
 
@@ -1592,6 +2816,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Permission Area'),
+          'lable' => t('Permission Area'),
+          'base' => 'T_PermissionArea',
+          'base field' => 'PermissionAreaKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'PermissionTypeKeyID' => array(     
@@ -1601,6 +2841,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Permission Type'),
+          'lable' => t('Permission Type'),
+          'base' => 'T_PermissionType',
+          'base field' => 'PermissionTypeKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'nAllowedScopeCodes' => array(     
@@ -1609,6 +2865,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -1630,6 +2892,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Permission Area Name'),
+          'lable' => t('Permission Area Name'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
     ); 
 
@@ -1650,6 +2928,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'nScopeCode' => array(     
@@ -1658,6 +2942,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -1680,6 +2970,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Permission Type Name'),
+          'lable' => t('Permission Type Name'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
     ); 
 
@@ -1700,6 +3006,22 @@ function homecoop_views_data() {
         'field' => array(       'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Pickup Location Name'),
+          'lable' => t('Pickup Location Name'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'AddressStringKeyID' => array(     
@@ -1708,6 +3030,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Pickup Location Address'),
+          'lable' => t('Pickup Location Address'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1718,6 +3056,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Pickup Location Published Comments'),
+          'lable' => t('Pickup Location Published Comments'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'AdminCommentsStringKeyID' => array(     
@@ -1726,6 +3080,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Pickup Location Admin Comments'),
+          'lable' => t('Pickup Location Admin Comments'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1736,6 +3106,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'CoordinatingGroupID' => array(     
@@ -1744,6 +3120,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Coordinating Group'),
+          'lable' => t('Coordinating Group'),
+          'base' => 'T_CoordinatingGroup',
+          'base field' => 'CoordinatingGroupID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1758,6 +3150,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'nRotationOrder' => array(     
@@ -1766,6 +3164,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1776,6 +3180,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
       ),
 
       'mCachier' => array(     
@@ -1785,6 +3195,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'mPrevCachier' => array(     
@@ -1793,6 +3209,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1829,6 +3251,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Pickup Location'),
+          'lable' => t('Pickup Location'),
+          'base' => 'T_PickupLocation',
+          'base field' => 'PickupLocationKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
       'StorageAreaKeyID' => array(     
         'title' => t('Storage Area ID'),
@@ -1836,6 +3274,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Storage Area Name'),
+          'lable' => t('Storage Area Name'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1846,6 +3300,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'bDisabled' => array(     
@@ -1855,6 +3315,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'bDefault' => array(     
@@ -1863,6 +3329,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -1885,6 +3357,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Producer Name'),
+          'lable' => t('Producer Name'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'bDisabled' => array(     
@@ -1893,6 +3381,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1903,6 +3397,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Coordinating Group'),
+          'lable' => t('Coordinating Group'),
+          'base' => 'T_CoordinatingGroup',
+          'base field' => 'CoordinatingGroupID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'sExportFileName' => array(     
@@ -1911,6 +3421,12 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
     ); 
@@ -1932,6 +3448,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Product Name'),
+          'lable' => t('Product Name'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'ProducerKeyID' => array(     
@@ -1940,6 +3472,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Producer'),
+          'lable' => t('Producer'),
+          'base' => 'T_Producer',
+          'base field' => 'ProducerKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1950,6 +3498,22 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Product Details'),
+          'lable' => t('Product Details'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'UnitKeyID' => array(     
@@ -1958,6 +3522,22 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Unit'),
+          'lable' => t('Unit'),
+          'base' => 'T_Unit',
+          'base field' => 'UnitKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
@@ -1968,6 +3548,12 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fPackageSize' => array(     
@@ -1977,122 +3563,226 @@ function homecoop_views_data() {
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'fUnitInterval' => array(     
-        'title' => 'FUnitInterval',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Unit Interval'),
+        'help' => t('Interval between orderable weights/capacities. Irrelevant for products provided by item quantity'),
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'fMaxUserOrder' => array(     
-        'title' => 'FMaxUserOrder',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Max. Order'),
+        'help' => t('Max. product quantity per member'),
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'bDisabled' => array(     
-        'title' => 'BDisabled',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Status'),
+        'help' => t('Is disabled?'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'mProducerPrice' => array(     
-        'title' => 'MProducerPrice',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Producer Price'),
+        'help' => t('This is the default price for the product. The actual product price can be set to a different value in each cooperative order'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'mCoopPrice' => array(     
-        'title' => 'MCoopPrice',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Coop. Price'),
+        'help' => t('This is the default price for the product. The actual product price can be set to a different value in each cooperative order'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'fBurden' => array(     
-        'title' => 'FBurden',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Burden'),
+        'help' => t('An index that indicates how much this product "burdens" a delivery. Helps to uphold a cooperative order\'s Delivery Capacity, if set'),
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'sImage1FileName' => array(     
-        'title' => 'SImage1FileName',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Image 1 File Name'),
+        'help' => t('Image 1 File Name'),
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
 
       'nItems' => array(     
-        'title' => 'NItems',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Items in Package'),
+        'help' => t('Items in Package'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'ItemUnitKeyID' => array(     
-        'title' => 'ItemUnitKeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Item Unit ID'),
+        'help' => t('Item Unit ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Item Unit'),
+          'lable' => t('Item Unit'),
+          'base' => 'T_Unit',
+          'base field' => 'UnitKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'fItemQuantity' => array(     
-        'title' => 'FItemQuantity',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Item Quantity'),
+        'help' => t('Item Quantity'),
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'nSortOrder' => array(     
-        'title' => 'NSortOrder',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Sorting Order'),
+        'help' => t('A number representing the sorting order of the product wherever a products list is displayed. Smaller numbers display higher on the list.'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
-          'click sortable' => FALSE,
+          'click sortable' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'JoinToProductKeyID' => array(     
-        'title' => 'JoinToProductKeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Join To Product ID'),
+        'help' => t('Join Items to Cost-Saving Larger Product'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Join To Product'),
+          'lable' => t('Join To Product'),
+          'base' => 'T_Product',
+          'base field' => 'ProductKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'sImage2FileName' => array(     
-        'title' => 'SImage2FileName',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Image 2 File Name'),
+        'help' => t('Image 2 File Name'),
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
     ); 
@@ -2101,19 +3791,35 @@ function homecoop_views_data() {
       'table' => array(     
         'base' => array(       
           'field' => 'RoleKeyID',
-          'title' => 'T Role',
+          'title' => t('Role'),
           'database' => 'homecoop',
-          'help' => 'TODO: please describe the items in this table!',
+          'help' => t('permission set'),
         ),
-        'group' => 'T Role',
+        'group' => t('Role'),
       ),
 
      'RoleKeyID' => array(     
-       'title' => 'RoleKeyID',
-       'help' => 'TODO: please describe this field!',
+       'title' => t('Role ID'),
+       'help' => t('Role ID'),
        'field' => array(       
          'handler' => 'views_handler_field_numeric',
          'click sortable' => FALSE,
+        ),
+       'relationship' => array(
+          'title' => t('Role Name'),
+          'lable' => t('Role Name'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -2122,46 +3828,110 @@ function homecoop_views_data() {
       'table' => array(     
         'base' => array(       
           'field' => 'RoleKeyID',
-          'title' => 'T RolePermission',
+          'title' => t('Role Permission'),
           'database' => 'homecoop',
-          'help' => 'TODO: please describe the items in this table!',
+          'help' => t('Defines the permissions a role is composed of.'),
         ),
-        'group' => 'T RolePermission',
+        'group' => t('Role Permission'),
       ),
 
       'RoleKeyID' => array(     
-        'title' => 'RoleKeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Role ID'),
+        'help' => t('Role ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Role'),
+          'lable' => t('Role'),
+          'base' => 'T_Role',
+          'base field' => 'RoleKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'PermissionAreaKeyID' => array(     
-        'title' => 'PermissionAreaKeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Permission Area ID'),
+        'help' => t('Permission Area ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Permission Area'),
+          'lable' => t('Permission Area'),
+          'base' => 'T_PermissionArea',
+          'base field' => 'PermissionAreaKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'PermissionTypeKeyID' => array(     
-        'title' => 'PermissionTypeKeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Permission Type ID'),
+        'help' => t('Permission Type ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Permission Type'),
+          'lable' => t('Permission Type'),
+          'base' => 'T_PermissionType',
+          'base field' => 'PermissionTypeKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'PermissionScopeKeyID' => array(     
-        'title' => 'PermissionScopeKeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Permission Scope ID'),
+        'help' => t('Permission Scope ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Permission Scope'),
+          'lable' => t('Permission Scope'),
+          'base' => 'T_PermissionScope',
+          'base field' => 'PermissionScopeKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -2170,61 +3940,121 @@ function homecoop_views_data() {
       'table' => array(     
         'base' => array(       
           'field' => 'TransactionID',
-          'title' => 'T Transaction',
+          'title' => t('Transaction'),
           'database' => 'homecoop',
-          'help' => 'TODO: please describe the items in this table!',
+          'help' => t('Transaction'),
         ),
-        'group' => 'T Transaction',
+        'group' => t('Transaction'),
       ),
 
       'TransactionID' => array(     
-        'title' => 'TransactionID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Transaction ID'),
+        'help' => t('Transaction ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'PickupLocationKeyID' => array(     
-        'title' => 'PickupLocationKeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Pickup Location ID'),
+        'help' => t('a cachier'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Cachier'),
+          'lable' => t('Cachier'),
+          'base' => 'T_PickupLocation',
+          'base field' => 'PickupLocationKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'MemberID' => array(     
-        'title' => 'MemberID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Member ID'),
+        'help' => t('Member ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Member'),
+          'lable' => t('Member'),
+          'base' => 'T_Member',
+          'base field' => 'MemberID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'ModifiedByMemberID' => array(     
-        'title' => 'ModifiedByMemberID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Modified By Member ID'),
+        'help' => t('Modified By Member ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Modified By Member'),
+          'lable' => t('Modified By Member'),
+          'base' => 'T_Member',
+          'base field' => 'MemberID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'mAmount' => array(     
-        'title' => 'MAmount',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Amount'),
+        'help' => t('Amount'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'dDate' => array(     
-        'title' => 'DDate',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Date'),
+        'help' => t('Date'),
         'field' => array(       
           'handler' => 'views_handler_field_date',
           'click sortable' => TRUE,
@@ -2238,11 +4068,14 @@ function homecoop_views_data() {
       ),
 
       'sTransaction' => array(     
-        'title' => 'STransaction',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Comment'),
+        'help' => t('Comment'),
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
     ); 
@@ -2251,46 +4084,100 @@ function homecoop_views_data() {
       'table' => array(     
         'base' => array(       
           'field' => 'UnitKeyID',
-          'title' => 'T Unit',
+          'title' => t('Unit'),
           'database' => 'homecoop',
-          'help' => 'TODO: please describe the items in this table!',
+          'help' => t('Unit'),
         ),
-        'group' => 'T Unit',
+        'group' => t('Unit'),
       ),
 
       'UnitKeyID' => array(     
-        'title' => 'UnitKeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Unit ID'),
+        'help' => t('Unit ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Unit Name'),
+          'lable' => t('Unit Name'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'MeasureKeyID' => array(     
-        'title' => 'MeasureKeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Measure ID'),
+        'help' => t('Measure ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Measure'),
+          'lable' => t('Measure'),
+          'base' => 'T_Measure',
+          'base field' => 'MeasureKeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'nFloatingPoint' => array(     
-        'title' => 'NFloatingPoint',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Floating Point'),
+        'help' => t('Floating Point'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'UnitAbbreviationStringKeyID' => array(     
-        'title' => 'UnitAbbreviationStringKeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Unit Abbreviation String ID'),
+        'help' => t('multilingual field'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'relationship' => array(
+          'title' => t('Unit Abbreviation'),
+          'lable' => t('Unit Abbreviation'),
+          'base' => 'Tlng_String',
+          'base field' => 'KeyID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
     ); 
@@ -2299,63 +4186,112 @@ function homecoop_views_data() {
       'table' => array(     
         'base' => array(       
           'field' => 'LangID',
-          'title' => 'Tlng Language',
+          'title' => t('Language'),
           'database' => 'homecoop',
-          'help' => 'TODO: please describe the items in this table!',
+          'help' => t('HomeCoop Language'),
         ),
-        'group' => 'Tlng Language',
+        'group' => t('Language'),
       ),
       'LangID' => array(     
-        'title' => 'LangID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Lang ID'),
+        'help' => t('Lang ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'sLanguage' => array(     
-        'title' => 'SLanguage',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Language'),
+        'help' => t('Language name'),
         'field' => array(       
           'handler' => 'views_handler_field',
-          'click sortable' => FALSE,
+          'click sortable' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
 
       'bActive' => array(     
-        'title' => 'BActive',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Active'),
+        'help' => t('Active'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'bRequired' => array(     
-        'title' => 'BRequired',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Required'),
+        'help' => t('Required'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'FallingLangID' => array(     
-        'title' => 'FallingLangID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Falling Language ID'),
+        'help' => t('Falling Language ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Falling Language'),
+          'lable' => t('Falling Language'),
+          'base' => 'Tlng_Language',
+          'base field' => 'LangID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'sPhpFolder' => array(     
-        'title' => 'SPhpFolder',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('PHP Folder'),
+        'help' => t('PHP Folder'),
         'field' => array(       
           'handler' => 'views_handler_field',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_string',
         ),
       ),
     ); 
@@ -2364,37 +4300,65 @@ function homecoop_views_data() {
       'table' => array(     
         'base' => array(       
           'field' => 'KeyID',
-          'title' => 'Tlng String',
+          'title' => t('String'),
           'database' => 'homecoop',
-          'help' => 'TODO: please describe the items in this table!',
+          'help' => t('language specific string'),
         ),
-        'group' => 'Tlng String',
+        'group' => t('String'),
       ),
 
       'KeyID' => array(     
-        'title' => 'KeyID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Key ID'),
+        'help' => t('Key ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
         ),
       ),
 
       'LangID' => array(     
-        'title' => 'LangID',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('Lang ID'),
+        'help' => t('Lang ID'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
+        'relationship' => array(
+          'title' => t('Language'),
+          'lable' => t('Language'),
+          'base' => 'Tlng_Language',
+          'base field' => 'LangID',
+        ),
+        'argument' => array(
+          'handler' => 'views_handler_argument_many_to_one',
+          'numeric' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_numeric',
+        ),
       ),
 
       'sString' => array(     
-        'title' => 'SString',
-        'help' => 'TODO: please describe this field!',
+        'title' => t('String'),
+        'help' => t('String'),
         'field' => array(       
           'handler' => 'views_handler_field',
-          'click sortable' => FALSE,
+          'click sortable' => TRUE,
+        ),
+        'sort' => array(
+          'handler' => 'views_handler_sort',
+        ),
+        'filter' => array(
+          'handler' => 'views_handler_filter_string',
         ),
       ),
     ); 

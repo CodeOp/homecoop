@@ -569,11 +569,15 @@ table {
   /* Remove most spacing between table cells. */
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+/* line 542, ../sass/_normalize.scss */
+table.views-table {
   /* Prevent cramped-looking tables */
-  /* width: 100%; */
+  width: 100%;
   /* Add vertical rhythm margins. */
-  /*@include leader(1);
-  @include trailer(1);*/
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
 }
 
 /* Layout rules */

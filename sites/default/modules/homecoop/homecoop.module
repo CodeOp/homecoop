@@ -7,6 +7,11 @@
  * Local Consumer Cooperatives Web Ordering System
  */
 
+define('HOMECOOP_RECORDS_PER_PAGE', '5');
+define('HOMECOOP_PAGER_PAGES', '9');
+
+define('HOMECOOP_DATE_FORMAT', 'j.n.Y');
+
 /**
  * Implement hook_help().
  */
@@ -45,6 +50,11 @@ function homecoop_menu() {
       'page callback' => 'homecoop_page_accessdenied',
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/accessdenied.inc',
+    ),
+    'hcorders' => array(
+      'page callback' => 'homecoop_page_orders',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/orders.inc',
     ),
   );
 }
