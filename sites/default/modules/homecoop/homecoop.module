@@ -645,12 +645,7 @@ function homecoop_views_php_cooporder_status_pre_render($view, $handler, &$stati
   $oStatus = new ActiveCoopOrderStatus(
       new DateTime($row->dEnd, $g_oTimeZone),  
       new DateTime($row->dDelivery, $g_oTimeZone),
-      $value == NULL? 0: $value
+      $row->nStatus
   );
-  echo $oStatus->StatusName;
-}
-
-function homecoop_views_php_cooporder_status_value($view, $handler, &$static, $row, $data) {
-  
-  
+  print $oStatus->StatusName;
 }

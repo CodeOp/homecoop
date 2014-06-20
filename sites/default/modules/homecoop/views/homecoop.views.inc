@@ -163,8 +163,14 @@ function homecoop_views_data() {
           'title' => t('Status'), 
           'help' => t('Coop. order status'), 
           'field' => array(       
-            'handler' => 'views_php_handler_field',
+            'handler' => 'views_handler_field_numeric',
             'click sortable' => TRUE,
+          ),
+          'sort' => array(
+            'handler' => 'views_handler_sort',
+          ),
+          'filter' => array(
+            'handler' => 'views_handler_filter_numeric',
           ),
         ),
         'CoordinatingGroupID' => array(     

@@ -4,7 +4,6 @@
  * Implements hook_views_default_views
  */
 function homecoop_views_default_views() {
-  global $language, $g_oMemberSession;
   $views = array();
   
   //view
@@ -107,17 +106,28 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['dDelivery']['date_format'] = 'custom';
   $handler->display->display_options['fields']['dDelivery']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
   $handler->display->display_options['fields']['dDelivery']['second_date_format'] = 'long';
+  
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php']['id'] = 'php';
+  $handler->display->display_options['fields']['php']['table'] = 'views';
+  $handler->display->display_options['fields']['php']['field'] = 'php';
+  $handler->display->display_options['fields']['php']['label'] = 'Status';
+  $handler->display->display_options['fields']['php']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php']['php_output'] = '<?php homecoop_views_php_cooporder_status_pre_render($view, $handler, $static, $row, $data, $value); ?>';
+  $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
   /* Field: Cooperative Order: Status */
   $handler->display->display_options['fields']['nStatus']['id'] = 'nStatus';
   $handler->display->display_options['fields']['nStatus']['table'] = 'T_CoopOrder';
   $handler->display->display_options['fields']['nStatus']['field'] = 'nStatus';
   $handler->display->display_options['fields']['nStatus']['relationship'] = 'CoopOrderKeyID';
+  $handler->display->display_options['fields']['nStatus']['label'] = '';
+  $handler->display->display_options['fields']['nStatus']['exclude'] = TRUE;
   $handler->display->display_options['fields']['nStatus']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['nStatus']['use_php_setup'] = 0;
-  $handler->display->display_options['fields']['nStatus']['php_output'] = '<?php homecoop_views_php_cooporder_status_pre_render($view, $handler, $static, $row, $data, $value); ?>';
-  $handler->display->display_options['fields']['nStatus']['php_value'] = 'return homecoop_views_php_cooporder_status_value($view, $handler, $static, $row, $data)';
-  $handler->display->display_options['fields']['nStatus']['use_php_click_sortable'] = '0';
-  $handler->display->display_options['fields']['nStatus']['php_click_sortable'] = '';
+  
+  
+  
   /* Field: Order: Created On */
   $handler->display->display_options['fields']['dCreated']['id'] = 'dCreated';
   $handler->display->display_options['fields']['dCreated']['table'] = 'T_Order';
@@ -158,14 +168,54 @@ function homecoop_views_default_views() {
   $handler->display->display_options['sorts']['dDelivery']['field'] = 'dDelivery';
   $handler->display->display_options['sorts']['dDelivery']['relationship'] = 'CoopOrderKeyID';
   $handler->display->display_options['sorts']['dDelivery']['order'] = 'DESC';
+  
+  
+  
+  /* Contextual filter: Language: PHP Folder */
+$handler->display->display_options['arguments']['sPhpFolder']['id'] = 'sPhpFolder';
+$handler->display->display_options['arguments']['sPhpFolder']['table'] = 'Tlng_Language';
+$handler->display->display_options['arguments']['sPhpFolder']['field'] = 'sPhpFolder';
+$handler->display->display_options['arguments']['sPhpFolder']['relationship'] = 'LangID';
+$handler->display->display_options['arguments']['sPhpFolder']['default_action'] = 'default';
+$handler->display->display_options['arguments']['sPhpFolder']['default_argument_type'] = 'php';
+$handler->display->display_options['arguments']['sPhpFolder']['default_argument_options']['code'] = 'global $language; return $language->language;';
+$handler->display->display_options['arguments']['sPhpFolder']['summary']['number_of_records'] = '0';
+$handler->display->display_options['arguments']['sPhpFolder']['summary']['format'] = 'default_summary';
+$handler->display->display_options['arguments']['sPhpFolder']['summary_options']['items_per_page'] = '5';
+$handler->display->display_options['arguments']['sPhpFolder']['limit'] = '0';
+/* Contextual filter: Language: PHP Folder */
+$handler->display->display_options['arguments']['sPhpFolder_1']['id'] = 'sPhpFolder_1';
+$handler->display->display_options['arguments']['sPhpFolder_1']['table'] = 'Tlng_Language';
+$handler->display->display_options['arguments']['sPhpFolder_1']['field'] = 'sPhpFolder';
+$handler->display->display_options['arguments']['sPhpFolder_1']['relationship'] = 'LangID_1';
+$handler->display->display_options['arguments']['sPhpFolder_1']['default_action'] = 'default';
+$handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_type'] = 'fixed';
+$handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_options']['argument'] = 'en';
+$handler->display->display_options['arguments']['sPhpFolder_1']['summary']['number_of_records'] = '0';
+$handler->display->display_options['arguments']['sPhpFolder_1']['summary']['format'] = 'default_summary';
+$handler->display->display_options['arguments']['sPhpFolder_1']['summary_options']['items_per_page'] = '5';
+$handler->display->display_options['arguments']['sPhpFolder_1']['limit'] = '0';
+/* Contextual filter: Order: Member ID */
+$handler->display->display_options['arguments']['MemberID']['id'] = 'MemberID';
+$handler->display->display_options['arguments']['MemberID']['table'] = 'T_Order';
+$handler->display->display_options['arguments']['MemberID']['field'] = 'MemberID';
+$handler->display->display_options['arguments']['MemberID']['default_action'] = 'default';
+$handler->display->display_options['arguments']['MemberID']['default_argument_type'] = 'php';
+$handler->display->display_options['arguments']['MemberID']['default_argument_options']['code'] = 'global $g_oMemberSession; if (isset($g_oMemberSession)) { return $g_oMemberSession->MemberID; } return 0;';
+$handler->display->display_options['arguments']['MemberID']['summary']['number_of_records'] = '0';
+$handler->display->display_options['arguments']['MemberID']['summary']['format'] = 'default_summary';
+$handler->display->display_options['arguments']['MemberID']['summary_options']['items_per_page'] = '5';
+  
+  
   /* Contextual filter: Language: PHP Folder */
   $handler->display->display_options['arguments']['sPhpFolder']['id'] = 'sPhpFolder';
   $handler->display->display_options['arguments']['sPhpFolder']['table'] = 'Tlng_Language';
   $handler->display->display_options['arguments']['sPhpFolder']['field'] = 'sPhpFolder';
   $handler->display->display_options['arguments']['sPhpFolder']['relationship'] = 'LangID';
   $handler->display->display_options['arguments']['sPhpFolder']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_options']['argument'] = $language->language;
+  
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_options']['code'] = 'global $language; return $language->language;';
   $handler->display->display_options['arguments']['sPhpFolder']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['sPhpFolder']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['sPhpFolder']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
@@ -176,8 +226,8 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['sPhpFolder_1']['field'] = 'sPhpFolder';
   $handler->display->display_options['arguments']['sPhpFolder_1']['relationship'] = 'LangID_1';
   $handler->display->display_options['arguments']['sPhpFolder_1']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_options']['argument'] = $language->language;
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_options']['code'] = 'global $language; return $language->language;';
   $handler->display->display_options['arguments']['sPhpFolder_1']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['sPhpFolder_1']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['sPhpFolder_1']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
@@ -187,8 +237,8 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['MemberID']['table'] = 'T_Order';
   $handler->display->display_options['arguments']['MemberID']['field'] = 'MemberID';
   $handler->display->display_options['arguments']['MemberID']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['MemberID']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['MemberID']['default_argument_options']['argument'] = $g_oMemberSession->MemberID;
+  $handler->display->display_options['arguments']['MemberID']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['MemberID']['default_argument_options']['code'] = 'global $g_oMemberSession; if (isset($g_oMemberSession)) { return $g_oMemberSession->MemberID; } return 0;';
   $handler->display->display_options['arguments']['MemberID']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['MemberID']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['MemberID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
