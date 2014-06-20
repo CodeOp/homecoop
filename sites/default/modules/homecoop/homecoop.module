@@ -639,3 +639,18 @@ function homecoop_get_tabs_info($oTabInfo, $oOrderTabInfo, $oPLTabInfo, $bHasCoo
   
   return $arrData;
 }
+
+function homecoop_views_php_cooporder_status_pre_render($view, $handler, &$static, $row, $data, $value) {
+  global $g_oTimeZone;
+  $oStatus = new ActiveCoopOrderStatus(
+      new DateTime($row->dEnd, $g_oTimeZone),  
+      new DateTime($row->dDelivery, $g_oTimeZone),
+      $value == NULL? 0: $value
+  );
+  echo $oStatus->StatusName;
+}
+
+function homecoop_views_php_cooporder_status_value($view, $handler, &$static, $row, $data) {
+  
+  
+}

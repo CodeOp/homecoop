@@ -107,6 +107,17 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['dDelivery']['date_format'] = 'custom';
   $handler->display->display_options['fields']['dDelivery']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
   $handler->display->display_options['fields']['dDelivery']['second_date_format'] = 'long';
+  /* Field: Cooperative Order: Status */
+  $handler->display->display_options['fields']['nStatus']['id'] = 'nStatus';
+  $handler->display->display_options['fields']['nStatus']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['nStatus']['field'] = 'nStatus';
+  $handler->display->display_options['fields']['nStatus']['relationship'] = 'CoopOrderKeyID';
+  $handler->display->display_options['fields']['nStatus']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['nStatus']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['nStatus']['php_output'] = '<?php homecoop_views_php_cooporder_status_pre_render($view, $handler, $static, $row, $data, $value); ?>';
+  $handler->display->display_options['fields']['nStatus']['php_value'] = 'return homecoop_views_php_cooporder_status_value($view, $handler, $static, $row, $data)';
+  $handler->display->display_options['fields']['nStatus']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['nStatus']['php_click_sortable'] = '';
   /* Field: Order: Created On */
   $handler->display->display_options['fields']['dCreated']['id'] = 'dCreated';
   $handler->display->display_options['fields']['dCreated']['table'] = 'T_Order';
@@ -129,6 +140,18 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['mCoopTotalIncFee']['field'] = 'mCoopTotalIncFee';
   $handler->display->display_options['fields']['mCoopTotalIncFee']['label'] = 'Total';
   $handler->display->display_options['fields']['mCoopTotalIncFee']['element_label_colon'] = FALSE;
+
+  /* Field: Cooperative Order: Closing */
+  $handler->display->display_options['fields']['dEnd']['id'] = 'dEnd';
+  $handler->display->display_options['fields']['dEnd']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['dEnd']['field'] = 'dEnd';
+  $handler->display->display_options['fields']['dEnd']['relationship'] = 'CoopOrderKeyID';
+  $handler->display->display_options['fields']['dEnd']['label'] = '';
+  $handler->display->display_options['fields']['dEnd']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['dEnd']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['dEnd']['date_format'] = 'long';
+  $handler->display->display_options['fields']['dEnd']['second_date_format'] = 'long';
+  
   /* Sort criterion: Cooperative Order: Delivery */
   $handler->display->display_options['sorts']['dDelivery']['id'] = 'dDelivery';
   $handler->display->display_options['sorts']['dDelivery']['table'] = 'T_CoopOrder';
@@ -197,6 +220,7 @@ function homecoop_views_default_views() {
     t('Total'),
     t('.'),
     t(','),
+    t('Status'),
     t('All'),
   );
   
