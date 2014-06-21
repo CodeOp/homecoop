@@ -1,0 +1,16 @@
+name = Codeop Utility
+description = Generic code for Codeop projects
+core = 7.x
+package = Codeop
+php = 5.3
+
+; ----------
+; Handlers
+; ----------
+files[] = views/handlers/codeop_util_handler_list_field.inc
+
+; ----------
+; Dependencies
+; ----------
+
+dependencies[] = views

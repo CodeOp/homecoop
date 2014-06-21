@@ -1,17 +1,21 @@
 name = HomeCoop
 description = Local Consumer Cooperatives Web Ordering System
 core = 7.x
-package = HomeCoop
+package = Codeop
 php = 5.3
 
 ; ----------
 ; Dependencies
 ; ----------
 
-; Core
-dependencies[] = locale
+dependencies[] = codeop_util
+
 dependencies[] = views
 dependencies[] = views_php
+
+; Core
+dependencies[] = locale
+
 
 scripts[] = js/responsive-nav.js
 scripts[] = js/public.js

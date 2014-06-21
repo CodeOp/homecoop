@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * Main module file for Codeop Utility
+ * 
+ * Generic code for Codeop projects
+ */
+
+/**
+ * Implement hook_help().
+ */
+function codeop_util_help($path, $args) {
+  if ($path == 'admin/help#codeop_utility') {
+    return t('Generic code for Codeop projects');
+  }
+}
+
+/*
+ * Implements hook_views_api()
+ */
+function codeop_util_views_api() {
+  $vpath = drupal_get_path('module', 'codeop_util') . '/views';
+  return array(
+    'api' => 3,
+    'path' => $vpath,
+    'template path' => $vpath,
+  );
+}
