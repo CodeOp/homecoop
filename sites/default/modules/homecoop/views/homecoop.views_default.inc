@@ -20,6 +20,7 @@ function homecoop_views_default_views() {
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['use_ajax'] = TRUE;
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'none';
   $handler->display->display_options['cache']['type'] = 'none';
@@ -211,7 +212,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['sPhpFolder_1']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
   $handler->display->display_options['arguments']['sPhpFolder_1']['limit'] = '0';
   /* Contextual filter: Order: Member ID */
-  $handler->display->display_options['arguments']['MemberID']['id'] = 'MemberID';
+  /*$handler->display->display_options['arguments']['MemberID']['id'] = 'MemberID';
   $handler->display->display_options['arguments']['MemberID']['table'] = 'T_Order';
   $handler->display->display_options['arguments']['MemberID']['field'] = 'MemberID';
   $handler->display->display_options['arguments']['MemberID']['default_action'] = 'default';
@@ -220,6 +221,26 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['MemberID']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['MemberID']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['MemberID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  */
+  
+  //--------------
+  // Filters
+  //--------------
+  /* Filter criterion: Order: Member ID */
+  $handler->display->display_options['filters']['MemberID']['id'] = 'MemberID';
+  $handler->display->display_options['filters']['MemberID']['table'] = 'T_Order';
+  $handler->display->display_options['filters']['MemberID']['field'] = 'MemberID';
+  $handler->display->display_options['filters']['MemberID']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['MemberID']['expose']['operator_id'] = 'MemberID_op';
+  $handler->display->display_options['filters']['MemberID']['expose']['label'] = 'Member';
+  $handler->display->display_options['filters']['MemberID']['expose']['operator'] = 'MemberID_op';
+  $handler->display->display_options['filters']['MemberID']['expose']['identifier'] = 'MemberID';
+  $handler->display->display_options['filters']['MemberID']['expose']['required'] = TRUE;
+  /*$handler->display->display_options['filters']['MemberID']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+  );*/
   //--------------
   // Translations
   //--------------
@@ -254,6 +275,7 @@ function homecoop_views_default_views() {
     t('Total'),
     t('Order ID'),
     t('All'),
+    t('Member'),
   );
   
   $views[$view->name] = $view;

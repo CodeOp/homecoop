@@ -2089,7 +2089,7 @@ function homecoop_views_data() {
            'numeric' => TRUE,
          ),
          'filter' => array(
-           'handler' => 'views_handler_filter_numeric',
+           'handler' => 'homecoop_views_handler_filter_member',
          ),
        ),
 
@@ -4364,4 +4364,33 @@ function homecoop_views_data() {
     ); 
   
   return $data;
+}
+
+/**
+ * @file
+ * non-generic views handlers
+ * 
+ */
+
+class homecoop_views_handler_filter_member extends views_handler_filter_many_to_one {
+  function get_value_options() { 
+    
+    $query = db_select('T_Member', 'm', array('target' => 'homecoop'));
+    $query->fields ('m', array (
+                  'MemberID',
+                  'sName'
+                )
+            );
+    $results = $query->execute();
+
+    //go through resultset
+    $rows = array();
+    if ($results) {
+      foreach ($results as $row) {
+        $rows[$row->MemberID] = $row->sName;
+      }
+    }
+    
+    $this->value_options = $rows;
+  }
 }

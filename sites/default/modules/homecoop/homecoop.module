@@ -12,6 +12,8 @@ define('HOMECOOP_PAGER_PAGES', '9');
 
 define('HOMECOOP_DATE_FORMAT', 'j.n.Y');
 
+homecoop_include_app_file('settings');
+
 /**
  * Implement hook_help().
  */
@@ -120,7 +122,9 @@ function homecoop_any_page() {
 
 function homecoop_authenticated_page() {
   drupal_get_messages(); //clear all previous errors from the queue when first entering a page
-  homecoop_include_app_file('settings');
+  
+  global $base_url;
+  $GLOBALS['HomeCoopThemePath'] = $base_url . '/' . drupal_get_path('theme',$GLOBALS['theme']) . '/';
   homecoop_include_app_file('authenticate');
   
   global $g_oMemberSession;
