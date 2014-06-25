@@ -15,6 +15,12 @@ class MemberOrders extends SQLBase{
                     );
   }
   
+  public function CheckCoord()
+  {   
+    return $this->AddPermissionBridge(self::PERMISSION_COORD, Consts::PERMISSION_AREA_COOP_ORDERS, Consts::PERMISSION_TYPE_MODIFY, 
+         Consts::PERMISSION_SCOPE_BOTH, 0, TRUE);
+  }
+  
   protected function CheckAccess()
   {
     global $g_oMemberSession;

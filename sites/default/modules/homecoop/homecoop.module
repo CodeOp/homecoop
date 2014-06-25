@@ -7,10 +7,6 @@
  * Local Consumer Cooperatives Web Ordering System
  */
 
-define('HOMECOOP_RECORDS_PER_PAGE', '5');
-define('HOMECOOP_PAGER_PAGES', '9');
-
-define('HOMECOOP_DATE_FORMAT', 'j.n.Y');
 
 homecoop_include_app_file('settings');
 

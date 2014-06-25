@@ -9,12 +9,62 @@ function homecoop_views_default_views() {
   //-------------------------------------------------------------------------------------------------------------------
   // My Orders
   //-------------------------------------------------------------------------------------------------------------------
+  $view = homecoop_my_orders_get_view('homecoop_my_orders', false);
+  $views[$view->name] = $view;
+  
+  $view = homecoop_my_orders_get_view('homecoop_my_orders_coord', true);
+  $views[$view->name] = $view;
+  
+  //--------------
+  // Translations
+  //--------------
+  $translatables['homecoop_my_orders'] = array(
+    t('Master'),
+    t('more'),
+    t('Apply'),
+    t('Reset'),
+    t('Sort by'),
+    t('Asc'),
+    t('Desc'),
+    t('Items per page'),
+    t('- All -'),
+    t('Offset'),
+    t('« first'),
+    t('‹ previous'),
+    t('next ›'),
+    t('last »'),
+    t('Order - CoopOrder'),
+    t('Order - PickupLocation'),
+    t('Coop Order Name'),
+    t('Pickup Location Name'),
+    t('Coop Order Name Language'),
+    t('Pickup Location Name Language'),
+    t('Order Title'),
+    t('Delivery'),
+    t('Status'),
+    t('.'),
+    t(','),
+    t('Order Date'),
+    t('Location Name'),
+    t('Total'),
+    t('Order ID'),
+    t('All'),
+    t('Member'),
+  );
+  
+  return $views;
+}
+
+function homecoop_my_orders_get_view($view_name, $is_coord) {
+  //-------------------------------------------------------------------------------------------------------------------
+  // My Orders
+  //-------------------------------------------------------------------------------------------------------------------
   $view = new view();
-  $view->name = 'homecoop_my_orders';
+  $view->name = $view_name;
   $view->description = '';
   $view->tag = 'default';
   $view->base_table = 'T_Order';
-  $view->human_name = 'HomeCoop My Orders';
+  $view->human_name = 'HomeCoop My Orders' . ($is_coord? ' (coord)' : '');
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -32,7 +82,6 @@ function homecoop_views_default_views() {
   $handler->display->display_options['pager']['options']['id'] = '0';
   $handler->display->display_options['pager']['options']['quantity'] = HOMECOOP_PAGER_PAGES;
   $handler->display->display_options['style_plugin'] = 'table';
- // $handler->display->display_options['style_options']['row_class'] = 'resgridrow';
   $handler->display->display_options['style_options']['columns'] = array(
     'OrderID' => 'OrderID',
     'mCoopTotalIncFee' => 'mCoopTotalIncFee',
@@ -163,6 +212,8 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['mCoopTotalIncFee']['field'] = 'mCoopTotalIncFee';
   $handler->display->display_options['fields']['mCoopTotalIncFee']['label'] = 'Total';
   $handler->display->display_options['fields']['mCoopTotalIncFee']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mCoopTotalIncFee']['set_precision'] = TRUE;
+  $handler->display->display_options['fields']['mCoopTotalIncFee']['precision'] = 2;
   /* Field: Cooperative Order: Closing */
   $handler->display->display_options['fields']['dEnd']['id'] = 'dEnd';
   $handler->display->display_options['fields']['dEnd']['table'] = 'T_CoopOrder';
@@ -211,74 +262,39 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['sPhpFolder_1']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['sPhpFolder_1']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
   $handler->display->display_options['arguments']['sPhpFolder_1']['limit'] = '0';
-  /* Contextual filter: Order: Member ID */
-  /*$handler->display->display_options['arguments']['MemberID']['id'] = 'MemberID';
-  $handler->display->display_options['arguments']['MemberID']['table'] = 'T_Order';
-  $handler->display->display_options['arguments']['MemberID']['field'] = 'MemberID';
-  $handler->display->display_options['arguments']['MemberID']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['MemberID']['default_argument_type'] = 'php';
-  $handler->display->display_options['arguments']['MemberID']['default_argument_options']['code'] = 'global $g_oMemberSession; if (isset($g_oMemberSession)) { return $g_oMemberSession->MemberID; } return 0;';
-  $handler->display->display_options['arguments']['MemberID']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['MemberID']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['MemberID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
-  */
+  if (!$is_coord) {
+    /* Contextual filter: Order: Member ID */
+    $handler->display->display_options['arguments']['MemberID']['id'] = 'MemberID';
+    $handler->display->display_options['arguments']['MemberID']['table'] = 'T_Order';
+    $handler->display->display_options['arguments']['MemberID']['field'] = 'MemberID';
+    $handler->display->display_options['arguments']['MemberID']['default_action'] = 'default';
+    $handler->display->display_options['arguments']['MemberID']['default_argument_type'] = 'php';
+    $handler->display->display_options['arguments']['MemberID']['default_argument_options']['code'] = 'global $g_oMemberSession; if (isset($g_oMemberSession)) { return $g_oMemberSession->MemberID; } return 0;';
+    $handler->display->display_options['arguments']['MemberID']['summary']['number_of_records'] = '0';
+    $handler->display->display_options['arguments']['MemberID']['summary']['format'] = 'default_summary';
+    $handler->display->display_options['arguments']['MemberID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  }
+  else {
+    //--------------
+    // Filters
+    //--------------
+    /* Filter criterion: Order: Member ID */
+    $handler->display->display_options['filters']['MemberID']['id'] = 'MemberID';
+    $handler->display->display_options['filters']['MemberID']['table'] = 'T_Order';
+    $handler->display->display_options['filters']['MemberID']['field'] = 'MemberID';
+    $handler->display->display_options['filters']['MemberID']['exposed'] = TRUE;
+    $handler->display->display_options['filters']['MemberID']['expose']['operator_id'] = 'MemberID_op';
+    $handler->display->display_options['filters']['MemberID']['expose']['label'] = 'Member';
+    $handler->display->display_options['filters']['MemberID']['expose']['operator'] = 'MemberID_op';
+    $handler->display->display_options['filters']['MemberID']['expose']['identifier'] = 'MemberID';
+    $handler->display->display_options['filters']['MemberID']['expose']['required'] = TRUE;
+    /*$handler->display->display_options['filters']['MemberID']['expose']['remember_roles'] = array(
+      2 => '2',
+      1 => 0,
+      3 => 0,
+    );*/
+  }
   
-  //--------------
-  // Filters
-  //--------------
-  /* Filter criterion: Order: Member ID */
-  $handler->display->display_options['filters']['MemberID']['id'] = 'MemberID';
-  $handler->display->display_options['filters']['MemberID']['table'] = 'T_Order';
-  $handler->display->display_options['filters']['MemberID']['field'] = 'MemberID';
-  $handler->display->display_options['filters']['MemberID']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['MemberID']['expose']['operator_id'] = 'MemberID_op';
-  $handler->display->display_options['filters']['MemberID']['expose']['label'] = 'Member';
-  $handler->display->display_options['filters']['MemberID']['expose']['operator'] = 'MemberID_op';
-  $handler->display->display_options['filters']['MemberID']['expose']['identifier'] = 'MemberID';
-  $handler->display->display_options['filters']['MemberID']['expose']['required'] = TRUE;
-  /*$handler->display->display_options['filters']['MemberID']['expose']['remember_roles'] = array(
-    2 => '2',
-    1 => 0,
-    3 => 0,
-  );*/
-  //--------------
-  // Translations
-  //--------------
-  $translatables['homecoop_my_orders_sample'] = array(
-    t('Master'),
-    t('more'),
-    t('Apply'),
-    t('Reset'),
-    t('Sort by'),
-    t('Asc'),
-    t('Desc'),
-    t('Items per page'),
-    t('- All -'),
-    t('Offset'),
-    t('« first'),
-    t('‹ previous'),
-    t('next ›'),
-    t('last »'),
-    t('Order - CoopOrder'),
-    t('Order - PickupLocation'),
-    t('Coop Order Name'),
-    t('Pickup Location Name'),
-    t('Coop Order Name Language'),
-    t('Pickup Location Name Language'),
-    t('Order Title'),
-    t('Delivery'),
-    t('Status'),
-    t('.'),
-    t(','),
-    t('Order Date'),
-    t('Location Name'),
-    t('Total'),
-    t('Order ID'),
-    t('All'),
-    t('Member'),
-  );
   
-  $views[$view->name] = $view;
-  
-  return $views;
+  return $view;
 }

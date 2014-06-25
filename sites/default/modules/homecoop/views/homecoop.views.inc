@@ -88,7 +88,8 @@ function homecoop_views_data() {
           'help' => t('A fixed amount that is paid by each member per order, in addition to the sum cost of the products, to cover expenses'),     
           'field' => array(       
             'handler' => 'views_handler_field_numeric',       
-            'click sortable' => FALSE,     
+            'click sortable' => FALSE, 
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -102,7 +103,8 @@ function homecoop_views_data() {
           'help' => t('Defines a small member\'s order, that has a reduced cooperative fee attached to it'),    
           'field' => array(       
             'handler' => 'views_handler_field_numeric',       
-            'click sortable' => FALSE,     
+            'click sortable' => FALSE,   
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -114,8 +116,10 @@ function homecoop_views_data() {
         'mSmallOrderCoopFee' => array(     
           'title' => t('Small Order Coop Fee'), 
           'help' => t('A reduced cooperative fee, for a small order'),
-          'field' => array(       'handler' => 'views_handler_field_numeric',
+          'field' => array(       
+            'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'filter' => array(
             'handler' => 'views_handler_filter_numeric',
@@ -203,6 +207,7 @@ function homecoop_views_data() {
           'field' => array(       
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -218,8 +223,9 @@ function homecoop_views_data() {
             A limitation can also be set for a specific pickup location. 
             Members will not be able to place an order that exceeds the limitation set here.'),
           'field' => array(       
-            'handler' => 'views_handler_field',
+            'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -232,8 +238,9 @@ function homecoop_views_data() {
           'title' => t('Total Burden'),
           'help' => t('The sum total of each ordered product "Burden" multiplied by the times it was ordered (calculated)'),
           'field' => array(       
-            'handler' => 'views_handler_field',
+            'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -248,6 +255,7 @@ function homecoop_views_data() {
           'field' => array(       
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -262,6 +270,7 @@ function homecoop_views_data() {
           'field' => array(       
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -276,6 +285,7 @@ function homecoop_views_data() {
           'field' => array(       
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -290,6 +300,7 @@ function homecoop_views_data() {
           'field' => array(   
             'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'filter' => array(
             'handler' => 'views_handler_filter_numeric',
@@ -299,8 +310,9 @@ function homecoop_views_data() {
           'title' => t('Total max. storage'),
           'help' => t('Total maximum storage areas capacity (calculated)'),
           'field' => array(       
-            'handler' => 'views_handler_field',
+            'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -313,8 +325,9 @@ function homecoop_views_data() {
           'title' => t('Total storage full'),
           'help' => t('Total storage areas used space - percentage (calculated).'),
           'field' => array(       
-            'handler' => 'views_handler_field',
+            'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -389,8 +402,9 @@ function homecoop_views_data() {
           comapring it to the sum of the "burden" field of each product multiplied by the quantity ordered. 
           Members will not be able to place an order that exceeds the limitation set here.'),
           'field' => array(       
-            'handler' => 'views_handler_field',
+            'handler' => 'views_handler_field_numeric',
             'click sortable' => FALSE,
+            'float' => TRUE,
           ),
           'sort' => array(
             'handler' => 'views_handler_sort',
@@ -403,8 +417,9 @@ function homecoop_views_data() {
         'title' => t('Total Burden'),
         'help' => t('The sum total of each ordered product "Burden" multiplied by the times it was ordered, per pickup location'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -419,6 +434,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -433,6 +449,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -445,8 +462,9 @@ function homecoop_views_data() {
         'title' => t('Total max. storage'),
         'help' => t('Total maximum storage areas capacity. (calculated)'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -459,8 +477,9 @@ function homecoop_views_data() {
         'title' => t('Total storage full'),
         'help' => t('Total storage areas used space. (calculated)'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -563,6 +582,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -578,6 +598,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -676,6 +697,7 @@ function homecoop_views_data() {
         'field' => array(     
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -690,6 +712,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -702,8 +725,9 @@ function homecoop_views_data() {
         'title' => t('Total Quantity Ordered'),
         'help' => t('Ordered product quantity'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -778,6 +802,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -792,6 +817,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -804,8 +830,9 @@ function homecoop_views_data() {
         'title' => t('% Delivery Fee'),
         'help' => t('% Delivery Fee'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -820,6 +847,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -834,6 +862,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -859,6 +888,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -871,8 +901,9 @@ function homecoop_views_data() {
         'title' => t('Total Burden'),
         'help' => t('Total Burden'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -887,8 +918,9 @@ function homecoop_views_data() {
           comapring it to the sum of the "burden" field of each product multiplied by the quantity ordered. 
           Members will not be able to place an order that exceeds the limitation set here.'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -903,6 +935,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -980,6 +1013,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -995,6 +1029,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1008,8 +1043,9 @@ function homecoop_views_data() {
         'title' => t('Max. Member Order'),
         'help' => t('Max. product quantity per member'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1023,8 +1059,9 @@ function homecoop_views_data() {
         'title' => t('Max. Coop Order'),
         'help' => t('Max. product quantity for the entire coop order'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1038,8 +1075,9 @@ function homecoop_views_data() {
         'title' => t('Burden'),
         'help' => t('Burden'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1053,8 +1091,9 @@ function homecoop_views_data() {
         'title' => t('Total Quantity Ordered'),
         'help' => t('Ordered product quantity'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1085,6 +1124,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1100,6 +1140,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1288,8 +1329,9 @@ function homecoop_views_data() {
           comapring it to the sum of the "burden" field of each product multiplied by the quantity ordered. 
           Members will not be able to place an order that exceeds the limitation set here.'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1302,8 +1344,9 @@ function homecoop_views_data() {
         'title' => t('Total Burden'),
         'help' => t('The sum total of each ordered product "Burden" multiplied by the times it was ordered'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1647,8 +1690,9 @@ function homecoop_views_data() {
         'help' => t('The percentage in which a member\'s order can exceed hir balance. 
           This rule is being applied only when the member\'s payment method allows a percentage over balance.'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1739,6 +1783,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -1754,6 +1799,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2154,6 +2200,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2219,6 +2266,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2249,6 +2297,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2277,8 +2326,9 @@ function homecoop_views_data() {
         'title' => t('Burden'),
         'help' => t('calculated'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2294,6 +2344,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2332,8 +2383,9 @@ function homecoop_views_data() {
         'title' => t('% Over Balance'),
         'help' => ('The percentage in which a member\'s order can exceed hir balance. This rule is being applied only when the member\'s payment method allows a percentage over balance.'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2424,8 +2476,9 @@ function homecoop_views_data() {
         'title' => t('Order'),
         'help' => t('Product quantity'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2441,6 +2494,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2456,6 +2510,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2469,8 +2524,9 @@ function homecoop_views_data() {
         'title' => t('Original Quantity'),
         'help' => t('Original Quantity'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2484,8 +2540,9 @@ function homecoop_views_data() {
         'title' => t('Add'),
         'help' => t('The maximum quantity the cooperative order coordinator will be allowed to *add* to your order for completing partial orders to the package size. For instance, if a package size is 2lb, and you wish to order only 0.5lb, by entering 0.5lb in this field you may specify that you are ready to go up to 1lb.'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2514,8 +2571,9 @@ function homecoop_views_data() {
         'title' => t('Unjoined Quantity'),
         'help' => t('internal'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2621,8 +2679,9 @@ function homecoop_views_data() {
         'title' => t('Order'),
         'help' => t('Product quantity'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2638,6 +2697,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2653,6 +2713,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2666,8 +2727,9 @@ function homecoop_views_data() {
         'title' => t('Original Quantity'),
         'help' => t('Original Quantity'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2681,8 +2743,9 @@ function homecoop_views_data() {
         'title' => t('Add'),
         'help' => t('The maximum quantity the cooperative order coordinator will be allowed to *add* to your order for completing partial orders to the package size. For instance, if a package size is 2lb, and you wish to order only 0.5lb, by entering 0.5lb in this field you may specify that you are ready to go up to 1lb.'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -2711,8 +2774,9 @@ function homecoop_views_data() {
         'title' => t('Unjoined Quantity'),
         'help' => t('internal'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3147,8 +3211,9 @@ function homecoop_views_data() {
           This is only a default value and can be overwritten in the cooperative order\'s pickup location settings. 
           If not overridden in the coop order, members will not be able to place an order that exceeds the limitation set here.'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3194,6 +3259,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3209,6 +3275,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3297,8 +3364,9 @@ function homecoop_views_data() {
         'title' => t('Max Burden'),
         'help' => t('Max Burden'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3545,8 +3613,9 @@ function homecoop_views_data() {
         'title' => t('Quantity'),
         'help' => t('Quantity'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3560,8 +3629,9 @@ function homecoop_views_data() {
         'title' => t('Package Size'),
         'help' => t('Package size for a large package that the cooperative allows ordering portions/slices of.'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3575,8 +3645,9 @@ function homecoop_views_data() {
         'title' => t('Unit Interval'),
         'help' => t('Interval between orderable weights/capacities. Irrelevant for products provided by item quantity'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3590,8 +3661,9 @@ function homecoop_views_data() {
         'title' => t('Max. Order'),
         'help' => t('Max. product quantity per member'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3622,6 +3694,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3637,6 +3710,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3650,8 +3724,9 @@ function homecoop_views_data() {
         'title' => t('Burden'),
         'help' => t('An index that indicates how much this product "burdens" a delivery. Helps to uphold a cooperative order\'s Delivery Capacity, if set'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -3720,8 +3795,9 @@ function homecoop_views_data() {
         'title' => t('Item Quantity'),
         'help' => t('Item Quantity'),
         'field' => array(       
-          'handler' => 'views_handler_field',
+          'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',
@@ -4043,6 +4119,7 @@ function homecoop_views_data() {
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
+          'float' => TRUE,
         ),
         'sort' => array(
           'handler' => 'views_handler_sort',

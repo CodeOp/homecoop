@@ -41,6 +41,10 @@ define('DB_PASSWORD',  'rubby');
 //timezones. for other timezones see http://php.net/manual/en/timezones.php
 define('COOP_TIMEZONE',  'Europe/Athens');
 
+define('HOMECOOP_RECORDS_PER_PAGE', '25');
+define('HOMECOOP_PAGER_PAGES', '9');
+define('HOMECOOP_DATE_FORMAT', 'j.n.Y');
+
 //leave empty for no join page link
 define('JOIN_PAGE', '');
 
