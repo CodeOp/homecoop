@@ -54,6 +54,14 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/orders.inc',
     ),
+    'hccoord' => array(
+      'access callback' => 'homecoop_public_access',
+    ),
+    'hccoord/orders' => array(
+      'page callback' => 'homecoop_page_coord_orders',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/orders.inc',
+    ),
   );
 }
 

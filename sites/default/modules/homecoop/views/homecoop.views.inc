@@ -4458,6 +4458,7 @@ class homecoop_views_handler_filter_member extends views_handler_filter_many_to_
                   'sName'
                 )
             );
+    $query->orderBy('sName');
     $results = $query->execute();
 
     //go through resultset
