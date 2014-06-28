@@ -98,7 +98,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['header']['php']['table'] = 'views';
   $handler->display->display_options['header']['php']['field'] = 'php';
   $handler->display->display_options['header']['php']['empty'] = TRUE;
-  $handler->display->display_options['header']['php']['php_output'] = '<div><a href="<?php echo url(\'order\', array(\'query\' => array(\'coid\' => $view->args[0]))); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a></div>';  
+  $handler->display->display_options['header']['php']['php_output'] = '<?php if (!isset($view->args[1]) || !$view->args[1]) { ?><div><a href="<?php echo url(\'hcorder\', array(\'query\' => array(\'coid\' => $view->args[0]))); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a></div><?php } ?>';  
   /* Relationship: Order: Coop Order */
   $handler->display->display_options['relationships']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';
   $handler->display->display_options['relationships']['CoopOrderKeyID']['table'] = 'T_Order';
@@ -158,6 +158,9 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['sName']['label'] = 'Member';
   $handler->display->display_options['fields']['sName']['relationship'] = 'MemberID';
   $handler->display->display_options['fields']['sName']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['sName']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['sName']['alter']['path'] = 'hcorderitems?id=[OrderID]';
+  
   /* Field: Member: Email address */
   $handler->display->display_options['fields']['sEMail']['id'] = 'sEMail';
   $handler->display->display_options['fields']['sEMail']['table'] = 'T_Member';
@@ -186,6 +189,9 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['mBalance']['field'] = 'mBalance';
   $handler->display->display_options['fields']['mBalance']['label'] = 'Balance';
   $handler->display->display_options['fields']['mBalance']['relationship'] = 'MemberID';
+  $handler->display->display_options['fields']['mBalance']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mBalance']['set_precision'] = TRUE;
+  $handler->display->display_options['fields']['mBalance']['precision'] = 2;
   /* Field: Order: Created On */
   $handler->display->display_options['fields']['dCreated']['id'] = 'dCreated';
   $handler->display->display_options['fields']['dCreated']['table'] = 'T_Order';
@@ -221,6 +227,16 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['CoopOrderKeyID']['summary']['number_of_records'] = '0';
   $handler->display->display_options['arguments']['CoopOrderKeyID']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['CoopOrderKeyID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Contextual filter: Global: Null */
+  $handler->display->display_options['arguments']['ReadOnly']['id'] = 'ReadOnly';
+  $handler->display->display_options['arguments']['ReadOnly']['table'] = 'views';
+  $handler->display->display_options['arguments']['ReadOnly']['field'] = 'null';
+  $handler->display->display_options['arguments']['ReadOnly']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['ReadOnly']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['ReadOnly']['default_argument_options']['argument'] = '0';
+  $handler->display->display_options['arguments']['ReadOnly']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['ReadOnly']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['ReadOnly']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
   /* Contextual filter: Language: PHP Folder */
   $handler->display->display_options['arguments']['sPhpFolder']['id'] = 'sPhpFolder';
   $handler->display->display_options['arguments']['sPhpFolder']['table'] = 'Tlng_Language';

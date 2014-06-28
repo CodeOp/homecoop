@@ -1473,3 +1473,8 @@ td a.LinkButton {
 .inlineblock {
   display: inline-block;
 }
+
+/* line 1179, ../sass/main.scss */
+.spacer4 {
+  font-size: 4px;
+}

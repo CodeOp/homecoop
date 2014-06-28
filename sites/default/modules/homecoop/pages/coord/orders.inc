@@ -4,13 +4,6 @@ function homecoop_page_coord_orders() {
   homecoop_authenticated_page();
   
   $oData = new Orders;
-
-  $bReadOnly = FALSE;
-  $oCoopOrderJoinProducts = NULL;
-  $arrOrdersUpdated = NULL;
-  $bOrdersChanged = FALSE;
-  $sPageTitle = 'Member Orders';
-  $mMaxOrder = 0;
   
   if (isset($_GET['coid'])) {
     $oData->CoopOrderID = intval($_GET['coid']);
@@ -43,6 +36,7 @@ function homecoop_page_coord_orders() {
   if ($oPercent->SelectedType != CoopOrderCapacity::TypeNone)
     $oTabInfo->Capacity = $oPercent->PercentRounded . '%';
   unset($oPercent);
+  
   $bReadOnly = ($oData->Status != CoopOrder::STATUS_ACTIVE 
           && $oData->Status != CoopOrder::STATUS_DRAFT
           && $oData->Status != CoopOrder::STATUS_LOCKED );
@@ -54,18 +48,27 @@ function homecoop_page_coord_orders() {
   $view->preview=TRUE;
   $view->is_cacheable = FALSE;
   $view->init_display('default');  
-  $view->pre_execute(array('CoopOrderKeyID' => $oData->CoopOrderID));
+  $view->pre_execute(array($oData->CoopOrderID, $bReadOnly));
   
   $content = array(
-    'maintable' => array(
-      'coopordertab' => array(
-        'tab' => homecoop_tab_cooporder($oFormExtraData),
-        '#weight' => 10,
-       ),
-      'view' => $view->display_handler->preview(),
+    'coopordertab' => array(
+      'tab' => homecoop_tab_cooporder($oExtraData),
+      '#weight' => 10,
+     ),
+    'spacer' => array(
+      '#markup' => '<div class="spacer4">&nbsp;</div>',
+      '#weight' => 15,
+    ),
+    'view' => array(
+      '#markup' => $view->display_handler->preview(),
+      '#weight' => 20,
     ),
   );
+  
   $view->post_execute();
+  
+  //close session opened in 'authenticate.php' when not required anymore
+  UserSessionBase::Close();
   
   return $content;
 }

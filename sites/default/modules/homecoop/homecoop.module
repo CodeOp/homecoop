@@ -386,7 +386,7 @@ function homecoop_tab_cooporder(&$oFormExtraData) {
       $arrContent['coopordertab']['orderssanchor'] = homecoop_tab_cooporder_write_element($oTabInfo, t('Member Orders'),
           url('hccoord/orders', 
           array('query' => 
-                  array('id' => $oTabInfo->ID),
+                  array('coid' => $oTabInfo->ID),
           )), $oTabInfo->Page == CoopOrderTabInfo::PAGE_ORDERS);
     }
     
