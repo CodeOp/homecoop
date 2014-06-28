@@ -124,11 +124,15 @@ function homecoop_any_page() {
   drupal_add_js(array('homecoop' => $hcsettings), 'setting');
 }
 
+function homecoop_getthemepath() {
+  global $base_url;
+  return $base_url . '/' . drupal_get_path('theme',$GLOBALS['theme']) . '/';
+}
+
 function homecoop_authenticated_page() {
   drupal_get_messages(); //clear all previous errors from the queue when first entering a page
   
-  global $base_url;
-  $GLOBALS['HomeCoopThemePath'] = $base_url . '/' . drupal_get_path('theme',$GLOBALS['theme']) . '/';
+  $GLOBALS['HomeCoopThemePath'] = homecoop_getthemepath();
   homecoop_include_app_file('authenticate');
   
   global $g_oMemberSession;

@@ -77,7 +77,7 @@ class Orders extends CoopOrderSubBase {
       return NULL;
     }
     
-    $sSQL = " SELECT O.OrderID, O.MemberID, O.PickupLocationKeyID, O.dCreated, O.dModified, O.bHasItemComments, O.mCoopTotalIncFee as OrderCoopTotal, O.sMemberComments, "  .
+    /*$sSQL = " SELECT O.OrderID, O.MemberID, O.PickupLocationKeyID, O.dCreated, O.dModified, O.bHasItemComments, O.mCoopTotalIncFee as OrderCoopTotal, O.sMemberComments, "  .
               " O.CreatedByMemberID, O.ModifiedByMemberID, M.mBalance, M.sName as MemberName, MC.sName as CreateMemberName, MM.sName as ModifyMemberName,  " .
               " M.sLoginName, M.sEMail, M.sEMail2, M.sEMail3, M.sEMail4, M.PaymentMethodKeyID, M.mBalance, M.fPercentOverBalance, " .
                      $this->ConcatStringsSelect(Consts::PERMISSION_AREA_PICKUP_LOCATIONS, 'sPickupLocation') .
@@ -95,7 +95,7 @@ class Orders extends CoopOrderSubBase {
 
     $this->RunSQL( $sSQL );
 
-    return $this->fetch();
+    return $this->fetch();*/
  }
 }
 

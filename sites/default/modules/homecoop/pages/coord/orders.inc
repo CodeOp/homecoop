@@ -3,9 +3,69 @@
 function homecoop_page_coord_orders() {
   homecoop_authenticated_page();
   
-  //coord permissions
+  $oData = new Orders;
+
+  $bReadOnly = FALSE;
+  $oCoopOrderJoinProducts = NULL;
+  $arrOrdersUpdated = NULL;
+  $bOrdersChanged = FALSE;
+  $sPageTitle = 'Member Orders';
+  $mMaxOrder = 0;
   
-  //tabs
+  if (isset($_GET['coid'])) {
+    $oData->CoopOrderID = intval($_GET['coid']);
+  }
   
-  //embed view
+  $oData->LoadDataByCoopOrder();
+  $oTabInfo = new CoopOrderTabInfo;
+  $oTabInfo->Page = CoopOrderTabInfo::PAGE_ORDERS;
+  
+  switch($oData->LastOperationStatus)
+  {
+    case SQLBase::OPERATION_STATUS_NO_SUFFICIENT_DATA_PROVIDED:
+    case SQLBase::OPERATION_STATUS_NO_PERMISSION:
+    case SQLBase::OPERATION_STATUS_LOAD_RECORD_FAILED:
+    case SQLBase::OPERATION_STATUS_COORDINATION_GROUP_VERIFY_FAILED:
+      drupal_goto(Consts::URL_ACCESS_DENIED);
+      return;
+  }
+
+  drupal_set_title(t('@ordername - Member Orders', array('@ordername' => $oData->Name)));
+  
+  $oTabInfo->ID = $oData->CoopOrderID;
+  $oTabInfo->CoopOrderTitle = $oData->Name;
+  $oTabInfo->Status = $oData->Status;
+  $oTabInfo->CoordinatingGroupID = $oData->CoordinatingGroupID;
+  $oTabInfo->StatusObj = new ActiveCoopOrderStatus($oData->End, $oData->Delivery, $oData->Status);
+  $oTabInfo->CoopTotal = $oData->CoopOrderCoopTotal; 
+  $oPercent = new CoopOrderCapacity($oData->CoopOrderMaxBurden, $oData->CoopOrderBurden, $oData->CoopOrderMaxCoopTotal, $oData->CoopOrderCoopTotal,
+      $oData->CoopOrderMaxStorageBurden, $oData->CoopOrderStorageBurden);
+  if ($oPercent->SelectedType != CoopOrderCapacity::TypeNone)
+    $oTabInfo->Capacity = $oPercent->PercentRounded . '%';
+  unset($oPercent);
+  $bReadOnly = ($oData->Status != CoopOrder::STATUS_ACTIVE 
+          && $oData->Status != CoopOrder::STATUS_DRAFT
+          && $oData->Status != CoopOrder::STATUS_LOCKED );
+  
+  $oExtraData = homecoop_get_tabs_info($oTabInfo, NULL, NULL, TRUE);
+  
+  $view = views_get_view('homecoop_cooporder_orders');
+  
+  $view->preview=TRUE;
+  $view->is_cacheable = FALSE;
+  $view->init_display('default');  
+  $view->pre_execute(array('CoopOrderKeyID' => $oData->CoopOrderID));
+  
+  $content = array(
+    'maintable' => array(
+      'coopordertab' => array(
+        'tab' => homecoop_tab_cooporder($oFormExtraData),
+        '#weight' => 10,
+       ),
+      'view' => $view->display_handler->preview(),
+    ),
+  );
+  $view->post_execute();
+  
+  return $content;
 }
