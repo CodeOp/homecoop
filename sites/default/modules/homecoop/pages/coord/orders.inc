@@ -48,7 +48,7 @@ function homecoop_page_coord_orders() {
   $view->preview=TRUE;
   $view->is_cacheable = FALSE;
   $view->init_display('default');  
-  $view->pre_execute(array($oData->CoopOrderID, $bReadOnly));
+  $view->pre_execute(array($oData->CoopOrderID, $bReadOnly? 'ro' : 'rw'));
   
   $content = array(
     'coopordertab' => array(

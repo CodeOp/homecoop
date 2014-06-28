@@ -190,7 +190,8 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
       '#weight' => 30,
     ),
     'buttons' => array(
-      '#weight' => 40,   
+      '#prefix' => '<br/>',
+      '#weight' => 40, 
       'btn_save' => array(
         '#type' => 'submit',
         '#name' => 'btn_save',

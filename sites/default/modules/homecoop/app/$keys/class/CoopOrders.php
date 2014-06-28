@@ -20,7 +20,7 @@ class CoopOrders extends SQLBase {
          Consts::PERMISSION_SCOPE_BOTH, 0, TRUE);  
   }
   
-  public function GetTable()
+  public function GetAccess()
   {
       global $g_oMemberSession;
       $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NONE;
@@ -41,7 +41,7 @@ class CoopOrders extends SQLBase {
       $this->AddPermissionBridge(self::PERMISSION_COORD_SET, Consts::PERMISSION_AREA_COOP_ORDERS, Consts::PERMISSION_TYPE_COORD_SET, 
          Consts::PERMISSION_SCOPE_COOP_CODE, 0, TRUE);
 
-      $sSQL =   " SELECT CO.CoopOrderKeyID, CO.dStart, CO.dEnd, CO.dDelivery, CO.ModifiedByMemberID, M.sName as ModifierName, CO.nStatus, CO.CoordinatingGroupID," .
+      /*$sSQL =   " SELECT CO.CoopOrderKeyID, CO.dStart, CO.dEnd, CO.dDelivery, CO.ModifiedByMemberID, M.sName as ModifierName, CO.nStatus, CO.CoordinatingGroupID," .
                 " CO.mMaxCoopTotal, CO.fMaxBurden, CO.mCoopTotal, CO.mProducerTotal, IfNull(CO.fBurden,2) fBurden, CO.mTotalDelivery, " .
                 " CO.fMaxStorageBurden, CO.fStorageBurden, " .
                        $this->ConcatStringsSelect(Consts::PERMISSION_AREA_COOP_ORDERS, 'sCoopOrder') .
@@ -56,7 +56,7 @@ class CoopOrders extends SQLBase {
 
       $this->RunSQL( $sSQL );
 
-      return $this->fetch();
+      return $this->fetch();*/
   }
   
  

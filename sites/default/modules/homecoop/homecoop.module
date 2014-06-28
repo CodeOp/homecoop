@@ -62,6 +62,11 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/orders.inc',
     ),
+    'hccoord/cooporders' => array(
+      'page callback' => 'homecoop_page_cooporders',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/cooporders.inc',
+    ),
   );
 }
 

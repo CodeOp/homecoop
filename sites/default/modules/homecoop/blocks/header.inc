@@ -212,7 +212,7 @@ function homecoop_coord_menu() {
   {
     $arrContent['cooporders'] = array(
       '#prefix' => '<li><span class="coordmenulabel">',
-      '#markup' => '<a href="' . url('hccooporders') . '">' . t('Cooperative Orders') . '</a>',
+      '#markup' => '<a href="' . url('hccoord/cooporders') . '">' . t('Cooperative Orders') . '</a>',
       '#suffix' => '</span></li>',
     );
   }   
