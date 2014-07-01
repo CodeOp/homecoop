@@ -8,7 +8,7 @@ class Products extends SQLBase {
   
   const PERMISSION_PRODUCTS = 100;
   
-  public function GetTable()
+  public function GetAccess()
   {
       global $g_oMemberSession;
 
@@ -23,10 +23,10 @@ class Products extends SQLBase {
       if (!$bEdit && !$bView)
       {
         $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_PERMISSION;
-        return NULL;
+        return;
       }
 
-      $sSQL =   " SELECT PRD.ProductKeyID, PRD.ProducerKeyID, PRD.UnitKeyID, PRD.fUnitInterval, PRD.fMaxUserOrder, PRD.mProducerPrice, PRD.mCoopPrice, " .
+      /*$sSQL =   " SELECT PRD.ProductKeyID, PRD.ProducerKeyID, PRD.UnitKeyID, PRD.fUnitInterval, PRD.fMaxUserOrder, PRD.mProducerPrice, PRD.mCoopPrice, " .
                 " PRD.fQuantity, PRD.nItems, PRD.nSortOrder, PRD.ItemUnitKeyID, PRD.fItemQuantity, PRD.fPackageSize,  " .
                 " PRD.fBurden, UT.nFloatingPoint, UT.MeasureKeyID, " . 
                       $this->ConcatStringsSelect(Consts::PERMISSION_AREA_PRODUCTS, 'sProduct') .
@@ -59,7 +59,7 @@ class Products extends SQLBase {
 
       $this->RunSQL( $sSQL );
 
-      return $this->fetch();
+      return $this->fetch();*/
   }
   
   //get products that come in large package and can be joined

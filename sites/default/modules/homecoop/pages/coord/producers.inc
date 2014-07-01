@@ -1,8 +1,11 @@
 <?php
 
 function homecoop_page_producers() {
+  global $language, $g_oMemberSession;
+  
   homecoop_authenticated_page();
    
+  
   $oProducers = new Producers;
   
   $oProducers->GetAccess();
@@ -23,8 +26,14 @@ function homecoop_page_producers() {
   $view->is_cacheable = FALSE;
   $view->init_display('default');  
   
+  $arrParams = array($bCanAdd? 'rw' : 'ro', $bCanSetCoord? 'yes' : 'no', $language->language);
+  if ( ($oProducers->GetPermissionScope(Producers::PERMISSION_COORD) != Consts::PERMISSION_SCOPE_COOP_CODE) &&
+            ($oProducers->GetPermissionScope(Producers::PERMISSION_VIEW) != Consts::PERMISSION_SCOPE_COOP_CODE) ) {
+    $arrParams[] = implode("+", $g_oMemberSession->Groups);
+  }
+  
   //args: has add permissions, has coord permissions
-  $view->pre_execute(array($bCanAdd? 'rw' : 'ro', $bCanSetCoord? 'yes' : 'no'));
+  $view->pre_execute($arrParams);
   
   $content = $view->display_handler->preview();
   

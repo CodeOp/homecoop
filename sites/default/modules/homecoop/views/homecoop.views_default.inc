@@ -25,6 +25,316 @@ function homecoop_views_default_views() {
   
   $view = homecoop_cooporders_get_view('homecoop_cooporders_nosums', false);
   $views[$view->name] = $view;
+  
+  
+  
+  
+  $view = new view();
+  $view->name = 'homecoop_products';
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'T_Product';
+  $view->human_name = 'HomeCoop Products';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = HOMECOOP_PAGER_PAGES;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'ProductKeyID' => 'ProductKeyID',
+    'ProducerKeyID' => 'ProducerKeyID',
+    'bDisabled' => 'bDisabled',
+    'nSortOrder' => 'nSortOrder',
+    'fBurden' => 'fBurden',
+    'mCoopPrice' => 'mCoopPrice',
+    'mProducerPrice' => 'mProducerPrice',
+    'fQuantity' => 'fQuantity',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'ProductKeyID' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'ProducerKeyID' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'bDisabled' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'nSortOrder' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'fBurden' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'mCoopPrice' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'mProducerPrice' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'fQuantity' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  /* Header: Global: PHP */
+  $handler->display->display_options['header']['php']['id'] = 'php';
+  $handler->display->display_options['header']['php']['table'] = 'views';
+  $handler->display->display_options['header']['php']['field'] = 'php';
+  $handler->display->display_options['header']['php']['php_output'] = '<?php if (!isset($view->args[0]) || $view->args[0] == \'yes\') { ?><div><a href="<?php echo url(\'hccoord/product\'); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a></div><?php } ?>';
+  /* Relationship: Product: Producer */
+  $handler->display->display_options['relationships']['ProducerKeyID']['id'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID']['table'] = 'T_Product';
+  $handler->display->display_options['relationships']['ProducerKeyID']['field'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID']['label'] = 'ProductProducer';
+  $handler->display->display_options['relationships']['ProducerKeyID']['required'] = TRUE;
+  /* Relationship: Product: Product Name */
+  $handler->display->display_options['relationships']['ProductKeyID']['id'] = 'ProductKeyID';
+  $handler->display->display_options['relationships']['ProductKeyID']['table'] = 'T_Product';
+  $handler->display->display_options['relationships']['ProductKeyID']['field'] = 'ProductKeyID';
+  $handler->display->display_options['relationships']['ProductKeyID']['label'] = 'ProductName';
+  $handler->display->display_options['relationships']['ProductKeyID']['required'] = TRUE;
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID']['id'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['relationship'] = 'ProductKeyID';
+  $handler->display->display_options['relationships']['LangID']['label'] = 'ProductNameLang';
+  $handler->display->display_options['relationships']['LangID']['required'] = TRUE;
+  /* Relationship: Producer: Producer Name */
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['id'] = 'ProducerKeyID_1';
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['table'] = 'T_Producer';
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['field'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['relationship'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['label'] = 'ProducerName';
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['required'] = TRUE;
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID_1']['id'] = 'LangID_1';
+  $handler->display->display_options['relationships']['LangID_1']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID_1']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID_1']['relationship'] = 'ProducerKeyID_1';
+  $handler->display->display_options['relationships']['LangID_1']['label'] = 'ProducerNameLang';
+  $handler->display->display_options['relationships']['LangID_1']['required'] = TRUE;
+  /* Relationship: Product: Unit */
+  $handler->display->display_options['relationships']['UnitKeyID']['id'] = 'UnitKeyID';
+  $handler->display->display_options['relationships']['UnitKeyID']['table'] = 'T_Product';
+  $handler->display->display_options['relationships']['UnitKeyID']['field'] = 'UnitKeyID';
+  $handler->display->display_options['relationships']['UnitKeyID']['label'] = 'ProductUnit';
+  $handler->display->display_options['relationships']['UnitKeyID']['required'] = TRUE;
+  /* Relationship: Unit: Unit Abbreviation */
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['id'] = 'UnitAbbreviationStringKeyID';
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['table'] = 'T_Unit';
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['field'] = 'UnitAbbreviationStringKeyID';
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['relationship'] = 'UnitKeyID';
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['label'] = 'ProductUnitAbrevName';
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['required'] = TRUE;
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID_2']['id'] = 'LangID_2';
+  $handler->display->display_options['relationships']['LangID_2']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID_2']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID_2']['relationship'] = 'UnitAbbreviationStringKeyID';
+  $handler->display->display_options['relationships']['LangID_2']['label'] = 'ProductUnitAbrevNameLang';
+  $handler->display->display_options['relationships']['LangID_2']['required'] = TRUE;
+  /* Field: Product: Product ID */
+  $handler->display->display_options['fields']['ProductKeyID']['id'] = 'ProductKeyID';
+  $handler->display->display_options['fields']['ProductKeyID']['table'] = 'T_Product';
+  $handler->display->display_options['fields']['ProductKeyID']['field'] = 'ProductKeyID';
+  $handler->display->display_options['fields']['ProductKeyID']['label'] = '';
+  $handler->display->display_options['fields']['ProductKeyID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['ProductKeyID']['element_label_colon'] = FALSE;
+  /* Field: Product: Producer ID */
+  $handler->display->display_options['fields']['ProducerKeyID']['id'] = 'ProducerKeyID';
+  $handler->display->display_options['fields']['ProducerKeyID']['table'] = 'T_Product';
+  $handler->display->display_options['fields']['ProducerKeyID']['field'] = 'ProducerKeyID';
+  $handler->display->display_options['fields']['ProducerKeyID']['label'] = '';
+  $handler->display->display_options['fields']['ProducerKeyID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['ProducerKeyID']['element_label_colon'] = FALSE;
+  /* Field: Product: Quantity */
+  $handler->display->display_options['fields']['fQuantity']['id'] = 'fQuantity';
+  $handler->display->display_options['fields']['fQuantity']['table'] = 'T_Product';
+  $handler->display->display_options['fields']['fQuantity']['field'] = 'fQuantity';
+  $handler->display->display_options['fields']['fQuantity']['label'] = '';
+  $handler->display->display_options['fields']['fQuantity']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['fQuantity']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fQuantity']['precision'] = '0';
+  /* Field: Product: Status */
+  $handler->display->display_options['fields']['bDisabled']['id'] = 'bDisabled';
+  $handler->display->display_options['fields']['bDisabled']['table'] = 'T_Product';
+  $handler->display->display_options['fields']['bDisabled']['field'] = 'bDisabled';
+  $handler->display->display_options['fields']['bDisabled']['label'] = '';
+  $handler->display->display_options['fields']['bDisabled']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['bDisabled']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString_2']['id'] = 'sString_2';
+  $handler->display->display_options['fields']['sString_2']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString_2']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString_2']['relationship'] = 'UnitAbbreviationStringKeyID';
+  $handler->display->display_options['fields']['sString_2']['label'] = '';
+  $handler->display->display_options['fields']['sString_2']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['sString_2']['element_label_colon'] = FALSE;
+  /* Field: Product: Sorting Order */
+  $handler->display->display_options['fields']['nSortOrder']['id'] = 'nSortOrder';
+  $handler->display->display_options['fields']['nSortOrder']['table'] = 'T_Product';
+  $handler->display->display_options['fields']['nSortOrder']['field'] = 'nSortOrder';
+  $handler->display->display_options['fields']['nSortOrder']['label'] = '#';
+  $handler->display->display_options['fields']['nSortOrder']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString']['id'] = 'sString';
+  $handler->display->display_options['fields']['sString']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString']['relationship'] = 'ProductKeyID';
+  $handler->display->display_options['fields']['sString']['label'] = 'Product';
+  $handler->display->display_options['fields']['sString']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['sString']['alter']['path'] = 'hccoord/product?id=[ProductKeyID]';
+  $handler->display->display_options['fields']['sString']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString_1']['id'] = 'sString_1';
+  $handler->display->display_options['fields']['sString_1']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString_1']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString_1']['relationship'] = 'ProducerKeyID_1';
+  $handler->display->display_options['fields']['sString_1']['label'] = 'Producer';
+  $handler->display->display_options['fields']['sString_1']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['sString_1']['alter']['path'] = 'hccoord/producer?id=[ProducerKeyID]';
+  $handler->display->display_options['fields']['sString_1']['element_label_colon'] = FALSE;
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php']['id'] = 'php';
+  $handler->display->display_options['fields']['php']['table'] = 'views';
+  $handler->display->display_options['fields']['php']['field'] = 'php';
+  $handler->display->display_options['fields']['php']['label'] = 'Quantity';
+  $handler->display->display_options['fields']['php']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php']['php_output'] = '<?php echo $row->fQuantity, \' \', $row->sString_2; ?>';
+  $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
+  /* Field: Product: Coop. Price */
+  $handler->display->display_options['fields']['mCoopPrice']['id'] = 'mCoopPrice';
+  $handler->display->display_options['fields']['mCoopPrice']['table'] = 'T_Product';
+  $handler->display->display_options['fields']['mCoopPrice']['field'] = 'mCoopPrice';
+  $handler->display->display_options['fields']['mCoopPrice']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mCoopPrice']['precision'] = '0';
+  /* Field: Product: Producer Price */
+  $handler->display->display_options['fields']['mProducerPrice']['id'] = 'mProducerPrice';
+  $handler->display->display_options['fields']['mProducerPrice']['table'] = 'T_Product';
+  $handler->display->display_options['fields']['mProducerPrice']['field'] = 'mProducerPrice';
+  $handler->display->display_options['fields']['mProducerPrice']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mProducerPrice']['precision'] = '0';
+  /* Field: Product: Burden */
+  $handler->display->display_options['fields']['fBurden']['id'] = 'fBurden';
+  $handler->display->display_options['fields']['fBurden']['table'] = 'T_Product';
+  $handler->display->display_options['fields']['fBurden']['field'] = 'fBurden';
+  $handler->display->display_options['fields']['fBurden']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fBurden']['precision'] = '0';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php_1']['id'] = 'php_1';
+  $handler->display->display_options['fields']['php_1']['table'] = 'views';
+  $handler->display->display_options['fields']['php_1']['field'] = 'php';
+  $handler->display->display_options['fields']['php_1']['label'] = 'Status';
+  $handler->display->display_options['fields']['php_1']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['php_1']['alter']['path'] = 'hccoord/product?id=[ProductKeyID]';
+  $handler->display->display_options['fields']['php_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php_1']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php_1']['php_output'] = '<?php print $row->bDisabled? t(\'Inactive\') : t(\'Active\'); ?>';
+  $handler->display->display_options['fields']['php_1']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php_1']['php_click_sortable'] = '';
+  /* Sort criterion: Product: Sorting Order */
+  $handler->display->display_options['sorts']['nSortOrder']['id'] = 'nSortOrder';
+  $handler->display->display_options['sorts']['nSortOrder']['table'] = 'T_Product';
+  $handler->display->display_options['sorts']['nSortOrder']['field'] = 'nSortOrder';
+  /* Sort criterion: String: String */
+  $handler->display->display_options['sorts']['sString']['id'] = 'sString';
+  $handler->display->display_options['sorts']['sString']['table'] = 'Tlng_String';
+  $handler->display->display_options['sorts']['sString']['field'] = 'sString';
+  $handler->display->display_options['sorts']['sString']['relationship'] = 'ProductKeyID';
+  /* Contextual filter: Global: Null */
+  $handler->display->display_options['arguments']['null']['id'] = 'null';
+  $handler->display->display_options['arguments']['null']['table'] = 'views';
+  $handler->display->display_options['arguments']['null']['field'] = 'null';
+  $handler->display->display_options['arguments']['null']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['null']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['null']['default_argument_options']['argument'] = 'yes';
+  $handler->display->display_options['arguments']['null']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['null']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['null']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Contextual filter: Language: PHP Folder */
+  $handler->display->display_options['arguments']['sPhpFolder']['id'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder']['table'] = 'Tlng_Language';
+  $handler->display->display_options['arguments']['sPhpFolder']['field'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder']['relationship'] = 'LangID';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_options']['code'] = 'global $language; return $language->language;';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['sPhpFolder']['limit'] = '0';
+  /* Contextual filter: Language: PHP Folder */
+  $handler->display->display_options['arguments']['sPhpFolder_1']['id'] = 'sPhpFolder_1';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['table'] = 'Tlng_Language';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['field'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['relationship'] = 'LangID_1';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_options']['code'] = 'global $language; return $language->language;';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['sPhpFolder_1']['limit'] = '0';
+  /* Contextual filter: Language: PHP Folder */
+  $handler->display->display_options['arguments']['sPhpFolder_2']['id'] = 'sPhpFolder_2';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['table'] = 'Tlng_Language';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['field'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['relationship'] = 'LangID_2';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['default_argument_options']['code'] = 'global $language; return $language->language;';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['sPhpFolder_2']['limit'] = '0';
+  /* Contextual filter: Producer: Coordinating Group ID */
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['id'] = 'CoordinatingGroupID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['table'] = 'T_Producer';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['field'] = 'CoordinatingGroupID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['relationship'] = 'ProducerKeyID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['exception']['value'] = '0';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['break_phrase'] = TRUE;
+  $views[$view->name] = $view;
+
  
   //-------------------------------------------------------------------------------------------------------------------
   // Producers
@@ -37,7 +347,6 @@ function homecoop_views_default_views() {
   $view->human_name = 'HomeCoop Producers';
   $view->core = 7;
   $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
@@ -177,6 +486,15 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['sPhpFolder']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['sPhpFolder']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
   $handler->display->display_options['arguments']['sPhpFolder']['limit'] = '0';
+  /* Contextual filter: Producer: Coordinating Group ID */
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['id'] = 'CoordinatingGroupID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['table'] = 'T_Producer';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['field'] = 'CoordinatingGroupID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['break_phrase'] = TRUE;
 
   $views[$view->name] = $view;
   
@@ -191,7 +509,6 @@ function homecoop_views_default_views() {
   $view->human_name = 'HomeCoop CoopOrder Orders';
   $view->core = 7;
   $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
@@ -432,9 +749,24 @@ function homecoop_views_default_views() {
     t('Member'),
   );
   
-  $translatables['homecoop_producers_sample'] = array(
+  $translatables['homecoop_products'] = array(
+    t('ProductProducer'),
+    t('ProductName'),
+    t('ProductNameLang'),
     t('ProducerName'),
     t('ProducerNameLang'),
+    t('ProductUnit'),
+    t('ProductUnitAbrevName'),
+    t('ProductUnitAbrevNameLang'),
+    t('Product'),
+    t('Producer'),
+    t('Quantity'),
+    t('Coop. Price'),
+    t('Producer Price'),
+    t('Burden'),
+  );
+  
+  $translatables['homecoop_producers_sample'] = array(
     t('Producer ID'),
     t('Producer Name'),
   );
@@ -474,7 +806,6 @@ function homecoop_my_orders_get_view($view_name, $is_coord) {
   $view->human_name = 'HomeCoop My Orders' . ($is_coord? ' (coord)' : '');
   $view->core = 7;
   $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
   $handler->display->display_options['use_ajax'] = TRUE;
@@ -716,7 +1047,6 @@ function homecoop_cooporders_get_view($view_name, $view_sums) {
   $view->human_name = 'HomeCoop CoopOrders' . ($view_sums? '' : ' (no sums)');
   $view->core = 7;
   $view->api_version = '3.0';
-  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');

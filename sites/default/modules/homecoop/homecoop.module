@@ -87,6 +87,11 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/products.inc',
     ),
+    'hccoord/product' => array(
+      'page callback' => 'homecoop_page_product',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/product.inc',
+    ),
     'hccoord/pickuplocs' => array(
       'page callback' => 'homecoop_page_pickuplocs',
       'access callback' => 'homecoop_public_access',
