@@ -54,6 +54,11 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/orders.inc',
     ),
+    'hccatalog' => array(
+      'page callback' => 'homecoop_page_catalog',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/catalog.inc',
+    ),
     'hccoord' => array(
       'access callback' => 'homecoop_public_access',
     ),
@@ -66,6 +71,66 @@ function homecoop_menu() {
       'page callback' => 'homecoop_page_cooporders',
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/cooporders.inc',
+    ),
+    'hccoord/producers' => array(
+      'page callback' => 'homecoop_page_producers',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/producers.inc',
+    ),
+    'hccoord/producer' => array(
+      'page callback' => 'homecoop_page_producer',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/producer.inc',
+    ),
+    'hccoord/products' => array(
+      'page callback' => 'homecoop_page_products',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/products.inc',
+    ),
+    'hccoord/pickuplocs' => array(
+      'page callback' => 'homecoop_page_pickuplocs',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/pickuplocs.inc',
+    ),
+    'hccoord/cachier' => array(
+      'page callback' => 'homecoop_page_cachier',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/cachier.inc',
+    ),
+    'hccoord/cooporder' => array(
+      'page callback' => 'homecoop_page_cooporder',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/cooporder.inc',
+    ),
+    'hccoord/copickuplocs' => array(
+      'page callback' => 'homecoop_page_copickuplocs',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/copickuplocs.inc',
+    ),
+    'hccoord/coproducers' => array(
+      'page callback' => 'homecoop_page_coproducers',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/coproducers.inc',
+    ),
+    'hccoord/coproducts' => array(
+      'page callback' => 'homecoop_page_coproducts',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/coproducts.inc',
+    ),
+    'hccoord/cooporderexport' => array(
+      'page callback' => 'homecoop_page_cooporderexport',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/cooporderexport.inc',
+    ),
+    'hccoord/coopordercopy' => array(
+      'page callback' => 'homecoop_page_coopordercopy',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/coopordercopy.inc',
+    ),
+    'hccoord/coordinate' => array(
+      'page callback' => 'homecoop_page_coordinate',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/coordinate.inc',
     ),
   );
 }
@@ -130,14 +195,18 @@ function homecoop_any_page() {
 }
 
 function homecoop_getthemepath() {
-  global $base_url;
-  return $base_url . '/' . drupal_get_path('theme',$GLOBALS['theme']) . '/';
+  if (!isset($GLOBALS['HomeCoopThemePath'])) {
+    global $base_url;
+    $GLOBALS['HomeCoopThemePath'] = $base_url . '/' . drupal_get_path('theme',$GLOBALS['theme']) . '/';
+  }
+  
+  return $GLOBALS['HomeCoopThemePath'];
 }
 
 function homecoop_authenticated_page() {
   drupal_get_messages(); //clear all previous errors from the queue when first entering a page
   
-  $GLOBALS['HomeCoopThemePath'] = homecoop_getthemepath();
+  homecoop_getthemepath();
   homecoop_include_app_file('authenticate');
   
   global $g_oMemberSession;

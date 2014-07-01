@@ -15,60 +15,32 @@ function homecoop_views_default_views() {
   $view = homecoop_my_orders_get_view('homecoop_my_orders_coord', true);
   $views[$view->name] = $view;
   
-  //--------------
-  // Translations
-  //--------------
-  $translatables['homecoop_my_orders'] = array(
-    t('Master'),
-    t('more'),
-    t('Apply'),
-    t('Reset'),
-    t('Sort by'),
-    t('Asc'),
-    t('Desc'),
-    t('Items per page'),
-    t('- All -'),
-    t('Offset'),
-    t('« first'),
-    t('‹ previous'),
-    t('next ›'),
-    t('last »'),
-    t('Order - CoopOrder'),
-    t('Order - PickupLocation'),
-    t('Coop Order Name'),
-    t('Pickup Location Name'),
-    t('Coop Order Name Language'),
-    t('Pickup Location Name Language'),
-    t('Order Title'),
-    t('Delivery'),
-    t('Status'),
-    t('.'),
-    t(','),
-    t('Order Date'),
-    t('Location Name'),
-    t('Total'),
-    t('Order ID'),
-    t('All'),
-    t('Member'),
-  );
+  
   
   //-------------------------------------------------------------------------------------------------------------------
   // Cooperative Orders
   //-------------------------------------------------------------------------------------------------------------------
+  $view = homecoop_cooporders_get_view('homecoop_cooporders', true);
+  $views[$view->name] = $view;
   
+  $view = homecoop_cooporders_get_view('homecoop_cooporders_nosums', false);
+  $views[$view->name] = $view;
+ 
+  //-------------------------------------------------------------------------------------------------------------------
+  // Producers
+  //-------------------------------------------------------------------------------------------------------------------
   $view = new view();
-  $view->name = 'homecoop_cooporders';
+  $view->name = 'homecoop_producers';
   $view->description = '';
   $view->tag = 'default';
-  $view->base_table = 'T_CoopOrder';
-  $view->human_name = 'HomeCoop CoopOrders';
+  $view->base_table = 'T_Producer';
+  $view->human_name = 'HomeCoop Producers';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Cooperative Orders';
   $handler->display->display_options['use_ajax'] = TRUE;
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'none';
@@ -77,213 +49,122 @@ function homecoop_views_default_views() {
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = HOMECOOP_PAGER_PAGES;
   $handler->display->display_options['style_plugin'] = 'table';
-  /* Relationship: Cooperative Order: Coop Order Name */
-  $handler->display->display_options['relationships']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';
-  $handler->display->display_options['relationships']['CoopOrderKeyID']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['relationships']['CoopOrderKeyID']['field'] = 'CoopOrderKeyID';
-  $handler->display->display_options['relationships']['CoopOrderKeyID']['label'] = 'CoopOrderName';
-  $handler->display->display_options['relationships']['CoopOrderKeyID']['required'] = TRUE;
+  $handler->display->display_options['style_options']['columns'] = array(
+    'ProducerKeyID' => 'ProducerKeyID',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'ProducerKeyID' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  /* Header: Global: PHP */
+  $handler->display->display_options['header']['php']['id'] = 'php';
+  $handler->display->display_options['header']['php']['table'] = 'views';
+  $handler->display->display_options['header']['php']['field'] = 'php';
+  $handler->display->display_options['header']['php']['php_output'] = '<?php if (!isset($view->args[0]) || $view->args[0] == \'rw\') { ?><div><a href="<?php echo url(\'hccoord/producer\'); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a></div><?php } ?>
+  ';
+  /* Relationship: Producer: Producer Name */
+  $handler->display->display_options['relationships']['ProducerKeyID']['id'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID']['table'] = 'T_Producer';
+  $handler->display->display_options['relationships']['ProducerKeyID']['field'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID']['label'] = 'ProducerName';
+  $handler->display->display_options['relationships']['ProducerKeyID']['required'] = TRUE;
   /* Relationship: String: Language */
   $handler->display->display_options['relationships']['LangID']['id'] = 'LangID';
   $handler->display->display_options['relationships']['LangID']['table'] = 'Tlng_String';
   $handler->display->display_options['relationships']['LangID']['field'] = 'LangID';
-  $handler->display->display_options['relationships']['LangID']['relationship'] = 'CoopOrderKeyID';
-  $handler->display->display_options['relationships']['LangID']['label'] = 'CoopOrderNameLang';
+  $handler->display->display_options['relationships']['LangID']['relationship'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['LangID']['label'] = 'ProducerNameLang';
   $handler->display->display_options['relationships']['LangID']['required'] = TRUE;
-  /* Field: Cooperative Order: Cooperative Order ID */
-  $handler->display->display_options['fields']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';
-  $handler->display->display_options['fields']['CoopOrderKeyID']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['CoopOrderKeyID']['field'] = 'CoopOrderKeyID';
-  $handler->display->display_options['fields']['CoopOrderKeyID']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['CoopOrderKeyID']['element_label_colon'] = FALSE;
-  /* Field: Cooperative Order: Total storage full */
-  $handler->display->display_options['fields']['fStorageBurden']['id'] = 'fStorageBurden';
-  $handler->display->display_options['fields']['fStorageBurden']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['fStorageBurden']['field'] = 'fStorageBurden';
-  $handler->display->display_options['fields']['fStorageBurden']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['fStorageBurden']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['fStorageBurden']['precision'] = '0';
-  /* Field: Cooperative Order: Total max. storage */
-  $handler->display->display_options['fields']['fMaxStorageBurden']['id'] = 'fMaxStorageBurden';
-  $handler->display->display_options['fields']['fMaxStorageBurden']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['fMaxStorageBurden']['field'] = 'fMaxStorageBurden';
-  $handler->display->display_options['fields']['fMaxStorageBurden']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['fMaxStorageBurden']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['fMaxStorageBurden']['precision'] = '0';
-  /* Field: Cooperative Order: Delivery Capacity */
-  $handler->display->display_options['fields']['fMaxBurden']['id'] = 'fMaxBurden';
-  $handler->display->display_options['fields']['fMaxBurden']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['fMaxBurden']['field'] = 'fMaxBurden';
-  $handler->display->display_options['fields']['fMaxBurden']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['fMaxBurden']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['fMaxBurden']['precision'] = '0';
-  /* Field: Cooperative Order: Total Burden */
-  $handler->display->display_options['fields']['fBurden']['id'] = 'fBurden';
-  $handler->display->display_options['fields']['fBurden']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['fBurden']['field'] = 'fBurden';
-  $handler->display->display_options['fields']['fBurden']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['fBurden']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['fBurden']['precision'] = '0';
-  /* Field: Cooperative Order: Max. Coop Total */
-  $handler->display->display_options['fields']['mMaxCoopTotal']['id'] = 'mMaxCoopTotal';
-  $handler->display->display_options['fields']['mMaxCoopTotal']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['mMaxCoopTotal']['field'] = 'mMaxCoopTotal';
-  $handler->display->display_options['fields']['mMaxCoopTotal']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['mMaxCoopTotal']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['mMaxCoopTotal']['precision'] = '0';
-  /* Field: Cooperative Order: Status */
-  $handler->display->display_options['fields']['nStatus']['id'] = 'nStatus';
-  $handler->display->display_options['fields']['nStatus']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['nStatus']['field'] = 'nStatus';
-  $handler->display->display_options['fields']['nStatus']['label'] = '';
-  $handler->display->display_options['fields']['nStatus']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['nStatus']['element_label_colon'] = FALSE;
+  /* Field: Producer: Producer ID */
+  $handler->display->display_options['fields']['ProducerKeyID']['id'] = 'ProducerKeyID';
+  $handler->display->display_options['fields']['ProducerKeyID']['table'] = 'T_Producer';
+  $handler->display->display_options['fields']['ProducerKeyID']['field'] = 'ProducerKeyID';
+  $handler->display->display_options['fields']['ProducerKeyID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['ProducerKeyID']['element_label_colon'] = FALSE;
+  /* Field: Producer: Coordinating Group ID */
+  $handler->display->display_options['fields']['CoordinatingGroupID']['id'] = 'CoordinatingGroupID';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['table'] = 'T_Producer';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['field'] = 'CoordinatingGroupID';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['label'] = '';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['CoordinatingGroupID']['element_label_colon'] = FALSE;
+  /* Field: Producer: Disabled */
+  $handler->display->display_options['fields']['bDisabled']['id'] = 'bDisabled';
+  $handler->display->display_options['fields']['bDisabled']['table'] = 'T_Producer';
+  $handler->display->display_options['fields']['bDisabled']['field'] = 'bDisabled';
+  $handler->display->display_options['fields']['bDisabled']['label'] = '';
+  $handler->display->display_options['fields']['bDisabled']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['bDisabled']['element_label_colon'] = FALSE;
   /* Field: String: String */
   $handler->display->display_options['fields']['sString']['id'] = 'sString';
   $handler->display->display_options['fields']['sString']['table'] = 'Tlng_String';
   $handler->display->display_options['fields']['sString']['field'] = 'sString';
-  $handler->display->display_options['fields']['sString']['relationship'] = 'CoopOrderKeyID';
-  $handler->display->display_options['fields']['sString']['label'] = 'Order Title';
+  $handler->display->display_options['fields']['sString']['relationship'] = 'ProducerKeyID';
+  $handler->display->display_options['fields']['sString']['label'] = 'Producer Name';
   $handler->display->display_options['fields']['sString']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['sString']['alter']['path'] = 'hccoord/cooporder?id=[CoopOrderKeyID]';
+  $handler->display->display_options['fields']['sString']['alter']['path'] = 'hccoord/producer?id=[ProducerKeyID]';
   $handler->display->display_options['fields']['sString']['element_label_colon'] = FALSE;
-  /* Field: Cooperative Order: Opening */
-  $handler->display->display_options['fields']['dStart']['id'] = 'dStart';
-  $handler->display->display_options['fields']['dStart']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['dStart']['field'] = 'dStart';
-  $handler->display->display_options['fields']['dStart']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['dStart']['date_format'] = 'custom';
-  $handler->display->display_options['fields']['dStart']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
-  $handler->display->display_options['fields']['dStart']['second_date_format'] = 'long';
-  /* Field: Cooperative Order: Closing */
-  $handler->display->display_options['fields']['dEnd']['id'] = 'dEnd';
-  $handler->display->display_options['fields']['dEnd']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['dEnd']['field'] = 'dEnd';
-  $handler->display->display_options['fields']['dEnd']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['dEnd']['date_format'] = 'custom';
-  $handler->display->display_options['fields']['dEnd']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
-  $handler->display->display_options['fields']['dEnd']['second_date_format'] = 'long';
-  /* Field: Cooperative Order: Delivery */
-  $handler->display->display_options['fields']['dDelivery']['id'] = 'dDelivery';
-  $handler->display->display_options['fields']['dDelivery']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['dDelivery']['field'] = 'dDelivery';
-  $handler->display->display_options['fields']['dDelivery']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['dDelivery']['date_format'] = 'custom';
-  $handler->display->display_options['fields']['dDelivery']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
-  $handler->display->display_options['fields']['dDelivery']['second_date_format'] = 'long';
   /* Field: Global: PHP */
-  $handler->display->display_options['fields']['StatusName']['id'] = 'StatusName';
-  $handler->display->display_options['fields']['StatusName']['table'] = 'views';
-  $handler->display->display_options['fields']['StatusName']['field'] = 'php';
-  $handler->display->display_options['fields']['StatusName']['label'] = 'Status';
-  $handler->display->display_options['fields']['StatusName']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['StatusName']['use_php_setup'] = 0;
-  $handler->display->display_options['fields']['StatusName']['php_output'] = '<?php print CoopOrder::StatusName($row->nStatus); ?>';
-  $handler->display->display_options['fields']['StatusName']['use_php_click_sortable'] = '0';
-  $handler->display->display_options['fields']['StatusName']['php_click_sortable'] = '';
-  /* Field: Cooperative Order: Total Coop */
-  $handler->display->display_options['fields']['mCoopTotal']['id'] = 'mCoopTotal';
-  $handler->display->display_options['fields']['mCoopTotal']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['mCoopTotal']['field'] = 'mCoopTotal';
-  $handler->display->display_options['fields']['mCoopTotal']['label'] = 'Coop';
-  $handler->display->display_options['fields']['mCoopTotal']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['mCoopTotal']['set_precision'] = TRUE;
-  $handler->display->display_options['fields']['mCoopTotal']['precision'] = '2';
-  /* Field: Cooperative Order: Total Producers */
-  $handler->display->display_options['fields']['mProducerTotal']['id'] = 'mProducerTotal';
-  $handler->display->display_options['fields']['mProducerTotal']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['fields']['mProducerTotal']['field'] = 'mProducerTotal';
-  $handler->display->display_options['fields']['mProducerTotal']['label'] = 'Producers';
-  $handler->display->display_options['fields']['mProducerTotal']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['mProducerTotal']['set_precision'] = TRUE;
-  $handler->display->display_options['fields']['mProducerTotal']['precision'] = '2';
+  $handler->display->display_options['fields']['php']['id'] = 'php';
+  $handler->display->display_options['fields']['php']['table'] = 'views';
+  $handler->display->display_options['fields']['php']['field'] = 'php';
+  $handler->display->display_options['fields']['php']['label'] = 'Status';
+  $handler->display->display_options['fields']['php']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php']['php_output'] = '<?php print $row->bDisabled ? t(\'Inactive\') : t(\'Active\'); ?>';
+  $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
   /* Field: Global: PHP */
-  $handler->display->display_options['fields']['PercentFull']['id'] = 'PercentFull';
-  $handler->display->display_options['fields']['PercentFull']['table'] = 'views';
-  $handler->display->display_options['fields']['PercentFull']['field'] = 'php';
-  $handler->display->display_options['fields']['PercentFull']['label'] = 'Full';
-  $handler->display->display_options['fields']['PercentFull']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['PercentFull']['use_php_setup'] = 0;
-  $handler->display->display_options['fields']['PercentFull']['php_output'] = '<?php 
-  $oCoopOrderCapacity = new CoopOrderCapacity(
-                                $row->fMaxBurden, $row->fBurden,
-                                $row->mMaxCoopTotal, $row->mCoopTotal,
-                           $row->fMaxStorageBurden, $row->fStorageBurden);
-  if ($oCoopOrderCapacity->SelectedType != CoopOrderCapacity::TypeNone) {
-                          echo $oCoopOrderCapacity->PercentRounded , \'%\';
+  $handler->display->display_options['fields']['php_1']['id'] = 'php_1';
+  $handler->display->display_options['fields']['php_1']['table'] = 'views';
+  $handler->display->display_options['fields']['php_1']['field'] = 'php';
+  $handler->display->display_options['fields']['php_1']['label'] = '';
+  $handler->display->display_options['fields']['php_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php_1']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php_1']['php_output'] = '<?php 
+
+  if (!isset($view->args[1]) || $view->args[1] == \'yes\') { 
+  $arrParams = array(\'pa\' => \'' . Consts::PERMISSION_AREA_PRODUCERS  .  '\', \'rid\' => $row->ProducerKeyID);
+  if (!empty($row->CoordinatingGroupID)) { 
+  $arrParams[\'id\'] = $row->CoordinatingGroupID;
   }
-  ?>';
-  $handler->display->display_options['fields']['PercentFull']['use_php_click_sortable'] = '0';
-  $handler->display->display_options['fields']['PercentFull']['php_click_sortable'] = '';
-  /* Field: Global: PHP */
-  $handler->display->display_options['fields']['CopyLink']['id'] = 'CopyLink';
-  $handler->display->display_options['fields']['CopyLink']['table'] = 'views';
-  $handler->display->display_options['fields']['CopyLink']['field'] = 'php';
-  $handler->display->display_options['fields']['CopyLink']['label'] = '';
-  $handler->display->display_options['fields']['CopyLink']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['CopyLink']['use_php_setup'] = 0;
-  $handler->display->display_options['fields']['CopyLink']['php_output'] = '<?php print \'<a href="\' . url(\'hccoord/coopordercopy\', array(\'query\' => array(\'id\' => $row->CoopOrderKeyID))) . \'" >\' . t(\'Copy\') . \'</a>\'; ?>';
-  $handler->display->display_options['fields']['CopyLink']['use_php_click_sortable'] = '0';
-  $handler->display->display_options['fields']['CopyLink']['php_click_sortable'] = '';
-  /* Field: Global: PHP */
-  $handler->display->display_options['fields']['CoordLink']['id'] = 'CoordLink';
-  $handler->display->display_options['fields']['CoordLink']['table'] = 'views';
-  $handler->display->display_options['fields']['CoordLink']['field'] = 'php';
-  $handler->display->display_options['fields']['CoordLink']['label'] = '';
-  $handler->display->display_options['fields']['CoordLink']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['CoordLink']['use_php_setup'] = 0;
-  $handler->display->display_options['fields']['CoordLink']['php_output'] = '<?php print \'<a href="\' . url(\'hccoord/coordinate\', array(\'query\' => array(\'pa\' => \'' . 
-      Consts::PERMISSION_AREA_COOP_ORDERS .'\', \'rid\' => $row->CoopOrderKeyID))) . \'" >\' . t(\'Coordination\') . \'</a>\'; ?>';
-  $handler->display->display_options['fields']['CoordLink']['use_php_click_sortable'] = '0';
-  $handler->display->display_options['fields']['CoordLink']['php_click_sortable'] = '';
-  /* Sort criterion: Cooperative Order: Delivery */
-  $handler->display->display_options['sorts']['dDelivery']['id'] = 'dDelivery';
-  $handler->display->display_options['sorts']['dDelivery']['table'] = 'T_CoopOrder';
-  $handler->display->display_options['sorts']['dDelivery']['field'] = 'dDelivery';
-  $handler->display->display_options['sorts']['dDelivery']['order'] = 'DESC';
-  
+  print \'<a href="\' . url(\'hccoord/coordinate\', array(\'query\' => $arrParams)) . \'" >\' . t(\'Coordination\') . \'</a>\'; 
+  } ?>';
+  $handler->display->display_options['fields']['php_1']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php_1']['php_click_sortable'] = '';
+  /* Sort criterion: String: String */
+  $handler->display->display_options['sorts']['sString']['id'] = 'sString';
+  $handler->display->display_options['sorts']['sString']['table'] = 'Tlng_String';
+  $handler->display->display_options['sorts']['sString']['field'] = 'sString';
+  $handler->display->display_options['sorts']['sString']['relationship'] = 'ProducerKeyID';
   /* Contextual filter: Global: Null */
-  $handler->display->display_options['arguments']['AllowEdit']['id'] = 'AllowEdit';
-  $handler->display->display_options['arguments']['AllowEdit']['table'] = 'views';
-  $handler->display->display_options['arguments']['AllowEdit']['field'] = 'null';
-  $handler->display->display_options['arguments']['AllowEdit']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['AllowEdit']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['AllowEdit']['default_argument_options']['argument'] = 'yes';
-  $handler->display->display_options['arguments']['AllowEdit']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['AllowEdit']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['AllowEdit']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['null']['id'] = 'null';
+  $handler->display->display_options['arguments']['null']['table'] = 'views';
+  $handler->display->display_options['arguments']['null']['field'] = 'null';
+  $handler->display->display_options['arguments']['null']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['null']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['null']['default_argument_options']['argument'] = 'rw';
+  $handler->display->display_options['arguments']['null']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['null']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['null']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
   /* Contextual filter: Global: Null */
-  $handler->display->display_options['arguments']['ViewSums']['id'] = 'ViewSums';
-  $handler->display->display_options['arguments']['ViewSums']['table'] = 'views';
-  $handler->display->display_options['arguments']['ViewSums']['field'] = 'null';
-  $handler->display->display_options['arguments']['ViewSums']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['ViewSums']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['ViewSums']['default_argument_options']['argument'] = 'yes';
-  $handler->display->display_options['arguments']['ViewSums']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['ViewSums']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['ViewSums']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
-  /* Contextual filter: Global: Null */
-  $handler->display->display_options['arguments']['CanCopy']['id'] = 'CanCopy';
-  $handler->display->display_options['arguments']['CanCopy']['table'] = 'views';
-  $handler->display->display_options['arguments']['CanCopy']['field'] = 'null';
-  $handler->display->display_options['arguments']['CanCopy']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['CanCopy']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['CanCopy']['default_argument_options']['argument'] = 'yes';
-  $handler->display->display_options['arguments']['CanCopy']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['CanCopy']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['CanCopy']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
-  /* Contextual filter: Global: Null */
-  $handler->display->display_options['arguments']['CanSetCoord']['id'] = 'CanSetCoord';
-  $handler->display->display_options['arguments']['CanSetCoord']['table'] = 'views';
-  $handler->display->display_options['arguments']['CanSetCoord']['field'] = 'null';
-  $handler->display->display_options['arguments']['CanSetCoord']['default_action'] = 'default';
-  $handler->display->display_options['arguments']['CanSetCoord']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['CanSetCoord']['default_argument_options']['argument'] = 'yes';
-  $handler->display->display_options['arguments']['CanSetCoord']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['CanSetCoord']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['CanSetCoord']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
-  
+  $handler->display->display_options['arguments']['null_1']['id'] = 'null_1';
+  $handler->display->display_options['arguments']['null_1']['table'] = 'views';
+  $handler->display->display_options['arguments']['null_1']['field'] = 'null';
+  $handler->display->display_options['arguments']['null_1']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['null_1']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['null_1']['default_argument_options']['argument'] = 'yes';
+  $handler->display->display_options['arguments']['null_1']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['null_1']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['null_1']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
   /* Contextual filter: Language: PHP Folder */
   $handler->display->display_options['arguments']['sPhpFolder']['id'] = 'sPhpFolder';
   $handler->display->display_options['arguments']['sPhpFolder']['table'] = 'Tlng_Language';
@@ -296,20 +177,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['sPhpFolder']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['sPhpFolder']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
   $handler->display->display_options['arguments']['sPhpFolder']['limit'] = '0';
-  $translatables['homecoop_cooporders_sample'] = array(
-    t('Cooperative Orders'),
-    t('CoopOrderName'),
-    t('CoopOrderNameLang'),
-    t('Order Title'),
-    t('Opening'),
-    t('Closing'),
-    t('Delivery'),
-    t('Status'),
-    t('Coop'),
-    t('Producers'),
-    t('Full'),
-    t('All'),
-  );
+
   $views[$view->name] = $view;
   
   //-------------------------------------------------------------------------------------------------------------------
@@ -524,8 +392,13 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['sPhpFolder_1']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['sPhpFolder_1']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
   $handler->display->display_options['arguments']['sPhpFolder_1']['limit'] = '0';
-
-  $translatables['homecoop_cooporder_orders'] = array(
+  
+  $views[$view->name] = $view;
+  
+  //--------------
+  // Translations
+  //--------------
+  $translatables['homecoop_my_orders'] = array(
     t('Master'),
     t('more'),
     t('Apply'),
@@ -546,22 +419,45 @@ function homecoop_views_default_views() {
     t('Pickup Location Name'),
     t('Coop Order Name Language'),
     t('Pickup Location Name Language'),
-    t('OrderMember'),
-    t('Order ID'),
+    t('Order Title'),
+    t('Delivery'),
+    t('Status'),
     t('.'),
     t(','),
-    t('Name'),
-    t('Email address'),
+    t('Order Date'),
     t('Location Name'),
     t('Total'),
-    t('Balance'),
-    t('Order Date'),
-    t('Comments'),
-    t('Created On'),
+    t('Order ID'),
     t('All'),
     t('Member'),
   );
-  $views[$view->name] = $view;
+  
+  $translatables['homecoop_producers_sample'] = array(
+    t('ProducerName'),
+    t('ProducerNameLang'),
+    t('Producer ID'),
+    t('Producer Name'),
+  );
+  
+  $translatables['homecoop_cooporder_orders'] = array(
+    t('OrderMember'),
+    t('Name'),
+    t('Email address'),
+    t('Balance'),
+    t('Comments'),
+    t('Created On'),
+  );
+  $translatables['homecoop_cooporders'] = array(
+    t('Cooperative Orders'),
+    t('CoopOrderName'),
+    t('CoopOrderNameLang'),
+    t('Opening'),
+    t('Closing'),
+    t('Coop'),
+    t('Producers'),
+    t('Full'),
+  );
+  
   
   return $views;
 }
@@ -808,5 +704,274 @@ function homecoop_my_orders_get_view($view_name, $is_coord) {
   
   
   
+  return $view;
+}
+
+function homecoop_cooporders_get_view($view_name, $view_sums) {
+  $view = new view();
+  $view->name = $view_name;
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'T_CoopOrder';
+  $view->human_name = 'HomeCoop CoopOrders' . ($view_sums? '' : ' (no sums)');
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['title'] = 'Cooperative Orders';
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['style_plugin'] = 'table';
+  /* Header: Global: PHP */
+  $handler->display->display_options['header']['php']['id'] = 'php';
+  $handler->display->display_options['header']['php']['table'] = 'views';
+  $handler->display->display_options['header']['php']['field'] = 'php';
+  $handler->display->display_options['header']['php']['empty'] = TRUE;
+  $handler->display->display_options['header']['php']['php_output'] = '<?php if (!isset($view->args[0]) || $view->args[0] == \'yes\') { ?><div><a href="<?php echo url(\'hccoord/cooporder\'); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a></div><?php } ?>';  
+  /* Relationship: Cooperative Order: Coop Order Name */
+  $handler->display->display_options['relationships']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';
+  $handler->display->display_options['relationships']['CoopOrderKeyID']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['relationships']['CoopOrderKeyID']['field'] = 'CoopOrderKeyID';
+  $handler->display->display_options['relationships']['CoopOrderKeyID']['label'] = 'CoopOrderName';
+  $handler->display->display_options['relationships']['CoopOrderKeyID']['required'] = TRUE;
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID']['id'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['relationship'] = 'CoopOrderKeyID';
+  $handler->display->display_options['relationships']['LangID']['label'] = 'CoopOrderNameLang';
+  $handler->display->display_options['relationships']['LangID']['required'] = TRUE;
+  /* Field: Cooperative Order: Cooperative Order ID */
+  $handler->display->display_options['fields']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';
+  $handler->display->display_options['fields']['CoopOrderKeyID']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['CoopOrderKeyID']['field'] = 'CoopOrderKeyID';
+  $handler->display->display_options['fields']['CoopOrderKeyID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['CoopOrderKeyID']['element_label_colon'] = FALSE;
+  /* Field: Cooperative Order: Coordinating Group */
+  $handler->display->display_options['fields']['CoordinatingGroupID']['id'] = 'CoordinatingGroupID';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['field'] = 'CoordinatingGroupID';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['label'] = '';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['CoordinatingGroupID']['element_label_colon'] = FALSE;
+  /* Field: Cooperative Order: Total storage full */
+  $handler->display->display_options['fields']['fStorageBurden']['id'] = 'fStorageBurden';
+  $handler->display->display_options['fields']['fStorageBurden']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['fStorageBurden']['field'] = 'fStorageBurden';
+  $handler->display->display_options['fields']['fStorageBurden']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['fStorageBurden']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fStorageBurden']['precision'] = '0';
+  /* Field: Cooperative Order: Total max. storage */
+  $handler->display->display_options['fields']['fMaxStorageBurden']['id'] = 'fMaxStorageBurden';
+  $handler->display->display_options['fields']['fMaxStorageBurden']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['fMaxStorageBurden']['field'] = 'fMaxStorageBurden';
+  $handler->display->display_options['fields']['fMaxStorageBurden']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['fMaxStorageBurden']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fMaxStorageBurden']['precision'] = '0';
+  /* Field: Cooperative Order: Delivery Capacity */
+  $handler->display->display_options['fields']['fMaxBurden']['id'] = 'fMaxBurden';
+  $handler->display->display_options['fields']['fMaxBurden']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['fMaxBurden']['field'] = 'fMaxBurden';
+  $handler->display->display_options['fields']['fMaxBurden']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['fMaxBurden']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fMaxBurden']['precision'] = '0';
+  /* Field: Cooperative Order: Total Burden */
+  $handler->display->display_options['fields']['fBurden']['id'] = 'fBurden';
+  $handler->display->display_options['fields']['fBurden']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['fBurden']['field'] = 'fBurden';
+  $handler->display->display_options['fields']['fBurden']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['fBurden']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fBurden']['precision'] = '0';
+  /* Field: Cooperative Order: Max. Coop Total */
+  $handler->display->display_options['fields']['mMaxCoopTotal']['id'] = 'mMaxCoopTotal';
+  $handler->display->display_options['fields']['mMaxCoopTotal']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['mMaxCoopTotal']['field'] = 'mMaxCoopTotal';
+  $handler->display->display_options['fields']['mMaxCoopTotal']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['mMaxCoopTotal']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mMaxCoopTotal']['precision'] = '0';
+  /* Field: Cooperative Order: Status */
+  $handler->display->display_options['fields']['nStatus']['id'] = 'nStatus';
+  $handler->display->display_options['fields']['nStatus']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['nStatus']['field'] = 'nStatus';
+  $handler->display->display_options['fields']['nStatus']['label'] = '';
+  $handler->display->display_options['fields']['nStatus']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['nStatus']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString']['id'] = 'sString';
+  $handler->display->display_options['fields']['sString']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString']['relationship'] = 'CoopOrderKeyID';
+  $handler->display->display_options['fields']['sString']['label'] = 'Order Title';
+  $handler->display->display_options['fields']['sString']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['sString']['alter']['path'] = 'hccoord/cooporder?id=[CoopOrderKeyID]';
+  $handler->display->display_options['fields']['sString']['element_label_colon'] = FALSE;
+  /* Field: Cooperative Order: Opening */
+  $handler->display->display_options['fields']['dStart']['id'] = 'dStart';
+  $handler->display->display_options['fields']['dStart']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['dStart']['field'] = 'dStart';
+  $handler->display->display_options['fields']['dStart']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['dStart']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['dStart']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
+  $handler->display->display_options['fields']['dStart']['second_date_format'] = 'long';
+  /* Field: Cooperative Order: Closing */
+  $handler->display->display_options['fields']['dEnd']['id'] = 'dEnd';
+  $handler->display->display_options['fields']['dEnd']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['dEnd']['field'] = 'dEnd';
+  $handler->display->display_options['fields']['dEnd']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['dEnd']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['dEnd']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
+  $handler->display->display_options['fields']['dEnd']['second_date_format'] = 'long';
+  /* Field: Cooperative Order: Delivery */
+  $handler->display->display_options['fields']['dDelivery']['id'] = 'dDelivery';
+  $handler->display->display_options['fields']['dDelivery']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['fields']['dDelivery']['field'] = 'dDelivery';
+  $handler->display->display_options['fields']['dDelivery']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['dDelivery']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['dDelivery']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
+  $handler->display->display_options['fields']['dDelivery']['second_date_format'] = 'long';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['StatusName']['id'] = 'StatusName';
+  $handler->display->display_options['fields']['StatusName']['table'] = 'views';
+  $handler->display->display_options['fields']['StatusName']['field'] = 'php';
+  $handler->display->display_options['fields']['StatusName']['label'] = 'Status';
+  $handler->display->display_options['fields']['StatusName']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['StatusName']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['StatusName']['php_output'] = '<?php print CoopOrder::StatusName($row->nStatus); ?>';
+  $handler->display->display_options['fields']['StatusName']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['StatusName']['php_click_sortable'] = '';
+  
+  if ($view_sums) {
+    /* Field: Cooperative Order: Total Coop */
+    $handler->display->display_options['fields']['mCoopTotal']['id'] = 'mCoopTotal';
+    $handler->display->display_options['fields']['mCoopTotal']['table'] = 'T_CoopOrder';
+    $handler->display->display_options['fields']['mCoopTotal']['field'] = 'mCoopTotal';
+    $handler->display->display_options['fields']['mCoopTotal']['label'] = 'Coop';
+    $handler->display->display_options['fields']['mCoopTotal']['element_label_colon'] = FALSE;
+    $handler->display->display_options['fields']['mCoopTotal']['set_precision'] = TRUE;
+    $handler->display->display_options['fields']['mCoopTotal']['precision'] = '2';
+    /* Field: Cooperative Order: Total Producers */
+    $handler->display->display_options['fields']['mProducerTotal']['id'] = 'mProducerTotal';
+    $handler->display->display_options['fields']['mProducerTotal']['table'] = 'T_CoopOrder';
+    $handler->display->display_options['fields']['mProducerTotal']['field'] = 'mProducerTotal';
+    $handler->display->display_options['fields']['mProducerTotal']['label'] = 'Producers';
+    $handler->display->display_options['fields']['mProducerTotal']['element_label_colon'] = FALSE;
+    $handler->display->display_options['fields']['mProducerTotal']['set_precision'] = TRUE;
+    $handler->display->display_options['fields']['mProducerTotal']['precision'] = '2';
+  }
+  
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['PercentFull']['id'] = 'PercentFull';
+  $handler->display->display_options['fields']['PercentFull']['table'] = 'views';
+  $handler->display->display_options['fields']['PercentFull']['field'] = 'php';
+  $handler->display->display_options['fields']['PercentFull']['label'] = 'Full';
+  $handler->display->display_options['fields']['PercentFull']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['PercentFull']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['PercentFull']['php_output'] = '<?php 
+  $oCoopOrderCapacity = new CoopOrderCapacity(
+                                $row->fMaxBurden, $row->fBurden,
+                                $row->mMaxCoopTotal, $row->mCoopTotal,
+                           $row->fMaxStorageBurden, $row->fStorageBurden);
+  if ($oCoopOrderCapacity->SelectedType != CoopOrderCapacity::TypeNone) {
+                          echo $oCoopOrderCapacity->PercentRounded , \'%\';
+  }
+  ?>';
+  $handler->display->display_options['fields']['PercentFull']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['PercentFull']['php_click_sortable'] = '';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['CopyLink']['id'] = 'CopyLink';
+  $handler->display->display_options['fields']['CopyLink']['table'] = 'views';
+  $handler->display->display_options['fields']['CopyLink']['field'] = 'php';
+  $handler->display->display_options['fields']['CopyLink']['label'] = '';
+  $handler->display->display_options['fields']['CopyLink']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['CopyLink']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['CopyLink']['php_output'] = '<?php if (!isset($view->args[1]) || $view->args[1] == \'yes\') { print \'<a href="\' . url(\'hccoord/coopordercopy\', array(\'query\' => array(\'id\' => $row->CoopOrderKeyID))) . \'" >\' . t(\'Copy\') . \'</a>\'; } ?>';
+  $handler->display->display_options['fields']['CopyLink']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['CopyLink']['php_click_sortable'] = '';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['CoordLink']['id'] = 'CoordLink';
+  $handler->display->display_options['fields']['CoordLink']['table'] = 'views';
+  $handler->display->display_options['fields']['CoordLink']['field'] = 'php';
+  $handler->display->display_options['fields']['CoordLink']['label'] = '';
+  $handler->display->display_options['fields']['CoordLink']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['CoordLink']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['CoordLink']['php_output'] = '<?php 
+
+  if (!isset($view->args[2]) || $view->args[2] == \'yes\') { 
+  $arrParams = array(\'pa\' => \''. Consts::PERMISSION_AREA_COOP_ORDERS .'\', \'rid\' => $row->CoopOrderKeyID);
+  if (!empty($row->CoordinatingGroupID)) { 
+  $arrParams[\'id\'] = $row->CoordinatingGroupID;
+  }
+  print \'<a href="\' . url(\'hccoord/coordinate\', array(\'query\' => $arrParams)) . \'" >\' . t(\'Coordination\') . \'</a>\'; 
+  } ?>';
+  $handler->display->display_options['fields']['CoordLink']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['CoordLink']['php_click_sortable'] = '';
+  /* Sort criterion: Cooperative Order: Delivery */
+  $handler->display->display_options['sorts']['dDelivery']['id'] = 'dDelivery';
+  $handler->display->display_options['sorts']['dDelivery']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['sorts']['dDelivery']['field'] = 'dDelivery';
+  $handler->display->display_options['sorts']['dDelivery']['order'] = 'DESC';
+  
+  /* Contextual filter: Global: Null */
+  $handler->display->display_options['arguments']['AllowEdit']['id'] = 'AllowEdit';
+  $handler->display->display_options['arguments']['AllowEdit']['table'] = 'views';
+  $handler->display->display_options['arguments']['AllowEdit']['field'] = 'null';
+  $handler->display->display_options['arguments']['AllowEdit']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['AllowEdit']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['AllowEdit']['default_argument_options']['argument'] = 'yes';
+  $handler->display->display_options['arguments']['AllowEdit']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['AllowEdit']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['AllowEdit']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  
+  /* Contextual filter: Global: Null */
+  $handler->display->display_options['arguments']['CanCopy']['id'] = 'CanCopy';
+  $handler->display->display_options['arguments']['CanCopy']['table'] = 'views';
+  $handler->display->display_options['arguments']['CanCopy']['field'] = 'null';
+  $handler->display->display_options['arguments']['CanCopy']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['CanCopy']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['CanCopy']['default_argument_options']['argument'] = 'yes';
+  $handler->display->display_options['arguments']['CanCopy']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['CanCopy']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['CanCopy']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Contextual filter: Global: Null */
+  $handler->display->display_options['arguments']['CanSetCoord']['id'] = 'CanSetCoord';
+  $handler->display->display_options['arguments']['CanSetCoord']['table'] = 'views';
+  $handler->display->display_options['arguments']['CanSetCoord']['field'] = 'null';
+  $handler->display->display_options['arguments']['CanSetCoord']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['CanSetCoord']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['CanSetCoord']['default_argument_options']['argument'] = 'yes';
+  $handler->display->display_options['arguments']['CanSetCoord']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['CanSetCoord']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['CanSetCoord']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  
+  /* Contextual filter: Language: PHP Folder */
+  $handler->display->display_options['arguments']['sPhpFolder']['id'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder']['table'] = 'Tlng_Language';
+  $handler->display->display_options['arguments']['sPhpFolder']['field'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder']['relationship'] = 'LangID';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_options']['code'] = 'global $language; return $language->language;';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['sPhpFolder']['limit'] = '0';
+  
+  /* Contextual filter: Cooperative Order: Coordinating Group */
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['id'] = 'CoordinatingGroupID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['table'] = 'T_CoopOrder';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['field'] = 'CoordinatingGroupID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['break_phrase'] = TRUE;
   return $view;
 }

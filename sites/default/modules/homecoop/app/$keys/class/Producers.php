@@ -7,7 +7,7 @@ if(realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME']))
 class Producers extends SQLBase
 {
     //returns the table's first row. Other rows are retreived by calling base::fetch()
-    public function GetTable()
+    public function GetAccess()
     {
         global $g_oMemberSession;
                 
@@ -22,7 +22,7 @@ class Producers extends SQLBase
         if (!$bEdit && !$bView)
         {
           $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_PERMISSION;
-          return NULL;
+          return;
         }
         
         $this->AddPermissionBridge(self::PERMISSION_ADD, Consts::PERMISSION_AREA_PRODUCERS, Consts::PERMISSION_TYPE_ADD, 
@@ -32,7 +32,7 @@ class Producers extends SQLBase
         $this->AddPermissionBridge(self::PERMISSION_COORD_SET, Consts::PERMISSION_AREA_PRODUCERS, Consts::PERMISSION_TYPE_COORD_SET, 
          Consts::PERMISSION_SCOPE_COOP_CODE, 0, TRUE);
 
-        $sSQL =          " SELECT P.ProducerKeyID, " . $this->ConcatStringsSelect(Consts::PERMISSION_AREA_PRODUCERS, 'sProducer');
+        /*$sSQL =          " SELECT P.ProducerKeyID, " . $this->ConcatStringsSelect(Consts::PERMISSION_AREA_PRODUCERS, 'sProducer');
 
         $sSQL .=  " , P.bDisabled, P.CoordinatingGroupID FROM T_Producer P " . $this->ConcatStringsJoin(Consts::PERMISSION_AREA_PRODUCERS);
 
@@ -44,7 +44,7 @@ class Producers extends SQLBase
         
         $this->RunSQL( $sSQL );
 
-        return $this->fetch();
+        return $this->fetch();*/
     }
     
     //for coordinator's coop order producer (coord/coproducer.php) - when creating a new record

@@ -1306,7 +1306,7 @@ class Order extends SQLBase {
       }
       else
       {
-        $this->m_aData[self::PROPERTY_PAGE_TITLE_ADDITION] = sprintf('<!$USER_ORDER_NAME_SUFFIX$!>', $this->m_aData[self::PROPERTY_MEMBER_NAME]);
+        $this->m_aData[self::PROPERTY_PAGE_TITLE_ADDITION] = t('@username\'s Order', array('@username' => $this->m_aData[self::PROPERTY_MEMBER_NAME]));
         $this->m_aData[self::PROPERTY_PAGE_TITLE] = $this->m_aData[self::PROPERTY_COOP_ORDER_NAME] . '<!$PAGE_TITLE_SEPARATOR$!>' . 
                 $this->m_aData[self::PROPERTY_PAGE_TITLE_ADDITION];
       }

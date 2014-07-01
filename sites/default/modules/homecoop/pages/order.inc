@@ -190,7 +190,6 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
       '#weight' => 30,
     ),
     'buttons' => array(
-      '#prefix' => '<br/>',
       '#weight' => 40, 
       'btn_save' => array(
         '#type' => 'submit',
@@ -231,7 +230,7 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
         '#name' => 'btn_delete',
         '#id' => 'btn_delete',
         '#submit' => array('homecoop_page_order_form_delete'),
-        '#value' => t('Delete @title', array('@title' => $oFormExtraData['PageTitleSuffix'])),
+        '#value' => t('Delete') . ' ' . $oFormExtraData['PageTitleSuffix'],
         '#weight' => 20, 
         '#attributes' => array(
           'class' => array('order'),
