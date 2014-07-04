@@ -16,7 +16,6 @@ function homecoop_views_default_views() {
   $views[$view->name] = $view;
   
   
-  
   //-------------------------------------------------------------------------------------------------------------------
   // Cooperative Orders
   //-------------------------------------------------------------------------------------------------------------------
@@ -26,8 +25,264 @@ function homecoop_views_default_views() {
   $view = homecoop_cooporders_get_view('homecoop_cooporders_nosums', false);
   $views[$view->name] = $view;
   
+  //-------------------------------------------------------------------------------------------------------------------
+  // Pickup Locations
+  //-------------------------------------------------------------------------------------------------------------------
   
+  $view = new view();
+  $view->name = 'homecoop_pickup_locations';
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'T_PickupLocation';
+  $view->human_name = 'HomeCoop Pickup Locations';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = HOMECOOP_PAGER_PAGES;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'PickupLocationKeyID' => 'PickupLocationKeyID',
+    'CoordinatingGroupID' => 'CoordinatingGroupID',
+    'bDisabled' => 'bDisabled',
+    'sString' => 'sString',
+    'sString_1' => 'sString_1',
+    'mCachier' => 'mCachier',
+    'dCachierUpdate' => 'dCachierUpdate',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'PickupLocationKeyID' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'CoordinatingGroupID' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'bDisabled' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'sString' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'sString_1' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'mCachier' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'dCachierUpdate' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  /* Header: Global: PHP */
+  $handler->display->display_options['header']['php']['id'] = 'php';
+  $handler->display->display_options['header']['php']['table'] = 'views';
+  $handler->display->display_options['header']['php']['field'] = 'php';
+  $handler->display->display_options['header']['php']['php_output'] = '<?php if (!isset($view->args[0]) || $view->args[0] == \'yes\') { ?><div><a href="<?php echo url(\'hccoord/pickuploc\'); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a></div><?php } ?>';
+  /* Relationship: Pickup Location: Pickup Location Address */
+  $handler->display->display_options['relationships']['AddressStringKeyID']['id'] = 'AddressStringKeyID';
+  $handler->display->display_options['relationships']['AddressStringKeyID']['table'] = 'T_PickupLocation';
+  $handler->display->display_options['relationships']['AddressStringKeyID']['field'] = 'AddressStringKeyID';
+  $handler->display->display_options['relationships']['AddressStringKeyID']['label'] = 'PickupLocationAddress';
+  $handler->display->display_options['relationships']['AddressStringKeyID']['required'] = TRUE;
+  /* Relationship: Pickup Location: Pickup Location Name */
+  $handler->display->display_options['relationships']['PickupLocationKeyID']['id'] = 'PickupLocationKeyID';
+  $handler->display->display_options['relationships']['PickupLocationKeyID']['table'] = 'T_PickupLocation';
+  $handler->display->display_options['relationships']['PickupLocationKeyID']['field'] = 'PickupLocationKeyID';
+  $handler->display->display_options['relationships']['PickupLocationKeyID']['label'] = 'PickupLocationName';
+  $handler->display->display_options['relationships']['PickupLocationKeyID']['required'] = TRUE;
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID']['id'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['relationship'] = 'AddressStringKeyID';
+  $handler->display->display_options['relationships']['LangID']['label'] = 'AddressLang';
+  $handler->display->display_options['relationships']['LangID']['required'] = TRUE;
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID_1']['id'] = 'LangID_1';
+  $handler->display->display_options['relationships']['LangID_1']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID_1']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID_1']['relationship'] = 'PickupLocationKeyID';
+  $handler->display->display_options['relationships']['LangID_1']['label'] = 'NameLang';
+  $handler->display->display_options['relationships']['LangID_1']['required'] = TRUE;
+  /* Field: Pickup Location: Pickup Location ID */
+  $handler->display->display_options['fields']['PickupLocationKeyID']['id'] = 'PickupLocationKeyID';
+  $handler->display->display_options['fields']['PickupLocationKeyID']['table'] = 'T_PickupLocation';
+  $handler->display->display_options['fields']['PickupLocationKeyID']['field'] = 'PickupLocationKeyID';
+  $handler->display->display_options['fields']['PickupLocationKeyID']['label'] = '';
+  $handler->display->display_options['fields']['PickupLocationKeyID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['PickupLocationKeyID']['element_label_colon'] = FALSE;
+  /* Field: Pickup Location: Coordinating Group ID */
+  $handler->display->display_options['fields']['CoordinatingGroupID']['id'] = 'CoordinatingGroupID';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['table'] = 'T_PickupLocation';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['field'] = 'CoordinatingGroupID';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['label'] = '';
+  $handler->display->display_options['fields']['CoordinatingGroupID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['CoordinatingGroupID']['element_label_colon'] = FALSE;
+  /* Field: Pickup Location: Disabled */
+  $handler->display->display_options['fields']['bDisabled']['id'] = 'bDisabled';
+  $handler->display->display_options['fields']['bDisabled']['table'] = 'T_PickupLocation';
+  $handler->display->display_options['fields']['bDisabled']['field'] = 'bDisabled';
+  $handler->display->display_options['fields']['bDisabled']['label'] = '';
+  $handler->display->display_options['fields']['bDisabled']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['bDisabled']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString']['id'] = 'sString';
+  $handler->display->display_options['fields']['sString']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString']['relationship'] = 'PickupLocationKeyID';
+  $handler->display->display_options['fields']['sString']['label'] = 'Location Name';
+  $handler->display->display_options['fields']['sString']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['sString']['alter']['path'] = 'hccoord/pickuploc?id=[PickupLocationKeyID]';
+  $handler->display->display_options['fields']['sString']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString_1']['id'] = 'sString_1';
+  $handler->display->display_options['fields']['sString_1']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString_1']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString_1']['relationship'] = 'AddressStringKeyID';
+  $handler->display->display_options['fields']['sString_1']['label'] = 'Address';
+  $handler->display->display_options['fields']['sString_1']['element_label_colon'] = FALSE;
+  /* Field: Pickup Location: Cachier */
+  $handler->display->display_options['fields']['mCachier']['id'] = 'mCachier';
+  $handler->display->display_options['fields']['mCachier']['table'] = 'T_PickupLocation';
+  $handler->display->display_options['fields']['mCachier']['field'] = 'mCachier';
+  $handler->display->display_options['fields']['mCachier']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mCachier']['set_precision'] = TRUE;
+  $handler->display->display_options['fields']['mCachier']['precision'] = '0';
+  /* Field: Pickup Location: Cachier Update */
+  $handler->display->display_options['fields']['dCachierUpdate']['id'] = 'dCachierUpdate';
+  $handler->display->display_options['fields']['dCachierUpdate']['table'] = 'T_PickupLocation';
+  $handler->display->display_options['fields']['dCachierUpdate']['field'] = 'dCachierUpdate';
+  $handler->display->display_options['fields']['dCachierUpdate']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['dCachierUpdate']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['dCachierUpdate']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
+  $handler->display->display_options['fields']['dCachierUpdate']['second_date_format'] = 'long';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php']['id'] = 'php';
+  $handler->display->display_options['fields']['php']['table'] = 'views';
+  $handler->display->display_options['fields']['php']['field'] = 'php';
+  $handler->display->display_options['fields']['php']['label'] = 'Status';
+  $handler->display->display_options['fields']['php']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['php']['alter']['path'] = 'hccoord/pickuploc?id=[PickupLocationKeyID]';
+  $handler->display->display_options['fields']['php']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php']['php_output'] = '<?php print $row->bDisabled? t(\'Inactive\') : t(\'Active\'); ?>';
+  $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php_1']['id'] = 'php_1';
+  $handler->display->display_options['fields']['php_1']['table'] = 'views';
+  $handler->display->display_options['fields']['php_1']['field'] = 'php';
+  $handler->display->display_options['fields']['php_1']['label'] = '';
+  $handler->display->display_options['fields']['php_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php_1']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php_1']['php_output'] = '<?php 
+
+    if (!isset($view->args[1]) || $view->args[1] == \'yes\') { 
+    $arrParams = array(\'pa\' => \'' . Consts::PERMISSION_AREA_PICKUP_LOCATIONS  .  '\', \'rid\' => $row->PickupLocationKeyID);
+    if (!empty($row->CoordinatingGroupID)) { 
+    $arrParams[\'id\'] = $row->CoordinatingGroupID;
+    }
+    print \'<a href="\' . url(\'hccoord/coordinate\', array(\'query\' => $arrParams)) . \'" >\' . t(\'Coordination\') . \'</a>\'; 
+    } ?>';
+  $handler->display->display_options['fields']['php_1']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php_1']['php_click_sortable'] = '';
+  /* Sort criterion: String: String */
+  $handler->display->display_options['sorts']['sString']['id'] = 'sString';
+  $handler->display->display_options['sorts']['sString']['table'] = 'Tlng_String';
+  $handler->display->display_options['sorts']['sString']['field'] = 'sString';
+  $handler->display->display_options['sorts']['sString']['relationship'] = 'PickupLocationKeyID';
+  /* Contextual filter: Global: Can Add */
+  $handler->display->display_options['arguments']['null']['id'] = 'null';
+  $handler->display->display_options['arguments']['null']['table'] = 'views';
+  $handler->display->display_options['arguments']['null']['field'] = 'null';
+  $handler->display->display_options['arguments']['null']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['null']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['null']['default_argument_options']['argument'] = 'yes';
+  $handler->display->display_options['arguments']['null']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['null']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['null']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Contextual filter: Global: Can Coord */
+  $handler->display->display_options['arguments']['null_1']['id'] = 'null_1';
+  $handler->display->display_options['arguments']['null_1']['table'] = 'views';
+  $handler->display->display_options['arguments']['null_1']['field'] = 'null';
+  $handler->display->display_options['arguments']['null_1']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['null_1']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['null_1']['default_argument_options']['argument'] = 'yes';
+  $handler->display->display_options['arguments']['null_1']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['null_1']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['null_1']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Contextual filter: Language: PHP Folder */
+  $handler->display->display_options['arguments']['sPhpFolder']['id'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder']['table'] = 'Tlng_Language';
+  $handler->display->display_options['arguments']['sPhpFolder']['field'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder']['relationship'] = 'LangID';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_options']['code'] = 'global $language; return $language->language;';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['sPhpFolder']['limit'] = '0';
+  /* Contextual filter: Language: PHP Folder */
+  $handler->display->display_options['arguments']['sPhpFolder_1']['id'] = 'sPhpFolder_1';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['table'] = 'Tlng_Language';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['field'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['relationship'] = 'LangID_1';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_options']['code'] = 'global $language; return $language->language;';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['sPhpFolder_1']['limit'] = '0';
+  /* Contextual filter: Pickup Location: Coordinating Group ID */
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['id'] = 'CoordinatingGroupID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['table'] = 'T_PickupLocation';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['field'] = 'CoordinatingGroupID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['break_phrase'] = TRUE;
   
+  $views[$view->name] = $view;
+  
+  //-------------------------------------------------------------------------------------------------------------------
+  // Products
+  //-------------------------------------------------------------------------------------------------------------------
   
   $view = new view();
   $view->name = 'homecoop_products';
@@ -335,7 +590,6 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['CoordinatingGroupID']['break_phrase'] = TRUE;
   $views[$view->name] = $view;
 
- 
   //-------------------------------------------------------------------------------------------------------------------
   // Producers
   //-------------------------------------------------------------------------------------------------------------------
@@ -647,7 +901,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['dCreated']['label'] = 'Order Date';
   $handler->display->display_options['fields']['dCreated']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['dCreated']['date_format'] = 'custom';
-  $handler->display->display_options['fields']['dCreated']['custom_date_format'] = 'j.n.Y';
+  $handler->display->display_options['fields']['dCreated']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
   $handler->display->display_options['fields']['dCreated']['second_date_format'] = 'long';
   /* Field: Order: Comments */
   $handler->display->display_options['fields']['sMemberComments']['id'] = 'sMemberComments';
@@ -747,6 +1001,16 @@ function homecoop_views_default_views() {
     t('Order ID'),
     t('All'),
     t('Member'),
+  );
+  
+  $translatables['homecoop_pickup_locations'] = array(
+    t('PickupLocationAddress'),
+    t('PickupLocationName'),
+    t('AddressLang'),
+    t('NameLang'),
+    t('Address'),
+    t('Cachier'),
+    t('Cachier Update'),
   );
   
   $translatables['homecoop_products'] = array(

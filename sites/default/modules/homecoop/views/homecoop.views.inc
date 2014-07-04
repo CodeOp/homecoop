@@ -3091,7 +3091,7 @@ function homecoop_views_data() {
 
       'AddressStringKeyID' => array(     
         'title' => t('Address String ID'),
-        'help' => t('multilingual field'),
+        'help' => t('Address - multilingual field'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
@@ -3116,7 +3116,7 @@ function homecoop_views_data() {
 
       'PublishedCommentsStringKeyID' => array(     
         'title' => t('Published Comments String ID'),
-        'help' => t('multilingual field'),
+        'help' => t('Published Comments - multilingual field'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
@@ -3141,7 +3141,7 @@ function homecoop_views_data() {
 
       'AdminCommentsStringKeyID' => array(     
         'title' => t('Admin Comments String ID'),
-        'help' => t('multilingual field'),
+        'help' => t('Admin Comments - multilingual field'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
@@ -3562,7 +3562,7 @@ function homecoop_views_data() {
 
       'SpecStringKeyID' => array(     
         'title' => t('Details String ID'),
-        'help' => t('multilingual field'),
+        'help' => t('Details - multilingual field'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
@@ -4236,7 +4236,7 @@ function homecoop_views_data() {
 
       'UnitAbbreviationStringKeyID' => array(     
         'title' => t('Unit Abbreviation String ID'),
-        'help' => t('multilingual field'),
+        'help' => t('Unit Abbreviation - multilingual field'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,

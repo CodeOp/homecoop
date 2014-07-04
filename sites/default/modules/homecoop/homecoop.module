@@ -97,6 +97,11 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/pickuplocs.inc',
     ),
+    'hccoord/pickuploc' => array(
+      'page callback' => 'homecoop_page_pickuploc',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/pickuploc.inc',
+    ),
     'hccoord/cachier' => array(
       'page callback' => 'homecoop_page_cachier',
       'access callback' => 'homecoop_public_access',
