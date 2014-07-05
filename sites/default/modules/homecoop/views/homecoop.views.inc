@@ -3255,8 +3255,8 @@ function homecoop_views_data() {
       ),
 
       'mCachier' => array(     
-        'title' => t('Cachier'),
-        'help' => t('Cachier total'),
+        'title' => t('Cashier'),
+        'help' => t('Cashier total'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
@@ -3271,8 +3271,8 @@ function homecoop_views_data() {
       ),
 
       'mPrevCachier' => array(     
-        'title' => t('Prev. Cachier'),
-        'help' => t('Prev. cachier amount'),
+        'title' => t('Prev. Cashier'),
+        'help' => t('Prev. cashier amount'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
@@ -3287,8 +3287,8 @@ function homecoop_views_data() {
       ),
 
       'dCachierUpdate' => array(     
-        'title' => t('Cachier Update'),
-        'help' => t('Cachier Update'),
+        'title' => t('Cashier Update'),
+        'help' => t('Cashier Update'),
         'field' => array(       
           'handler' => 'views_handler_field_date',
           'click sortable' => TRUE,
@@ -4041,14 +4041,14 @@ function homecoop_views_data() {
 
       'PickupLocationKeyID' => array(     
         'title' => t('Pickup Location ID'),
-        'help' => t('a cachier'),
+        'help' => t('a cashier'),
         'field' => array(       
           'handler' => 'views_handler_field_numeric',
           'click sortable' => FALSE,
         ),
         'relationship' => array(
-          'title' => t('Cachier'),
-          'lable' => t('Cachier'),
+          'title' => t('Cashier'),
+          'lable' => t('Cashier'),
           'base' => 'T_PickupLocation',
           'base field' => 'PickupLocationKeyID',
         ),

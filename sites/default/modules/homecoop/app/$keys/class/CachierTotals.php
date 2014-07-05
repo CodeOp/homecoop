@@ -17,7 +17,7 @@ class CachierTotals extends SQLBase {
                             );
   }
   
-  public function GetData()
+  public function GetAccess()
   {
     if (!$this->AddPermissionBridge(self::PERMISSION_VIEW, Consts::PERMISSION_AREA_CACHIER_TOTALS, 
            Consts::PERMISSION_TYPE_VIEW, Consts::PERMISSION_SCOPE_COOP_CODE, 0, TRUE))
@@ -26,7 +26,7 @@ class CachierTotals extends SQLBase {
       return FALSE;
     }
     
-    $sSQL = " SELECT SUM(mBalanceHeld) as SumBalance FROM T_Member;";
+   /* $sSQL = " SELECT SUM(mBalanceHeld) as SumBalance FROM T_Member;";
     $this->RunSQL($sSQL);
         
     $recSum = $this->fetch();
@@ -43,7 +43,7 @@ class CachierTotals extends SQLBase {
     $this->m_aData[self::PROPERTY_TOTAL_CACHIER_BALANCE] = 
         intval(Rounding::Round($this->m_aData[self::PROPERY_TOTAL_CACHIER] - $this->m_aData[self::PROPERY_TOTAL_BALANCE], 
             Rounding::ROUND_TYPE_DEFAULT));
-    
+    */
     return TRUE;
   }
 }

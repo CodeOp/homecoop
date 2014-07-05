@@ -102,10 +102,10 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/pickuploc.inc',
     ),
-    'hccoord/cachier' => array(
-      'page callback' => 'homecoop_page_cachier',
+    'hccoord/cashier' => array(
+      'page callback' => 'homecoop_page_cashier',
       'access callback' => 'homecoop_public_access',
-      'file' => 'pages/coord/cachier.inc',
+      'file' => 'pages/coord/cashier.inc',
     ),
     'hccoord/cooporder' => array(
       'page callback' => 'homecoop_page_cooporder',

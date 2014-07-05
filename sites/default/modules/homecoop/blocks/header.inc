@@ -19,7 +19,7 @@ function homecoop_header_block() {
       $HelloMessage .= t('Your balance: @balance', array('@balance' => $g_oMemberSession->Balance));
 
       if ($g_oMemberSession->Balance != $g_oMemberSession->BalanceHeld) {
-        $HelloMessage .= ' ' . t('‎(in cachier: @balanceheld)‎', array('@balanceheld' => $g_oMemberSession->BalanceHeld));
+        $HelloMessage .= ' ' . t('‎(in cashier: @balanceheld)‎', array('@balanceheld' => $g_oMemberSession->BalanceHeld));
       }
 
       $mMaxOrder = $g_oMemberSession->GetMaxOrder();
@@ -199,7 +199,7 @@ function homecoop_coord_menu() {
   define('prmidProductsModify', 40);
   define('prmidProductsView', 41);
   define('prmidPickupLocationsModify', 50);
-  define('prmidCachierTotals', 60);
+  define('prmidCashierTotals', 60);
   define('prmidMembersModify', 70);
   define('prmidMembersView', 80);
   
@@ -251,12 +251,12 @@ function homecoop_coord_menu() {
       );
   }
 
-  if ($oPermissionBridgeSet->DefinePermissionBridge(prmidCachierTotals, Consts::PERMISSION_AREA_CACHIER_TOTALS, 
+  if ($oPermissionBridgeSet->DefinePermissionBridge(prmidCashierTotals, Consts::PERMISSION_AREA_CACHIER_TOTALS, 
              Consts::PERMISSION_TYPE_VIEW, Consts::PERMISSION_SCOPE_COOP_CODE, 0, TRUE))
   {
-    $arrContent['cachier'] = array(
+    $arrContent['cashier'] = array(
         '#prefix' => '<li><span class="coordmenulabel">',
-        '#markup' => '<a href="' . url('hccoord/cachier') . '">' . t('Cashier Totals') . '</a>',
+        '#markup' => '<a href="' . url('hccoord/cashier') . '">' . t('Cashier Totals') . '</a>',
         '#suffix' => '</span></li>',
       );
   }
