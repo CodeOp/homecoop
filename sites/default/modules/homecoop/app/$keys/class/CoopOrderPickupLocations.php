@@ -17,10 +17,8 @@ class CoopOrderPickupLocations extends CoopOrderSubBase {
 
  public function LoadData()
  {    
-    global $g_oMemberSession;
-    
     if (!$this->LoadCoopOrderData())
-      return NULL;
+      return;
     
     $bEdit = $this->AddPermissionBridge(self::PERMISSION_COOP_ORDER_PICKUP_LOCATION_EDIT, Consts::PERMISSION_AREA_COOP_ORDER_PICKUP_LOCATIONS, 
             Consts::PERMISSION_TYPE_MODIFY, Consts::PERMISSION_SCOPE_BOTH, 0, TRUE);
@@ -31,11 +29,11 @@ class CoopOrderPickupLocations extends CoopOrderSubBase {
     if (!$bEdit && !$bView)
     {
       $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_PERMISSION;
-      return NULL;
+      return;
     }
     
     //check sums permission
-    $this->AddPermissionBridge(self::PERMISSION_SUMS, Consts::PERMISSION_AREA_COOP_ORDER_PICKUP_LOCATION_SUMS,
+    /*$this->AddPermissionBridge(self::PERMISSION_SUMS, Consts::PERMISSION_AREA_COOP_ORDER_PICKUP_LOCATION_SUMS,
             Consts::PERMISSION_TYPE_VIEW, Consts::PERMISSION_SCOPE_COOP_CODE, 0, TRUE);
         
     $sSQL =   " SELECT COPL.PickupLocationKeyID, COPL.fMaxBurden, IfNull(COPL.fBurden,0) fBurden, COPL.mMaxCoopTotal , COPL.mCoopTotal ," . 
@@ -52,7 +50,7 @@ class CoopOrderPickupLocations extends CoopOrderSubBase {
 
     $this->RunSQL( $sSQL );
 
-    return $this->fetch();
+    return $this->fetch();*/
  }
  
  public function LoadList($nCoopOrderID, $MemberID)

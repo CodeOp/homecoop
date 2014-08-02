@@ -117,6 +117,11 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/copickuplocs.inc',
     ),
+    'hccoord/copickuploc' => array(
+      'page callback' => 'homecoop_page_copickuploc',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/copickuploc.inc',
+    ),
     'hccoord/coproducers' => array(
       'page callback' => 'homecoop_page_coproducers',
       'access callback' => 'homecoop_public_access',
