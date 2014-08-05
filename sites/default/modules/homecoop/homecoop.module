@@ -127,6 +127,11 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/coproducers.inc',
     ),
+    'hccoord/coproducer' => array(
+      'page callback' => 'homecoop_page_coproducer',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/coproducer.inc',
+    ),
     'hccoord/coproducts' => array(
       'page callback' => 'homecoop_page_coproducts',
       'access callback' => 'homecoop_public_access',

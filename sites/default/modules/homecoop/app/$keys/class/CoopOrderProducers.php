@@ -17,7 +17,7 @@ class CoopOrderProducers extends CoopOrderSubBase {
  {
     global $g_oMemberSession;
     if (!$this->LoadCoopOrderData())
-      return NULL;
+      return;
     
     $bEdit = $this->AddPermissionBridge(self::PERMISSION_COOP_ORDER_PRODUCER_EDIT, Consts::PERMISSION_AREA_COOP_ORDER_PRODUCERS, 
             Consts::PERMISSION_TYPE_MODIFY, Consts::PERMISSION_SCOPE_BOTH, 0, TRUE);
@@ -28,10 +28,10 @@ class CoopOrderProducers extends CoopOrderSubBase {
     if (!$bEdit && !$bView)
     {
       $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_PERMISSION;
-      return NULL;
+      return;
     }
     
-    $sSQL =   " SELECT COP.ProducerKeyID, COP.mMaxProducerOrder, COP.mCoopTotal, COP.mProducerTotal, COP.fDelivery, COP.mDelivery, COP.mMinDelivery, " . 
+    /*$sSQL =   " SELECT COP.ProducerKeyID, COP.mMaxProducerOrder, COP.mCoopTotal, COP.mProducerTotal, COP.fDelivery, COP.mDelivery, COP.mMinDelivery, " . 
               " COP.mMaxDelivery, COP.mTotalDelivery, P.CoordinatingGroupID,IfNull(COP.fBurden,0) fBurden, COP.fMaxBurden, " .
                  $this->ConcatStringsSelect(Consts::PERMISSION_AREA_PRODUCERS, 'sProducer') .
           " FROM T_CoopOrderProducer COP INNER JOIN T_Producer P ON COP.ProducerKeyID = P.ProducerKeyID " . 
@@ -44,7 +44,7 @@ class CoopOrderProducers extends CoopOrderSubBase {
 
     $this->RunSQL( $sSQL );
     
-    return $this->fetch();
+    return $this->fetch();*/
  }
  
  public function LoadCoordList()

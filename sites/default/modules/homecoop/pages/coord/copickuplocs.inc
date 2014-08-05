@@ -10,8 +10,6 @@ function homecoop_page_copickuplocs() {
   $oTabInfo = new CoopOrderTabInfo;
   $bReadOnly = FALSE;
   $oTabInfo->Page = CoopOrderTabInfo::PAGE_PICKUP;
-  
-  $bShowSums = FALSE;
    
   if (isset($_GET['id']))
     $oData->CoopOrderID = intval($_GET['id']);
@@ -54,7 +52,7 @@ function homecoop_page_copickuplocs() {
     drupal_set_message(t('Cooperative order cannot be updated at its current status'), 'warning', FALSE);
   }
   
-  //args: allow add, allow coord, language, language, coordinating groups
+  //args: id, read-write/read-only, language, language, coordinating groups
   $arrParams = array(
     $oData->CoopOrderID,
     $bReadOnly? 'ro' : 'rw',

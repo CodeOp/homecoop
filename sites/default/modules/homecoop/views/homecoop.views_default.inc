@@ -1019,7 +1019,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['header']['php']['id'] = 'php';
   $handler->display->display_options['header']['php']['table'] = 'views';
   $handler->display->display_options['header']['php']['field'] = 'php';
-  $handler->display->display_options['header']['php']['php_output'] = '<?php if (!isset($view->args[1]) || $view->args[1] == \'rw\') { ?><div><a href="<?php echo url(\'hccoord/copickuploc\', array(\'query\' => array(\'coid\' => $view->args[0]))); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a></div><?php } ?>';
+  $handler->display->display_options['header']['php']['php_output'] = '<?php if (!isset($view->args[1]) || $view->args[1] == \'rw\') { ?><div><a href="<?php echo url(\'hccoord/coproducer\', array(\'query\' => array(\'coid\' => $view->args[0]))); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a></div><?php } ?>';
   /* Relationship: Coop Order Producer: Producer */
   $handler->display->display_options['relationships']['ProducerKeyID']['id'] = 'ProducerKeyID';
   $handler->display->display_options['relationships']['ProducerKeyID']['table'] = 'T_CoopOrderProducer';
@@ -1046,18 +1046,28 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['CoopOrderKeyID']['label'] = '';
   $handler->display->display_options['fields']['CoopOrderKeyID']['exclude'] = TRUE;
   $handler->display->display_options['fields']['CoopOrderKeyID']['element_label_colon'] = FALSE;
+  /* Field: Coop Order Producer: Producer ID */
+  $handler->display->display_options['fields']['ProducerKeyID']['id'] = 'ProducerKeyID';
+  $handler->display->display_options['fields']['ProducerKeyID']['table'] = 'T_CoopOrderProducer';
+  $handler->display->display_options['fields']['ProducerKeyID']['field'] = 'ProducerKeyID';
+  $handler->display->display_options['fields']['ProducerKeyID']['label'] = '';
+  $handler->display->display_options['fields']['ProducerKeyID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['ProducerKeyID']['element_label_colon'] = FALSE;
   /* Field: String: String */
   $handler->display->display_options['fields']['sString']['id'] = 'sString';
   $handler->display->display_options['fields']['sString']['table'] = 'Tlng_String';
   $handler->display->display_options['fields']['sString']['field'] = 'sString';
   $handler->display->display_options['fields']['sString']['relationship'] = 'ProducerKeyID_1';
   $handler->display->display_options['fields']['sString']['label'] = 'Producer';
+  $handler->display->display_options['fields']['sString']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['sString']['alter']['path'] = 'hccoord/coproducer?coid=[CoopOrderKeyID]&pid=[ProducerKeyID]';
   $handler->display->display_options['fields']['sString']['element_label_colon'] = FALSE;
   /* Field: Coop Order Producer: Delivery Capacity */
   $handler->display->display_options['fields']['fMaxBurden']['id'] = 'fMaxBurden';
   $handler->display->display_options['fields']['fMaxBurden']['table'] = 'T_CoopOrderProducer';
   $handler->display->display_options['fields']['fMaxBurden']['field'] = 'fMaxBurden';
   $handler->display->display_options['fields']['fMaxBurden']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fMaxBurden']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['fMaxBurden']['precision'] = '0';
   /* Field: Coop Order Producer: Producer Total */
   $handler->display->display_options['fields']['mProducerTotal']['id'] = 'mProducerTotal';
@@ -1076,6 +1086,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['mTotalDelivery']['table'] = 'T_CoopOrderProducer';
   $handler->display->display_options['fields']['mTotalDelivery']['field'] = 'mTotalDelivery';
   $handler->display->display_options['fields']['mTotalDelivery']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mTotalDelivery']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['mTotalDelivery']['precision'] = '0';
   /* Contextual filter: Coop Order Producer: Coop Order ID */
   $handler->display->display_options['arguments']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';
