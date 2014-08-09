@@ -1354,6 +1354,15 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['fBurden']['field'] = 'fBurden';
   $handler->display->display_options['fields']['fBurden']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['fBurden']['precision'] = '0';
+  /* Sort criterion: Coop Order Product: Status */
+  $handler->display->display_options['sorts']['bDisabled']['id'] = 'bDisabled';
+  $handler->display->display_options['sorts']['bDisabled']['table'] = 'T_CoopOrderProduct';
+  $handler->display->display_options['sorts']['bDisabled']['field'] = 'bDisabled';
+  /* Sort criterion: Product: Sorting Order */
+  $handler->display->display_options['sorts']['nSortOrder']['id'] = 'nSortOrder';
+  $handler->display->display_options['sorts']['nSortOrder']['table'] = 'T_Product';
+  $handler->display->display_options['sorts']['nSortOrder']['field'] = 'nSortOrder';
+  $handler->display->display_options['sorts']['nSortOrder']['relationship'] = 'ProductKeyID';
   /* Contextual filter: Coop Order Product: Coop Order ID */
   $handler->display->display_options['arguments']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';
   $handler->display->display_options['arguments']['CoopOrderKeyID']['table'] = 'T_CoopOrderProduct';
@@ -2198,11 +2207,53 @@ function homecoop_cooporder_pickuplocs_get_view($name, $bViewSums) {
   $handler->display->display_options['fields']['fMaxStorageBurden']['exclude'] = TRUE;
   $handler->display->display_options['fields']['fMaxStorageBurden']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['fMaxStorageBurden']['precision'] = '0';
+  
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php_1']['id'] = 'php_1';
+  $handler->display->display_options['fields']['php_1']['table'] = 'views';
+  $handler->display->display_options['fields']['php_1']['field'] = 'php';
+  $handler->display->display_options['fields']['php_1']['label'] = '';
+  $handler->display->display_options['fields']['php_1']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['php_1']['alter']['path'] = 'hccoord/copickuplocproducers?coid=[CoopOrderKeyID]&plid=[PickupLocationKeyID]';
+  $handler->display->display_options['fields']['php_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php_1']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php_1']['php_output'] = '<?php print t(\'Producers\'); ?>';
+  $handler->display->display_options['fields']['php_1']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php_1']['php_click_sortable'] = '';
+  
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php_2']['id'] = 'php_2';
+  $handler->display->display_options['fields']['php_2']['table'] = 'views';
+  $handler->display->display_options['fields']['php_2']['field'] = 'php';
+  $handler->display->display_options['fields']['php_2']['label'] = '';
+  $handler->display->display_options['fields']['php_2']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['php_2']['alter']['path'] = 'hccoord/copickuplocproducts?coid=[CoopOrderKeyID]&plid=[PickupLocationKeyID]';
+  $handler->display->display_options['fields']['php_2']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php_2']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php_2']['php_output'] = '<?php print t(\'Products\'); ?>';
+  $handler->display->display_options['fields']['php_2']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php_2']['php_click_sortable'] = '';
+  
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php_3']['id'] = 'php_3';
+  $handler->display->display_options['fields']['php_3']['table'] = 'views';
+  $handler->display->display_options['fields']['php_3']['field'] = 'php';
+  $handler->display->display_options['fields']['php_3']['label'] = '';
+  $handler->display->display_options['fields']['php_3']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['php_3']['alter']['path'] = 'hccoord/copickuplocorders?coid=[CoopOrderKeyID]&plid=[PickupLocationKeyID]';
+  $handler->display->display_options['fields']['php_3']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php_3']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php_3']['php_output'] = '<?php print t(\'Member Orders\'); ?>';
+  $handler->display->display_options['fields']['php_3']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php_3']['php_click_sortable'] = '';
+  
   /* Sort criterion: String: String */
   $handler->display->display_options['sorts']['sString']['id'] = 'sString';
   $handler->display->display_options['sorts']['sString']['table'] = 'Tlng_String';
   $handler->display->display_options['sorts']['sString']['field'] = 'sString';
   $handler->display->display_options['sorts']['sString']['relationship'] = 'PickupLocationKeyID_1';
+  
+  
   
   /* Contextual filter: Coop Order Pickup Location: Coop Order ID */
   $handler->display->display_options['arguments']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';

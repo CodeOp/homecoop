@@ -23,10 +23,12 @@ class CoopOrderProducts  extends CoopOrderSubBase {
     if (!$bEdit && !$bView)
     {
       $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_PERMISSION;
-      return NULL;
+      return FALSE;
     }
     
-    $sSQL =   " SELECT COPRD.ProductKeyID, COPRD.bDisabled DisabledProduct, P.ProducerKeyID, COPRD.nJoinedStatus, COPRD.mProducerPrice, COPRD.mCoopPrice, ". 
+    return TRUE;
+    
+    /*$sSQL =   " SELECT COPRD.ProductKeyID, COPRD.bDisabled DisabledProduct, P.ProducerKeyID, COPRD.nJoinedStatus, COPRD.mProducerPrice, COPRD.mCoopPrice, ". 
             " IfNUll(COPRD.mProducerTotal,0) mProducerTotal, PRD.UnitKeyID," . 
             " NUllIf(PRD.fQuantity,0) ProductQuantity, PRD.nItems ProductItems, PRD.fItemQuantity, PRD.fPackageSize, PRD.fUnitInterval, " .
             " IfNull(COPRD.fTotalCoopOrder,0) fTotalCoopOrder, COPRD.fMaxUserOrder, COPRD.fMaxCoopOrder, IfNull(COPRD.fBurden,0) fBurden, " . 
@@ -50,7 +52,7 @@ class CoopOrderProducts  extends CoopOrderSubBase {
 
     $this->RunSQL( $sSQL );
 
-    return $this->fetch();
+    return $this->fetch();*/
  }
  
  
