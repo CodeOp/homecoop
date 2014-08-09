@@ -19,11 +19,29 @@ function ToggleTabDisplay(sTabNameToShow) {
   
   if (sTabNameToShow == sTabToHide) return;
   
-  document.getElementById(sTabToHide).style.display = "none";
-  document.getElementById(sTabNameToShow).style.display = "block";
+  var ctlTabToHide = document.getElementById(sTabToHide);
   
-  document.getElementById(sTabToHide + "Item").style.backgroundColor = "#D8D8D8";
-  document.getElementById(sTabNameToShow + "Item").style.backgroundColor = "#FFF";
+  if (ctlTabToHide != null) {
+    ctlTabToHide.style.display = "none";
+  }
+  
+  var ctlTabToShow = document.getElementById(sTabNameToShow);
+  
+  if (ctlTabToShow != null) {
+    ctlTabToShow.style.display = "block";
+  }
+  
+  var ctlTabItemToHide = document.getElementById(sTabToHide + "Item");
+  
+  if (ctlTabItemToHide != null) {
+    ctlTabItemToHide.style.backgroundColor = "#D8D8D8";
+  }
+  
+  var ctlTabItemToShow = document.getElementById(sTabNameToShow + "Item");
+  
+  if (ctlTabItemToShow != null) {
+    document.getElementById(sTabNameToShow + "Item").style.backgroundColor = "#FFF";
+  }
   
   document.getElementById('hidCurrentMainTab').value = sTabNameToShow;
 }

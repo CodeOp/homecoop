@@ -1,0 +1,41 @@
+/nbproject/
+/includes/
+/misc/
+/modules/
+/profiles/minimal/
+/profiles/standard/
+/profiles/testing/
+/scripts/
+/themes/
+/*.*
+/sites/*.*
+/sites/all/
+/sites/default/*.*
+/sites/default/files/
+*.*~
+!/sites/default/modules/
+!/sites/default/themes/
+/sites/default/modules/homecoop/app/*.*
+/sites/default/modules/homecoop/app/he/
+/sites/default/modules/homecoop/app/en/
+/sites/default/modules/homecoop/app/uploadimg/
+/sites/default/modules/homecoop/app/nbproject/
+/sites/default/modules/homecoop/app/?keys/*.*
+/sites/default/modules/homecoop/app/?keys/xsl/
+/sites/default/modules/homecoop/app/?keys/style/
+/sites/default/modules/homecoop/app/?keys/script/
+
+/sites/default/modules/homecoop/app/?keys/control/
+/sites/default/modules/homecoop/app/?keys/coord/
+/sites/default/modules/homecoop/app/?keys/img/
+/sites/default/modules/homecoop/app/?keys/php_calendar/
+
+# THESE FILES SHOULD ONLY BE UPDATED MANUALLY WHEN THERE'S A CHANGE IN STANDALONE HOMECOOP
+!/sites/default/modules/homecoop/app/?keys/settings.php
+!/sites/default/modules/homecoop/app/?keys/authenticate.php
+
+# PATCHES
+
+# SYNC THIS FILE
+!.gitignore
+

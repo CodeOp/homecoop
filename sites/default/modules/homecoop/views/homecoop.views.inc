@@ -499,6 +499,20 @@ function homecoop_views_data() {
           'help' => t('Coop Order Pickup Location Producer - a table that helps in calculations'),
         ),
         'group' => t('Coop Order Pickup Location Producer'),
+        /*'join'  => array(
+         'T_CoopOrderProducer' => array(
+           'left_field' => 'CoopOrderKeyID',
+           'field'      => 'CoopOrderKeyID',
+           'extra'      => array(
+             array(
+               'field'    => 'ProducerKeyID',
+               'value'    => 'T_CoopOrderProducer.ProducerKeyID',
+               'operator' => '=',
+               'numeric'  => true,
+             ),
+           ),
+         ),
+       ),*/
       ),
 
       'CoopOrderKeyID' => array(     
@@ -945,6 +959,8 @@ function homecoop_views_data() {
         ),
       ),
     ); 
+    
+     
 
      $data['T_CoopOrderProduct'] = array(   
       'table' => array(     

@@ -17,14 +17,12 @@ class CoopOrderPickupLocationProducers extends CoopOrderPickupLocationSubBase {
   }
  
   public function LoadData()
- {
-    global $g_oMemberSession;
-    
+ {    
     if (!$this->LoadCoopOrderData())
-      return NULL;
+      return;
     
     if (!$this->LoadCoopOrderPickupLocationData(Consts::PERMISSION_AREA_COOP_ORDER_PICKUP_LOCATION_PRODUCERS))
-      return NULL;
+      return;
     
     //this bridges are not mandatory. If the user has the permission, it might actually limit hir access instead of broadening it - showing only
     //producers ze has access to
@@ -34,7 +32,7 @@ class CoopOrderPickupLocationProducers extends CoopOrderPickupLocationSubBase {
     $this->AddPermissionBridge(self::PERMISSION_COOP_ORDER_PRODUCER_MODIFY, Consts::PERMISSION_AREA_COOP_ORDER_PRODUCERS, 
             Consts::PERMISSION_TYPE_MODIFY, Consts::PERMISSION_SCOPE_BOTH, 0, TRUE);
     
-    $sSQL =   " SELECT COPLP.ProducerKeyID, COPLP.mCoopTotal, COPLP.mProducerTotal,COP.mTotalDelivery, " . 
+    /*$sSQL =   " SELECT COPLP.ProducerKeyID, COPLP.mCoopTotal, COPLP.mProducerTotal,COP.mTotalDelivery, " . 
                  $this->ConcatStringsSelect(Consts::PERMISSION_AREA_PRODUCERS, 'sProducer') .
           " FROM T_CoopOrderPickupLocationProducer COPLP INNER JOIN T_Producer P ON COPLP.ProducerKeyID = P.ProducerKeyID " . 
           " INNER JOIN T_CoopOrderProducer COP ON COP.CoopOrderKeyID = COPLP.CoopOrderKeyID AND COP.ProducerKeyID = COPLP.ProducerKeyID " .
@@ -48,7 +46,7 @@ class CoopOrderPickupLocationProducers extends CoopOrderPickupLocationSubBase {
 
     $this->RunSQL( $sSQL );
 
-    return $this->fetch();
+    return $this->fetch();*/
     
  }
 }

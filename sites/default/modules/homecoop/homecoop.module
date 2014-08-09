@@ -122,6 +122,21 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/copickuploc.inc',
     ),
+    'hccoord/copickuplocproducers' => array(
+      'page callback' => 'homecoop_page_copickuploc_producers',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/copickuplocproducers.inc',
+    ),
+    'hccoord/copickuplocproducts' => array(
+      'page callback' => 'homecoop_page_copickuploc_products',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/copickuplocproducts.inc',
+    ),
+    'hccoord/copickuplocorders' => array(
+      'page callback' => 'homecoop_page_copickuploc_orders',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/copickuplocorders.inc',
+    ),
     'hccoord/coproducers' => array(
       'page callback' => 'homecoop_page_coproducers',
       'access callback' => 'homecoop_public_access',
