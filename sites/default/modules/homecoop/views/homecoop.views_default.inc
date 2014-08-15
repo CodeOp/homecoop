@@ -1565,6 +1565,256 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['CoordinatingGroupID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
 
   $views[$view->name] = $view;
+  
+  $view = new view();
+  $view->name = 'homecoop_cooporder_pickuplocation_products';
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'T_CoopOrderPickupLocationProduct';
+  $view->human_name = 'HomeCoop CoopOrder PickupLocation Products';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = HOMECOOP_PAGER_PAGES;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'CoopOrderKeyID' => 'CoopOrderKeyID',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'CoopOrderKeyID' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  /* Relationship: Coop Order Pickup Location Product: Coop Order Pickup Location Product - Product */
+  $handler->display->display_options['relationships']['ProductKeyID']['id'] = 'ProductKeyID';
+  $handler->display->display_options['relationships']['ProductKeyID']['table'] = 'T_CoopOrderPickupLocationProduct';
+  $handler->display->display_options['relationships']['ProductKeyID']['field'] = 'ProductKeyID';
+  $handler->display->display_options['relationships']['ProductKeyID']['label'] = 'Product';
+  $handler->display->display_options['relationships']['ProductKeyID']['required'] = TRUE;
+  /* Relationship: Product: Producer */
+  $handler->display->display_options['relationships']['ProducerKeyID']['id'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID']['table'] = 'T_Product';
+  $handler->display->display_options['relationships']['ProducerKeyID']['field'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID']['relationship'] = 'ProductKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID']['label'] = 'Producer';
+  $handler->display->display_options['relationships']['ProducerKeyID']['required'] = TRUE;
+  /* Relationship: Product: Product Name */
+  $handler->display->display_options['relationships']['ProductKeyID_1']['id'] = 'ProductKeyID_1';
+  $handler->display->display_options['relationships']['ProductKeyID_1']['table'] = 'T_Product';
+  $handler->display->display_options['relationships']['ProductKeyID_1']['field'] = 'ProductKeyID';
+  $handler->display->display_options['relationships']['ProductKeyID_1']['relationship'] = 'ProductKeyID';
+  $handler->display->display_options['relationships']['ProductKeyID_1']['label'] = 'ProductName';
+  $handler->display->display_options['relationships']['ProductKeyID_1']['required'] = TRUE;
+  /* Relationship: Product: Unit */
+  $handler->display->display_options['relationships']['UnitKeyID']['id'] = 'UnitKeyID';
+  $handler->display->display_options['relationships']['UnitKeyID']['table'] = 'T_Product';
+  $handler->display->display_options['relationships']['UnitKeyID']['field'] = 'UnitKeyID';
+  $handler->display->display_options['relationships']['UnitKeyID']['relationship'] = 'ProductKeyID';
+  $handler->display->display_options['relationships']['UnitKeyID']['label'] = 'ProductUnit';
+  $handler->display->display_options['relationships']['UnitKeyID']['required'] = TRUE;
+  /* Relationship: Producer: Producer Name */
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['id'] = 'ProducerKeyID_1';
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['table'] = 'T_Producer';
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['field'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['relationship'] = 'ProducerKeyID';
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['label'] = 'ProducerName';
+  $handler->display->display_options['relationships']['ProducerKeyID_1']['required'] = TRUE;
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID']['id'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['relationship'] = 'ProductKeyID_1';
+  $handler->display->display_options['relationships']['LangID']['label'] = 'ProductNameLang';
+  $handler->display->display_options['relationships']['LangID']['required'] = TRUE;
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID_1']['id'] = 'LangID_1';
+  $handler->display->display_options['relationships']['LangID_1']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID_1']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID_1']['relationship'] = 'ProducerKeyID_1';
+  $handler->display->display_options['relationships']['LangID_1']['label'] = 'ProducerNameLang';
+  $handler->display->display_options['relationships']['LangID_1']['required'] = TRUE;
+  /* Relationship: Unit: Unit Abbreviation */
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['id'] = 'UnitAbbreviationStringKeyID';
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['table'] = 'T_Unit';
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['field'] = 'UnitAbbreviationStringKeyID';
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['relationship'] = 'UnitKeyID';
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['label'] = 'UnitAbbreviation';
+  $handler->display->display_options['relationships']['UnitAbbreviationStringKeyID']['required'] = TRUE;
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID_2']['id'] = 'LangID_2';
+  $handler->display->display_options['relationships']['LangID_2']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID_2']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID_2']['relationship'] = 'UnitAbbreviationStringKeyID';
+  $handler->display->display_options['relationships']['LangID_2']['label'] = 'UnitAbbrevLang';
+  $handler->display->display_options['relationships']['LangID_2']['required'] = TRUE;
+  /* Field: Coop Order Pickup Location Product: Coop Order ID */
+  $handler->display->display_options['fields']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';
+  $handler->display->display_options['fields']['CoopOrderKeyID']['table'] = 'T_CoopOrderPickupLocationProduct';
+  $handler->display->display_options['fields']['CoopOrderKeyID']['field'] = 'CoopOrderKeyID';
+  $handler->display->display_options['fields']['CoopOrderKeyID']['label'] = '';
+  $handler->display->display_options['fields']['CoopOrderKeyID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['CoopOrderKeyID']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString']['id'] = 'sString';
+  $handler->display->display_options['fields']['sString']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString']['relationship'] = 'ProducerKeyID_1';
+  $handler->display->display_options['fields']['sString']['label'] = 'Producer';
+  $handler->display->display_options['fields']['sString']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString_1']['id'] = 'sString_1';
+  $handler->display->display_options['fields']['sString_1']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString_1']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString_1']['relationship'] = 'ProductKeyID_1';
+  $handler->display->display_options['fields']['sString_1']['label'] = 'Product';
+  $handler->display->display_options['fields']['sString_1']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString_2']['id'] = 'sString_2';
+  $handler->display->display_options['fields']['sString_2']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString_2']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString_2']['relationship'] = 'UnitAbbreviationStringKeyID';
+  $handler->display->display_options['fields']['sString_2']['label'] = '';
+  $handler->display->display_options['fields']['sString_2']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['sString_2']['element_label_colon'] = FALSE;
+  /* Field: Product: Package Size */
+  $handler->display->display_options['fields']['fPackageSize']['id'] = 'fPackageSize';
+  $handler->display->display_options['fields']['fPackageSize']['table'] = 'T_Product';
+  $handler->display->display_options['fields']['fPackageSize']['field'] = 'fPackageSize';
+  $handler->display->display_options['fields']['fPackageSize']['relationship'] = 'ProductKeyID';
+  $handler->display->display_options['fields']['fPackageSize']['label'] = '';
+  $handler->display->display_options['fields']['fPackageSize']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['fPackageSize']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fPackageSize']['set_precision'] = TRUE;
+  $handler->display->display_options['fields']['fPackageSize']['precision'] = '2';
+  /* Field: Product: Quantity */
+  $handler->display->display_options['fields']['fQuantity']['id'] = 'fQuantity';
+  $handler->display->display_options['fields']['fQuantity']['table'] = 'T_Product';
+  $handler->display->display_options['fields']['fQuantity']['field'] = 'fQuantity';
+  $handler->display->display_options['fields']['fQuantity']['relationship'] = 'ProductKeyID';
+  $handler->display->display_options['fields']['fQuantity']['label'] = '';
+  $handler->display->display_options['fields']['fQuantity']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['fQuantity']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fQuantity']['precision'] = '0';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php']['id'] = 'php';
+  $handler->display->display_options['fields']['php']['table'] = 'views';
+  $handler->display->display_options['fields']['php']['field'] = 'php';
+  $handler->display->display_options['fields']['php']['label'] = 'Package Size';
+  $handler->display->display_options['fields']['php']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php']['php_value'] = 'if (!empty($row->fPackageSize)) {
+    return $row->fPackageSize;
+  }
+  return $row->fQuantity;';
+  $handler->display->display_options['fields']['php']['php_output'] = '<?php print $value . \' \' . $row->sString_2; ?>';
+  $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
+  /* Field: Coop Order Pickup Location Product: Total Quantity Ordered */
+  $handler->display->display_options['fields']['fTotalCoopOrder']['id'] = 'fTotalCoopOrder';
+  $handler->display->display_options['fields']['fTotalCoopOrder']['table'] = 'T_CoopOrderPickupLocationProduct';
+  $handler->display->display_options['fields']['fTotalCoopOrder']['field'] = 'fTotalCoopOrder';
+  $handler->display->display_options['fields']['fTotalCoopOrder']['label'] = 'Quantity';
+  $handler->display->display_options['fields']['fTotalCoopOrder']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fTotalCoopOrder']['precision'] = '0';
+  /* Field: Coop Order Pickup Location Product: Total Coop */
+  $handler->display->display_options['fields']['mCoopTotal']['id'] = 'mCoopTotal';
+  $handler->display->display_options['fields']['mCoopTotal']['table'] = 'T_CoopOrderPickupLocationProduct';
+  $handler->display->display_options['fields']['mCoopTotal']['field'] = 'mCoopTotal';
+  $handler->display->display_options['fields']['mCoopTotal']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mCoopTotal']['precision'] = '0';
+  /* Field: Coop Order Pickup Location Product: Total Producers */
+  $handler->display->display_options['fields']['mProducerTotal']['id'] = 'mProducerTotal';
+  $handler->display->display_options['fields']['mProducerTotal']['table'] = 'T_CoopOrderPickupLocationProduct';
+  $handler->display->display_options['fields']['mProducerTotal']['field'] = 'mProducerTotal';
+  $handler->display->display_options['fields']['mProducerTotal']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mProducerTotal']['precision'] = '0';
+  /* Contextual filter: Coop Order Pickup Location Product: Coop Order ID */
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['table'] = 'T_CoopOrderPickupLocationProduct';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['field'] = 'CoopOrderKeyID';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['default_action'] = 'not found';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Contextual filter: Coop Order Pickup Location Product: Pickup Location ID */
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['id'] = 'PickupLocationKeyID';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['table'] = 'T_CoopOrderPickupLocationProduct';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['field'] = 'PickupLocationKeyID';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['default_action'] = 'not found';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Contextual filter: Language: PHP Folder */
+  $handler->display->display_options['arguments']['sPhpFolder']['id'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder']['table'] = 'Tlng_Language';
+  $handler->display->display_options['arguments']['sPhpFolder']['field'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder']['relationship'] = 'LangID';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_options']['code'] = 'global $language; return $language->language;';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['sPhpFolder']['limit'] = '0';
+  /* Contextual filter: Language: PHP Folder */
+  $handler->display->display_options['arguments']['sPhpFolder_1']['id'] = 'sPhpFolder_1';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['table'] = 'Tlng_Language';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['field'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['relationship'] = 'LangID_1';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['default_argument_options']['code'] = 'global $language; return $language->language;';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['sPhpFolder_1']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['sPhpFolder_1']['limit'] = '0';
+  /* Contextual filter: Language: PHP Folder */
+  $handler->display->display_options['arguments']['sPhpFolder_2']['id'] = 'sPhpFolder_2';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['table'] = 'Tlng_Language';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['field'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['relationship'] = 'LangID_2';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['default_argument_options']['code'] = 'global $language; return $language->language;';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['sPhpFolder_2']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['sPhpFolder_2']['limit'] = '0';
+  /* Contextual filter: Producer: Coordinating Group ID */
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['id'] = 'CoordinatingGroupID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['table'] = 'T_Producer';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['field'] = 'CoordinatingGroupID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['relationship'] = 'ProducerKeyID';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['CoordinatingGroupID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Filter criterion: Coop Order Pickup Location Product: Total Quantity Ordered */
+  $handler->display->display_options['filters']['fTotalCoopOrder']['id'] = 'fTotalCoopOrder';
+  $handler->display->display_options['filters']['fTotalCoopOrder']['table'] = 'T_CoopOrderPickupLocationProduct';
+  $handler->display->display_options['filters']['fTotalCoopOrder']['field'] = 'fTotalCoopOrder';
+  $handler->display->display_options['filters']['fTotalCoopOrder']['operator'] = '>';
+  $handler->display->display_options['filters']['fTotalCoopOrder']['value']['value'] = '0';
+
+  $views[$view->name] = $view;
 
   //--------------
   // Translations
@@ -1601,6 +1851,11 @@ function homecoop_views_default_views() {
     t('Order ID'),
     t('All'),
     t('Member'),
+  );
+  
+  $translatables['homecoop_cooporder_pickuplocation_products'] = array(
+    t('Package Size'),
+    t('Total Producers'),
   );
   
   $translatables['homecoop_cooporder_producers'] = array(

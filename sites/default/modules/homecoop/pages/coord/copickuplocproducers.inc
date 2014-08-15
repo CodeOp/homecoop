@@ -12,22 +12,22 @@ function homecoop_page_copickuploc_producers() {
   $oTabInfo->IsSubPage = TRUE;
   $oCoopOrderCapacity = NULL;
 
-  if (isset($_GET['coid']))
+  if (isset($_GET['coid'])) {
     $oData->CoopOrderID = intval($_GET['coid']);
+  }
   
-  if (isset($_GET['plid']))
+  if (isset($_GET['plid'])) {
     $oData->PickupLocationID = intval($_GET['plid']);
+  }
   
-  if ($oData->CoopOrderID <= 0 || $oData->PickupLocationID <= 0)
-  {
+  if ($oData->CoopOrderID <= 0 || $oData->PickupLocationID <= 0) {
      drupal_goto(Consts::URL_ACCESS_DENIED);
      return;
   }
   
   $oData->LoadData();
   
-  switch($oData->LastOperationStatus)
-  {
+  switch($oData->LastOperationStatus) {
     case SQLBase::OPERATION_STATUS_NO_SUFFICIENT_DATA_PROVIDED:
     case SQLBase::OPERATION_STATUS_NO_PERMISSION:
     case SQLBase::OPERATION_STATUS_LOAD_RECORD_FAILED:
@@ -50,8 +50,9 @@ function homecoop_page_copickuploc_producers() {
   $oTabInfo->CoopTotal = $oData->CoopOrderCoopTotal; 
   $oPercent = new CoopOrderCapacity($oData->CoopOrderMaxBurden, $oData->CoopOrderBurden, $oData->CoopOrderMaxCoopTotal, $oData->CoopOrderCoopTotal,
       $oData->CoopOrderMaxStorageBurden, $oData->CoopOrderStorageBurden);
-  if ($oPercent->SelectedType != CoopOrderCapacity::TypeNone)
+  if ($oPercent->SelectedType != CoopOrderCapacity::TypeNone) {
     $oTabInfo->Capacity = $oPercent->PercentRounded . '%';
+  }
   unset($oPercent);
 
   $oPLTabInfo = new CoopOrderPickupLocationTabInfo($oData->CoopOrderID, $oData->PickupLocationID, $oData->PickupLocationName, 
