@@ -170,7 +170,7 @@ function homecoop_views_default_views() {
   /* Field: String: String */
   $handler->display->display_options['fields']['sString_1']['id'] = 'sString_1';
   $handler->display->display_options['fields']['sString_1']['table'] = 'Tlng_String';
-  $handler->display->display_options['fields']['sString_1']['field'] = 'sString';
+  $handler->display->display_oOrptions['fields']['sString_1']['field'] = 'sString';
   $handler->display->display_options['fields']['sString_1']['relationship'] = 'AddressStringKeyID';
   $handler->display->display_options['fields']['sString_1']['label'] = 'Address';
   $handler->display->display_options['fields']['sString_1']['element_label_colon'] = FALSE;
@@ -853,6 +853,20 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['OrderID']['field'] = 'OrderID';
   $handler->display->display_options['fields']['OrderID']['exclude'] = TRUE;
   $handler->display->display_options['fields']['OrderID']['element_label_colon'] = FALSE;
+  /* Field: Order: Has Item Comments */
+  $handler->display->display_options['fields']['bHasItemComments']['id'] = 'bHasItemComments';
+  $handler->display->display_options['fields']['bHasItemComments']['table'] = 'T_Order';
+  $handler->display->display_options['fields']['bHasItemComments']['field'] = 'bHasItemComments';
+  $handler->display->display_options['fields']['bHasItemComments']['label'] = '';
+  $handler->display->display_options['fields']['bHasItemComments']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['bHasItemComments']['element_label_colon'] = FALSE;
+  /* Field: Order: Comments */
+  $handler->display->display_options['fields']['sMemberComments']['id'] = 'sMemberComments';
+  $handler->display->display_options['fields']['sMemberComments']['table'] = 'T_Order';
+  $handler->display->display_options['fields']['sMemberComments']['field'] = 'sMemberComments';
+  $handler->display->display_options['fields']['sMemberComments']['label'] = '';
+  $handler->display->display_options['fields']['sMemberComments']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['sMemberComments']['element_label_colon'] = FALSE;
   /* Field: Member: Name */
   $handler->display->display_options['fields']['sName']['id'] = 'sName';
   $handler->display->display_options['fields']['sName']['table'] = 'T_Member';
@@ -903,12 +917,22 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['dCreated']['date_format'] = 'custom';
   $handler->display->display_options['fields']['dCreated']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
   $handler->display->display_options['fields']['dCreated']['second_date_format'] = 'long';
-  /* Field: Order: Comments */
-  $handler->display->display_options['fields']['sMemberComments']['id'] = 'sMemberComments';
-  $handler->display->display_options['fields']['sMemberComments']['table'] = 'T_Order';
-  $handler->display->display_options['fields']['sMemberComments']['field'] = 'sMemberComments';
-  $handler->display->display_options['fields']['sMemberComments']['label'] = 'Comments';
-  $handler->display->display_options['fields']['sMemberComments']['element_label_colon'] = FALSE;
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php']['id'] = 'php';
+  $handler->display->display_options['fields']['php']['table'] = 'views';
+  $handler->display->display_options['fields']['php']['field'] = 'php';
+  $handler->display->display_options['fields']['php']['label'] = 'Comments';
+  $handler->display->display_options['fields']['php']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['php']['alter']['path'] = 'hcorderitems?id=[OrderID]';
+  $handler->display->display_options['fields']['php']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php']['php_value'] = 'if ($row->bHasItemComments) {
+   return check_plain($row->sMemberComments) . t(\'+ More..\');
+  }
+  return check_plain($row->sMemberComments);';
+  $handler->display->display_options['fields']['php']['php_output'] = '<?php print $value; ?>';
+  $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
   /* Sort criterion: Order: Created On */
   $handler->display->display_options['sorts']['dCreated']['id'] = 'dCreated';
   $handler->display->display_options['sorts']['dCreated']['table'] = 'T_Order';
@@ -1815,7 +1839,164 @@ function homecoop_views_default_views() {
   $handler->display->display_options['filters']['fTotalCoopOrder']['value']['value'] = '0';
 
   $views[$view->name] = $view;
+  
+  $view = new view();
+  $view->name = 'homecoop_cooporder_pickuplocation_orders';
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'T_Order';
+  $view->human_name = 'HomeCoop CoopOrder PickupLocation Orders';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = HOMECOOP_PAGER_PAGES;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'OrderID' => 'OrderID',
+    'sName' => 'sName',
+    'sEMail' => 'sEMail',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'OrderID' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'sName' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'sEMail' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  /* Relationship: Order: Member */
+  $handler->display->display_options['relationships']['MemberID']['id'] = 'MemberID';
+  $handler->display->display_options['relationships']['MemberID']['table'] = 'T_Order';
+  $handler->display->display_options['relationships']['MemberID']['field'] = 'MemberID';
+  $handler->display->display_options['relationships']['MemberID']['label'] = 'Member';
+  $handler->display->display_options['relationships']['MemberID']['required'] = TRUE;
+  /* Field: Order: Order ID */
+  $handler->display->display_options['fields']['OrderID']['id'] = 'OrderID';
+  $handler->display->display_options['fields']['OrderID']['table'] = 'T_Order';
+  $handler->display->display_options['fields']['OrderID']['field'] = 'OrderID';
+  $handler->display->display_options['fields']['OrderID']['label'] = '';
+  $handler->display->display_options['fields']['OrderID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['OrderID']['element_label_colon'] = FALSE;
+  /* Field: Order: Comments */
+  $handler->display->display_options['fields']['sMemberComments']['id'] = 'sMemberComments';
+  $handler->display->display_options['fields']['sMemberComments']['table'] = 'T_Order';
+  $handler->display->display_options['fields']['sMemberComments']['field'] = 'sMemberComments';
+  $handler->display->display_options['fields']['sMemberComments']['label'] = '';
+  $handler->display->display_options['fields']['sMemberComments']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['sMemberComments']['element_label_colon'] = FALSE;
+  /* Field: Order: Has Item Comments */
+  $handler->display->display_options['fields']['bHasItemComments']['id'] = 'bHasItemComments';
+  $handler->display->display_options['fields']['bHasItemComments']['table'] = 'T_Order';
+  $handler->display->display_options['fields']['bHasItemComments']['field'] = 'bHasItemComments';
+  $handler->display->display_options['fields']['bHasItemComments']['label'] = '';
+  $handler->display->display_options['fields']['bHasItemComments']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['bHasItemComments']['element_label_colon'] = FALSE;
+  /* Field: Member: Name */
+  $handler->display->display_options['fields']['sName']['id'] = 'sName';
+  $handler->display->display_options['fields']['sName']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['sName']['field'] = 'sName';
+  $handler->display->display_options['fields']['sName']['relationship'] = 'MemberID';
+  $handler->display->display_options['fields']['sName']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['sName']['alter']['path'] = 'hcorderitems?id=[OrderID]';
+  $handler->display->display_options['fields']['sName']['element_label_colon'] = FALSE;
+  /* Field: Member: Email address */
+  $handler->display->display_options['fields']['sEMail']['id'] = 'sEMail';
+  $handler->display->display_options['fields']['sEMail']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['sEMail']['field'] = 'sEMail';
+  $handler->display->display_options['fields']['sEMail']['relationship'] = 'MemberID';
+  /* Field: Order: Total Amount */
+  $handler->display->display_options['fields']['mCoopTotalIncFee']['id'] = 'mCoopTotalIncFee';
+  $handler->display->display_options['fields']['mCoopTotalIncFee']['table'] = 'T_Order';
+  $handler->display->display_options['fields']['mCoopTotalIncFee']['field'] = 'mCoopTotalIncFee';
+  $handler->display->display_options['fields']['mCoopTotalIncFee']['label'] = 'Total';
+  $handler->display->display_options['fields']['mCoopTotalIncFee']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mCoopTotalIncFee']['set_precision'] = TRUE;
+  $handler->display->display_options['fields']['mCoopTotalIncFee']['precision'] = '2';
+  /* Field: Member: Balance */
+  $handler->display->display_options['fields']['mBalance']['id'] = 'mBalance';
+  $handler->display->display_options['fields']['mBalance']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['mBalance']['field'] = 'mBalance';
+  $handler->display->display_options['fields']['mBalance']['relationship'] = 'MemberID';
+  $handler->display->display_options['fields']['mBalance']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mBalance']['precision'] = '0';
+  /* Field: Order: Created On */
+  $handler->display->display_options['fields']['dCreated']['id'] = 'dCreated';
+  $handler->display->display_options['fields']['dCreated']['table'] = 'T_Order';
+  $handler->display->display_options['fields']['dCreated']['field'] = 'dCreated';
+  $handler->display->display_options['fields']['dCreated']['label'] = 'Order Date';
+  $handler->display->display_options['fields']['dCreated']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['dCreated']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['dCreated']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
+  $handler->display->display_options['fields']['dCreated']['second_date_format'] = 'long';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php']['id'] = 'php';
+  $handler->display->display_options['fields']['php']['table'] = 'views';
+  $handler->display->display_options['fields']['php']['field'] = 'php';
+  $handler->display->display_options['fields']['php']['label'] = 'Comments';
+  $handler->display->display_options['fields']['php']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['php']['alter']['path'] = 'hcorderitems?id=[OrderID]';
+  $handler->display->display_options['fields']['php']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php']['php_value'] = 'if ($row->bHasItemComments) {
+   return check_plain($row->sMemberComments) . t(\'+ More..\');
+  }
+  return check_plain($row->sMemberComments);';
+  $handler->display->display_options['fields']['php']['php_output'] = '<?php print $value; ?>';
+  $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
+  /* Sort criterion: Order: Created On */
+  $handler->display->display_options['sorts']['dCreated']['id'] = 'dCreated';
+  $handler->display->display_options['sorts']['dCreated']['table'] = 'T_Order';
+  $handler->display->display_options['sorts']['dCreated']['field'] = 'dCreated';
+  $handler->display->display_options['sorts']['dCreated']['order'] = 'DESC';
+  /* Contextual filter: Order: Coop Order ID */
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['id'] = 'CoopOrderKeyID';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['table'] = 'T_Order';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['field'] = 'CoopOrderKeyID';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['default_action'] = 'not found';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['CoopOrderKeyID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Contextual filter: Order: Pickup Location ID */
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['id'] = 'PickupLocationKeyID';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['table'] = 'T_Order';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['field'] = 'PickupLocationKeyID';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['default_action'] = 'not found';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['PickupLocationKeyID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+
+
+  $views[$view->name] = $view;
   //--------------
   // Translations
   //--------------
@@ -2346,15 +2527,15 @@ function homecoop_cooporders_get_view($view_name, $view_sums) {
   $handler->display->display_options['fields']['PercentFull']['label'] = 'Full';
   $handler->display->display_options['fields']['PercentFull']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['PercentFull']['use_php_setup'] = 0;
-  $handler->display->display_options['fields']['PercentFull']['php_output'] = '<?php 
+  $handler->display->display_options['fields']['PercentFull']['php_value'] = ' 
   $oCoopOrderCapacity = new CoopOrderCapacity(
                                 $row->fMaxBurden, $row->fBurden,
                                 $row->mMaxCoopTotal, $row->mCoopTotal,
                            $row->fMaxStorageBurden, $row->fStorageBurden);
   if ($oCoopOrderCapacity->SelectedType != CoopOrderCapacity::TypeNone) {
-                          echo $oCoopOrderCapacity->PercentRounded , \'%\';
-  }
-  ?>';
+                          return $oCoopOrderCapacity->PercentRounded , \'%\';
+  }';
+  $handler->display->display_options['fields']['PercentFull']['php_output'] = '<?php print $value; ?>';
   $handler->display->display_options['fields']['PercentFull']['use_php_click_sortable'] = '0';
   $handler->display->display_options['fields']['PercentFull']['php_click_sortable'] = '';
   /* Field: Global: PHP */

@@ -15,12 +15,12 @@ class CoopOrderPickupLocationOrders extends CoopOrderPickupLocationSubBase {
   
   public function __construct()
   {
-    $this->m_aSortFields = array(
+    /*$this->m_aSortFields = array(
        self::SORT_FIELD_CREATE_DATE => array(self::IND_SORT_FIELD_NAME => "O.dCreated", 
                                             self::IND_SORT_FIELD_ORDER => Consts::SORT_ORDER_DESCENDING),
        self::SORT_FIELD_MEMBER_NAME => array(self::IND_SORT_FIELD_NAME => "M.sName", 
                                             self::IND_SORT_FIELD_ORDER => Consts::SORT_ORDER_ASCENDING)
-       );
+       );*/
     
     $this->m_aOriginalData = array( self::PROPERTY_COOP_ORDER_ID => 0,
                             self::PROPERTY_NAME => NULL,
@@ -56,12 +56,12 @@ class CoopOrderPickupLocationOrders extends CoopOrderPickupLocationSubBase {
     global $g_oMemberSession;
     
     if (!$this->LoadCoopOrderData())
-      return NULL;
+      return;
     
     if (!$this->LoadCoopOrderPickupLocationData(Consts::PERMISSION_AREA_COOP_ORDER_PICKUP_LOCATION_ORDERS))
-      return NULL;
+      return;
     
-    $this->m_aOriginalData = $this->m_aData;
+    /*$this->m_aOriginalData = $this->m_aData;
 
     $sSQL = " SELECT O.OrderID, O.MemberID, O.dCreated, O.dModified, O.bHasItemComments, O.mCoopTotalIncFee as OrderCoopTotal, O.sMemberComments, "  .
           " O.CreatedByMemberID, O.ModifiedByMemberID, M.mBalance, M.sName as MemberName, MC.sName as CreateMemberName, MM.sName as ModifyMemberName,  " .
@@ -76,7 +76,7 @@ class CoopOrderPickupLocationOrders extends CoopOrderPickupLocationSubBase {
 
     $this->RunSQL( $sSQL );
 
-    return $this->fetch();
+    return $this->fetch();*/
     
  }
 }
