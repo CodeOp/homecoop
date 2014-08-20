@@ -1995,11 +1995,15 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['PickupLocationKeyID']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['PickupLocationKeyID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
 
-
   $views[$view->name] = $view;
-  //--------------
-  // Translations
-  //--------------
+
+  return $views;
+}
+
+/*
+ * Translations. moved to a separate not-running function
+ */
+function homecoop_views_translatables() {
   $translatables['homecoop_my_orders'] = array(
     t('Master'),
     t('more'),
@@ -2112,9 +2116,6 @@ function homecoop_views_default_views() {
     t('Producers'),
     t('Full'),
   );
-  
-  
-  return $views;
 }
 
 function homecoop_my_orders_get_view($view_name, $is_coord) {

@@ -17,6 +17,8 @@ function homecoop_help($path, $args) {
   if ($path == 'admin/help#homecoop') {
     return t('Local Consumer Cooperatives Web Ordering System');
   }
+  
+  
 }
 
 /**
@@ -190,10 +192,114 @@ function homecoop_permission() {
   );
 }
 
+/**
+* Implements hook_block_info().
+*/
+function homecoop_block_info() {
+  return array(
+    'homecoop_header' => array(
+      'info' => t('HomeCoop header'),
+      'cache' => DRUPAL_CACHE_GLOBAL,
+    ),
+  );
+}
+
+/**
+* Implements hook_block_view().
+*/
+function homecoop_block_view($block_name = '') {
+  switch ($block_name) {
+    case 'homecoop_header':
+      require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'homecoop') . '/blocks/header.inc');
+      $block = array(
+        'subject' => t('Header'),
+        'content' => homecoop_header_block(),
+      );
+      return $block;
+  }
+}
+
 /*
  * Implements hook_cron()
  */
 function homecoop_cron() {
+}
+
+/**
+ * Implements hook_field_default_field_bases().
+ */
+function homecoop_field_default_field_bases() {
+  $field_bases = array();
+
+  // Exported field_base: 'field_homecoop_member_id'
+  $field_bases['field_homecoop_member_id'] = array(
+    'active' => 1,
+    'cardinality' => 1,
+    'deleted' => 0,
+    'entity_types' => array(),
+    'field_name' => 'field_homecoop_member_id',
+    'foreign keys' => array(),
+    'indexes' => array(),
+    'locked' => 0,
+    'module' => 'number',
+    'settings' => array(
+      'entity_translation_sync' => FALSE,
+    ),
+    'translatable' => 0,
+    'type' => 'number_integer',
+  );
+
+  return $field_bases;
+}
+
+/**
+ * Implements hook_field_default_field_instances().
+ */
+function homecoop_field_default_field_instances() {
+  $field_instances = array();
+
+  // Exported field_instance: 'user-user-field_homecoop_member_id'
+  $field_instances['user-user-field_homecoop_member_id'] = array(
+    'bundle' => 'user',
+    'default_value' => NULL,
+    'deleted' => 0,
+    'description' => '',
+    'display' => array(
+      'default' => array(
+        'label' => 'above',
+        'settings' => array(),
+        'type' => 'hidden',
+        'weight' => 0,
+      ),
+    ),
+    'entity_type' => 'user',
+    'exclude_cv' => 0,
+    'field_name' => 'field_homecoop_member_id',
+    'label' => 'HomeCoop Member ID',
+    'required' => 0,
+    'settings' => array(
+      'entity_translation_sync' => FALSE,
+      'exclude_cv' => FALSE,
+      'max' => '',
+      'min' => 0,
+      'prefix' => '',
+      'suffix' => '',
+      'user_register_form' => 0,
+    ),
+    'widget' => array(
+      'active' => 0,
+      'module' => 'number',
+      'settings' => array(),
+      'type' => 'number',
+      'weight' => 7,
+    ),
+  );
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('HomeCoop Member ID');
+
+  return $field_instances;
 }
 
 function homecoop_public_access() {
@@ -266,32 +372,7 @@ function homecoop_check_if_authenticated() {
   }
 }
 
-/**
-* Implements hook_block_info().
-*/
-function homecoop_block_info() {
-  return array(
-    'homecoop_header' => array(
-      'info' => t('HomeCoop header'),
-      'cache' => DRUPAL_CACHE_GLOBAL,
-    ),
-  );
-}
 
-/**
-* Implements hook_block_view().
-*/
-function homecoop_block_view($block_name = '') {
-  switch ($block_name) {
-    case 'homecoop_header':
-      require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'homecoop') . '/blocks/header.inc');
-      $block = array(
-        'subject' => t('Header'),
-        'content' => homecoop_header_block(),
-      );
-      return $block;
-  }
-}
 
 function homecoop_LoadSpecificFacet(&$oFacet, &$aFacet, &$aFacetIDs, &$nFacetRemoved, $sIDField)
 {
@@ -769,4 +850,13 @@ function homecoop_views_php_cooporder_status_pre_render($view, $handler, &$stati
       $row->nStatus
   );
   print $oStatus->StatusName;
+}
+
+/*
+ * Translatables
+ * 
+ * Included for use with string extractors like potx.
+ */
+function homecoop_translatables() {
+  t('HomeCoop Member ID');
 }

@@ -141,56 +141,7 @@ $GLOBALS['g_nFallingLanguageID'] = 0;
 
 define('SITE_ROOT', DRUPAL_ROOT . '/' . drupal_get_path('module', 'homecoop') . "/app" );
 
-/*
-$sNeedle = $_SERVER["PHP_SELF"];
-//look for php self in the script file name
-$nPos = strpos($_SERVER["SCRIPT_FILENAME"], $sNeedle);
 
-$nNext = 0;
-
-while ($nPos === FALSE)
-{
-  $nNext = stripos( $sNeedle, '/', $nNext );
-  if ($nNext !== FALSE)
-    $sNeedle = substr( $sNeedle, $nNext );
-  else
-    break;
-  $nNext++;
-  
-  $nPos = strpos($_SERVER["SCRIPT_FILENAME"], $sNeedle);
-}
-
-$g_sFilePathFromRoot = substr( $_SERVER["SCRIPT_FILENAME"], $nPos+1 );
-
-$nRootPos = 0;
-$nPos = 0;
-
-$endLang = stripos( $g_sFilePathFromRoot, '/'); //go to next '/' (possibly after the language folder)
-
-if ($g_aSupportedLanguages !== NULL)
-{
-  $g_sLangDir = substr ($g_sFilePathFromRoot, 0, $endLang); //extract language folder
-  $g_sFilePathFromRoot = substr ($g_sFilePathFromRoot, $endLang + 1); //extract path after language folder
-
-}
-
-//get relative path to root
-while($nPos !== FALSE)
-{
-    $nPos = stripos( $g_sFilePathFromRoot, '/', $nPos); //go to next '/'
-    if ($nPos !== FALSE)
-    {
-      $g_sRootRelativePath .= '../';
-      $nPos++;
-    }
-}
-if ($g_aSupportedLanguages !== NULL)
-{
-    $g_sRedirectAfterLangChange = $g_sFilePathFromRoot;
-    if ($_SERVER['QUERY_STRING'] != NULL && $_SERVER['QUERY_STRING'] != '')
-      $g_sRedirectAfterLangChange .= '?' . $_SERVER['QUERY_STRING'];
-}
-*/
 $GLOBALS['g_sLangDir'] = '';
 if ($language->language != LANGUAGE_NONE) {
   $GLOBALS['g_sLangDir'] = $language->language;
