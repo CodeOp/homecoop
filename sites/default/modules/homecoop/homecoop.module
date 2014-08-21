@@ -169,6 +169,16 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/coordinate.inc',
     ),
+    'hccoord/members' => array(
+      'page callback' => 'homecoop_page_members',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/members.inc',
+    ),
+    'hccoord/member' => array(
+      'page callback' => 'homecoop_page_member',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/member.inc',
+    ),
   );
 }
 
@@ -850,13 +860,4 @@ function homecoop_views_php_cooporder_status_pre_render($view, $handler, &$stati
       $row->nStatus
   );
   print $oStatus->StatusName;
-}
-
-/*
- * Translatables
- * 
- * Included for use with string extractors like potx.
- */
-function homecoop_translatables() {
-  t('HomeCoop Member ID');
 }
