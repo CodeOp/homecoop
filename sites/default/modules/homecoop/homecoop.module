@@ -16,9 +16,7 @@ homecoop_include_app_file('settings');
 function homecoop_help($path, $args) {
   if ($path == 'admin/help#homecoop') {
     return t('Local Consumer Cooperatives Web Ordering System');
-  }
-  
-  
+  } 
 }
 
 /**
@@ -850,6 +848,86 @@ function homecoop_get_tabs_info($oTabInfo, $oOrderTabInfo, $oPLTabInfo, $bHasCoo
   }
   
   return $arrData;
+}
+
+function homecoop_member_tab_info($oMemberTabInfo) {
+  
+  if (!isset($oMemberTabInfo) || $oMemberTabInfo == NULL || $oMemberTabInfo->MemberID == 0 || !$oMemberTabInfo->CheckAccess()) {
+    return NULL;
+  }
+  
+  return array(
+    'hasmemberrolescoordpermission' => $oMemberTabInfo->HasPermissions(array(MemberTabInfo::PERMISSION_MEMBER_ROLES_COORD, 
+               MemberTabInfo::PERMISSION_MEMBER_ROLES_VIEW)),
+    'hasmembertransactionsviewpermission' => $oMemberTabInfo->HasPermissions(array(MemberTabInfo::PERMISSION_MEMBER_TRANSACTIONS_VIEW)),
+    'hasmemberpickuplocationsviewpermission' => $oMemberTabInfo->HasPermissions(array(MemberTabInfo::PERMISSION_MEMBER_PICKUP_LOCATIONS_MODIFY, 
+               MemberTabInfo::PERMISSION_MEMBER_PICKUP_LOCATIONS_COORD)),
+    'hasmemberproducersviewpermission' => $oMemberTabInfo->HasPermissions(array(MemberTabInfo::PERMISSION_MEMBER_PRODUCERS_MODIFY, 
+               MemberTabInfo::PERMISSION_MEMBER_PRODUCERS_COORD)),
+    'MainTabName' => $oMemberTabInfo->MainTabName,
+    'Page' => $oMemberTabInfo->Page,
+  );
+}
+
+function homecoop_member_tab_content($oMemberTabInfo) {
+  if (!isset($oMemberTabInfo) || $oMemberTabInfo == NULL) {
+    return array();
+  }
+  
+  $arrContent = array(
+    'tabs' => array(
+      '#prefix' => '<table id="tabMember" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul class="tabrow subtabrow">',
+      'maintab' => WriteMemberTabElement($oMemberTabInfo['MainTabName'], 
+          url('hccoord/member', 
+              array('query' => array('id' => $oMemberTabInfo['ID']))), 
+          $oMemberTabInfo['Page'] == MemberTabInfo::PAGE_ENTRY),
+      '#suffix' => '</ul></td></tr></table>',
+    ),
+  );
+  
+  if ($oMemberTabInfo['hasmemberrolescoordpermission']) {
+    $arrContent['rolestab'] = homecoop_tab_member_write_element(t('Roles'),
+        url('hccoord/memberroles', array('query' => array('id' => $oMemberTabInfo['ID']))), 
+          $oMemberTabInfo['Page'] == MemberTabInfo::PAGE_ROLES);
+  }
+  
+  if ($oMemberTabInfo['hasmembertransactionsviewpermission']) {
+    $arrContent['transactionstab'] = homecoop_tab_member_write_element(t('Transactions'),
+        url('hccoord/membertransactions', array('query' => array('id' => $oMemberTabInfo['ID']))), 
+          $oMemberTabInfo['Page'] == MemberTabInfo::PAGE_TRANSACTIONS);
+  }
+  
+  if ($oMemberTabInfo['hasmemberpickuplocationsviewpermission']) {
+    $arrContent['pickuplocstab'] = homecoop_tab_member_write_element(t('Pickup Locations'),
+        url('hccoord/memberpickuplocs', array('query' => array('id' => $oMemberTabInfo['ID']))), 
+          $oMemberTabInfo['Page'] == MemberTabInfo::PAGE_PICKUP_LOCATIONS);
+  }
+  
+  if ($oMemberTabInfo['hasmemberproducersviewpermission']) {
+    $arrContent['producerstab'] = homecoop_tab_member_write_element(t('Producers'),
+        url('hccoord/memberproducers', array('query' => array('id' => $oMemberTabInfo['ID']))), 
+          $oMemberTabInfo['Page'] == MemberTabInfo::PAGE_PRODUCERS);
+  }
+  
+  return $arrContent;
+}
+
+function homecoop_tab_member_write_element($sText, $sLink, $bIsOnPage)
+{    
+  $arrContent = array(
+    '#prefix' => '<li',
+    '#markup' => ' >' . $sText,
+    '#suffix' => '</li>',
+  );
+  
+  if ($bIsOnPage) {
+    $arrContent['#prefix'] .= ' class="selected" ';
+  }
+  else {
+    $arrContent['#prefix'] .= ' onclick="javascript:location.href = \'' . $sLink . '\';"';
+  }
+  
+  return $arrContent;
 }
 
 function homecoop_views_php_cooporder_status_pre_render($view, $handler, &$static, $row, $data, $value) {
