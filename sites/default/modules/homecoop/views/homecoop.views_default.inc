@@ -26,6 +26,273 @@ function homecoop_views_default_views() {
   $views[$view->name] = $view;
   
   //-------------------------------------------------------------------------------------------------------------------
+  // Members
+  //-------------------------------------------------------------------------------------------------------------------
+  
+  $view = new view();
+  $view->name = 'homecoop_members';
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'T_Member';
+  $view->human_name = 'HomeCoop Members';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = HOMECOOP_PAGER_PAGES;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'MemberID' => 'MemberID',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'MemberID' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  /* Header: Global: PHP */
+  $handler->display->display_options['header']['php']['id'] = 'php';
+  $handler->display->display_options['header']['php']['table'] = 'views';
+  $handler->display->display_options['header']['php']['field'] = 'php';
+  $handler->display->display_options['header']['php']['php_output'] = '<div><?php if (!isset($view->args[1]) || $view->args[1] == \'rw\') { ?><a href="<?php echo url(\'hccoord/member\'); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\';  ?>" /></a><?php } ?>&nbsp;<a target="_blank" href="<?php echo url(\'hccoord/members/download\'); ?>"><img border="0" title="<?php echo t(\'Export\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/document-export-4.png\';  ?>" /></a></div>';
+
+  /* Relationship: Member: PaymentMethod */
+  $handler->display->display_options['relationships']['PaymentMethodKeyID']['id'] = 'PaymentMethodKeyID';
+  $handler->display->display_options['relationships']['PaymentMethodKeyID']['table'] = 'T_Member';
+  $handler->display->display_options['relationships']['PaymentMethodKeyID']['field'] = 'PaymentMethodKeyID';
+  $handler->display->display_options['relationships']['PaymentMethodKeyID']['label'] = 'PaymentMethod';
+  $handler->display->display_options['relationships']['PaymentMethodKeyID']['required'] = TRUE;
+  /* Relationship: Payment Method: Payment Method Name */
+  $handler->display->display_options['relationships']['PaymentMethodKeyID_1']['id'] = 'PaymentMethodKeyID_1';
+  $handler->display->display_options['relationships']['PaymentMethodKeyID_1']['table'] = 'T_PaymentMethod';
+  $handler->display->display_options['relationships']['PaymentMethodKeyID_1']['field'] = 'PaymentMethodKeyID';
+  $handler->display->display_options['relationships']['PaymentMethodKeyID_1']['relationship'] = 'PaymentMethodKeyID';
+  $handler->display->display_options['relationships']['PaymentMethodKeyID_1']['label'] = 'PaymentMethodName';
+  $handler->display->display_options['relationships']['PaymentMethodKeyID_1']['required'] = TRUE;
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID']['id'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['relationship'] = 'PaymentMethodKeyID_1';
+  $handler->display->display_options['relationships']['LangID']['label'] = 'PaymentMethodLang';
+  $handler->display->display_options['relationships']['LangID']['required'] = TRUE;
+  /* Field: Member: Member ID */
+  $handler->display->display_options['fields']['MemberID']['id'] = 'MemberID';
+  $handler->display->display_options['fields']['MemberID']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['MemberID']['field'] = 'MemberID';
+  $handler->display->display_options['fields']['MemberID']['label'] = '';
+  $handler->display->display_options['fields']['MemberID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['MemberID']['element_label_colon'] = FALSE;
+  /* Field: Member: Email address */
+  $handler->display->display_options['fields']['sEMail']['id'] = 'sEMail';
+  $handler->display->display_options['fields']['sEMail']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['sEMail']['field'] = 'sEMail';
+  $handler->display->display_options['fields']['sEMail']['label'] = '';
+  $handler->display->display_options['fields']['sEMail']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['sEMail']['element_label_colon'] = FALSE;
+  /* Field: Member: Email address 2 */
+  $handler->display->display_options['fields']['sEMail2']['id'] = 'sEMail2';
+  $handler->display->display_options['fields']['sEMail2']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['sEMail2']['field'] = 'sEMail2';
+  $handler->display->display_options['fields']['sEMail2']['label'] = '';
+  $handler->display->display_options['fields']['sEMail2']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['sEMail2']['element_label_colon'] = FALSE;
+  /* Field: Member: Email address 3 */
+  $handler->display->display_options['fields']['sEMail3']['id'] = 'sEMail3';
+  $handler->display->display_options['fields']['sEMail3']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['sEMail3']['field'] = 'sEMail3';
+  $handler->display->display_options['fields']['sEMail3']['label'] = '';
+  $handler->display->display_options['fields']['sEMail3']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['sEMail3']['element_label_colon'] = FALSE;
+  /* Field: Member: Email address 4 */
+  $handler->display->display_options['fields']['sEMail4']['id'] = 'sEMail4';
+  $handler->display->display_options['fields']['sEMail4']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['sEMail4']['field'] = 'sEMail4';
+  $handler->display->display_options['fields']['sEMail4']['label'] = '';
+  $handler->display->display_options['fields']['sEMail4']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['sEMail4']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString']['id'] = 'sString';
+  $handler->display->display_options['fields']['sString']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString']['relationship'] = 'PaymentMethodKeyID_1';
+  $handler->display->display_options['fields']['sString']['label'] = '';
+  $handler->display->display_options['fields']['sString']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['sString']['element_label_colon'] = FALSE;
+  /* Field: Member: % Over Balance */
+  $handler->display->display_options['fields']['fPercentOverBalance']['id'] = 'fPercentOverBalance';
+  $handler->display->display_options['fields']['fPercentOverBalance']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['fPercentOverBalance']['field'] = 'fPercentOverBalance';
+  $handler->display->display_options['fields']['fPercentOverBalance']['label'] = '';
+  $handler->display->display_options['fields']['fPercentOverBalance']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['fPercentOverBalance']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['fPercentOverBalance']['precision'] = '0';
+  /* Field: Member: Status */
+  $handler->display->display_options['fields']['bDisabled']['id'] = 'bDisabled';
+  $handler->display->display_options['fields']['bDisabled']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['bDisabled']['field'] = 'bDisabled';
+  $handler->display->display_options['fields']['bDisabled']['label'] = '';
+  $handler->display->display_options['fields']['bDisabled']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['bDisabled']['element_label_colon'] = FALSE;
+  /* Field: Member: Name */
+  $handler->display->display_options['fields']['sName']['id'] = 'sName';
+  $handler->display->display_options['fields']['sName']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['sName']['field'] = 'sName';
+  $handler->display->display_options['fields']['sName']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['sName']['alter']['path'] = 'hccoord/member?id=[MemberID]';
+  $handler->display->display_options['fields']['sName']['element_label_colon'] = FALSE;
+  /* Field: Member: Joined On */
+  $handler->display->display_options['fields']['dJoined']['id'] = 'dJoined';
+  $handler->display->display_options['fields']['dJoined']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['dJoined']['field'] = 'dJoined';
+  $handler->display->display_options['fields']['dJoined']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['dJoined']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['dJoined']['custom_date_format'] = HOMECOOP_DATE_FORMAT;
+  $handler->display->display_options['fields']['dJoined']['second_date_format'] = 'long';
+  /* Field: Member: Login name */
+  $handler->display->display_options['fields']['sLoginName']['id'] = 'sLoginName';
+  $handler->display->display_options['fields']['sLoginName']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['sLoginName']['field'] = 'sLoginName';
+  $handler->display->display_options['fields']['sLoginName']['element_label_colon'] = FALSE;
+  /* Field: Member: Balance */
+  $handler->display->display_options['fields']['mBalance']['id'] = 'mBalance';
+  $handler->display->display_options['fields']['mBalance']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['mBalance']['field'] = 'mBalance';
+  $handler->display->display_options['fields']['mBalance']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mBalance']['set_precision'] = TRUE;
+  $handler->display->display_options['fields']['mBalance']['precision'] = '0';
+  /* Field: Member: Balance Held */
+  $handler->display->display_options['fields']['mBalanceHeld']['id'] = 'mBalanceHeld';
+  $handler->display->display_options['fields']['mBalanceHeld']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['mBalanceHeld']['field'] = 'mBalanceHeld';
+  $handler->display->display_options['fields']['mBalanceHeld']['set_precision'] = TRUE;
+  $handler->display->display_options['fields']['mBalanceHeld']['precision'] = '0';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php_1']['id'] = 'php_1';
+  $handler->display->display_options['fields']['php_1']['table'] = 'views';
+  $handler->display->display_options['fields']['php_1']['field'] = 'php';
+  $handler->display->display_options['fields']['php_1']['label'] = 'Payment Method';
+  $handler->display->display_options['fields']['php_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php_1']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php_1']['php_value'] = '$value = $row->sString;
+  $fPercent = 0;
+  if ($row->fPercentOverBalance != NULL) {
+    $fPercent = $row->fPercentOverBalance;
+  }
+  return str_replace(\'%\', \'%\' . $fPercent, $value);';
+  $handler->display->display_options['fields']['php_1']['php_output'] = '<?php print $value; ?>';
+  $handler->display->display_options['fields']['php_1']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php_1']['php_click_sortable'] = '';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php']['id'] = 'php';
+  $handler->display->display_options['fields']['php']['table'] = 'views';
+  $handler->display->display_options['fields']['php']['field'] = 'php';
+  $handler->display->display_options['fields']['php']['label'] = 'Email Addresses';
+  $handler->display->display_options['fields']['php']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php']['php_value'] = '$value = array();
+  $value[] = $row->sEMail;
+  if ($row->sEMail2 != NULL)
+   $value[] = $row->sEMail2;
+  if ($row->sEMail3 != NULL)
+   $value[] = $row->sEMail3;
+  if ($row->sEMail4 != NULL)
+   $value[] = $row->sEMail4;
+  return $value;';
+  $handler->display->display_options['fields']['php']['php_output'] = '<?php
+  print implode(\', \', $value);
+  ?>';
+  $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
+  /* Field: Global: PHP */
+  $handler->display->display_options['fields']['php_2']['id'] = 'php_2';
+  $handler->display->display_options['fields']['php_2']['table'] = 'views';
+  $handler->display->display_options['fields']['php_2']['field'] = 'php';
+  $handler->display->display_options['fields']['php_2']['label'] = 'Status';
+  $handler->display->display_options['fields']['php_2']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php_2']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php_2']['php_output'] = '<?php print $row->bDisabled? t(\'Inactive\') : t(\'Active\'); ?>';
+  $handler->display->display_options['fields']['php_2']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php_2']['php_click_sortable'] = '';
+  /* Sort criterion: Member: Status */
+  $handler->display->display_options['sorts']['bDisabled']['id'] = 'bDisabled';
+  $handler->display->display_options['sorts']['bDisabled']['table'] = 'T_Member';
+  $handler->display->display_options['sorts']['bDisabled']['field'] = 'bDisabled';
+  /* Sort criterion: Member: Name */
+  $handler->display->display_options['sorts']['sName']['id'] = 'sName';
+  $handler->display->display_options['sorts']['sName']['table'] = 'T_Member';
+  $handler->display->display_options['sorts']['sName']['field'] = 'sName';
+  /* Contextual filter: Language: PHP Folder */
+  $handler->display->display_options['arguments']['sPhpFolder']['id'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder']['table'] = 'Tlng_Language';
+  $handler->display->display_options['arguments']['sPhpFolder']['field'] = 'sPhpFolder';
+  $handler->display->display_options['arguments']['sPhpFolder']['relationship'] = 'LangID';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['sPhpFolder']['default_argument_options']['code'] = 'global $language; return $language->language;';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['sPhpFolder']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['arguments']['sPhpFolder']['limit'] = '0';
+  /* Contextual filter: Global: Null */
+  $handler->display->display_options['arguments']['null']['id'] = 'null';
+  $handler->display->display_options['arguments']['null']['table'] = 'views';
+  $handler->display->display_options['arguments']['null']['field'] = 'null';
+  $handler->display->display_options['arguments']['null']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['null']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['null']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['null']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Filter criterion: Global: Combine fields filter */
+  $handler->display->display_options['filters']['combine']['id'] = 'combine';
+  $handler->display->display_options['filters']['combine']['table'] = 'views';
+  $handler->display->display_options['filters']['combine']['field'] = 'combine';
+  $handler->display->display_options['filters']['combine']['operator'] = 'contains';
+  $handler->display->display_options['filters']['combine']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['combine']['expose']['operator_id'] = 'combine_op';
+  $handler->display->display_options['filters']['combine']['expose']['label'] = 'Search';
+  $handler->display->display_options['filters']['combine']['expose']['operator'] = 'combine_op';
+  $handler->display->display_options['filters']['combine']['expose']['identifier'] = 'membersearch';
+  $handler->display->display_options['filters']['combine']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+  );
+  $handler->display->display_options['filters']['combine']['fields'] = array(
+    'sEMail' => 'sEMail',
+    'sEMail2' => 'sEMail2',
+    'sEMail3' => 'sEMail3',
+    'sEMail4' => 'sEMail4',
+    'sName' => 'sName',
+    'sLoginName' => 'sLoginName',
+  );
+  /* Display: Data export */
+  $handler = $view->new_display('views_data_export', 'Data export', 'views_data_export_1');
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['style_plugin'] = 'views_data_export_xls';
+  $handler->display->display_options['style_options']['provide_file'] = 1;
+  $handler->display->display_options['style_options']['filename'] = 'members_%timestamp-full_%1-value.xls';
+  $handler->display->display_options['style_options']['parent_sort'] = 0;
+  $handler->display->display_options['path'] = 'hccoord/members/download';
+  
+  $views[$view->name] = $view;
+  
+  
+  //-------------------------------------------------------------------------------------------------------------------
   // Pickup Locations
   //-------------------------------------------------------------------------------------------------------------------
   
@@ -110,7 +377,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['header']['php']['id'] = 'php';
   $handler->display->display_options['header']['php']['table'] = 'views';
   $handler->display->display_options['header']['php']['field'] = 'php';
-  $handler->display->display_options['header']['php']['php_output'] = '<?php if (!isset($view->args[0]) || $view->args[0] == \'yes\') { ?><div><a href="<?php echo url(\'hccoord/pickuploc\'); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a></div><?php } ?>';
+  $handler->display->display_options['header']['php']['php_output'] = '<div><?php if (!isset($view->args[0]) || $view->args[0] == \'yes\') { ?><a href="<?php echo url(\'hccoord/pickuploc\'); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a><?php } ?></div>';
   /* Relationship: Pickup Location: Pickup Location Address */
   $handler->display->display_options['relationships']['AddressStringKeyID']['id'] = 'AddressStringKeyID';
   $handler->display->display_options['relationships']['AddressStringKeyID']['table'] = 'T_PickupLocation';
@@ -170,7 +437,7 @@ function homecoop_views_default_views() {
   /* Field: String: String */
   $handler->display->display_options['fields']['sString_1']['id'] = 'sString_1';
   $handler->display->display_options['fields']['sString_1']['table'] = 'Tlng_String';
-  $handler->display->display_oOrptions['fields']['sString_1']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString_1']['field'] = 'sString';
   $handler->display->display_options['fields']['sString_1']['relationship'] = 'AddressStringKeyID';
   $handler->display->display_options['fields']['sString_1']['label'] = 'Address';
   $handler->display->display_options['fields']['sString_1']['element_label_colon'] = FALSE;
@@ -277,7 +544,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['CoordinatingGroupID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
   $handler->display->display_options['arguments']['CoordinatingGroupID']['break_phrase'] = TRUE;
-  
+    
   $views[$view->name] = $view;
   
   //-------------------------------------------------------------------------------------------------------------------
@@ -367,7 +634,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['header']['php']['id'] = 'php';
   $handler->display->display_options['header']['php']['table'] = 'views';
   $handler->display->display_options['header']['php']['field'] = 'php';
-  $handler->display->display_options['header']['php']['php_output'] = '<?php if (!isset($view->args[0]) || $view->args[0] == \'yes\') { ?><div><a href="<?php echo url(\'hccoord/product\'); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a></div><?php } ?>';
+  $handler->display->display_options['header']['php']['php_output'] = '<div><?php if (!isset($view->args[0]) || $view->args[0] == \'yes\') { ?><a href="<?php echo url(\'hccoord/product\'); ?>"><img border="0" title="<?php echo t(\'Add\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/edit-add-2.png\'  ?>" /></a><?php } ?>&nbsp;<a target="_blank" href="<?php echo url(\'hccoord/products/download\'); ?>"><img border="0" title="<?php echo t(\'Export\'); ?>" src="<?php echo homecoop_getthemepath() . \'img/document-export-4.png\';  ?>" /></a></div>';
   /* Relationship: Product: Producer */
   $handler->display->display_options['relationships']['ProducerKeyID']['id'] = 'ProducerKeyID';
   $handler->display->display_options['relationships']['ProducerKeyID']['table'] = 'T_Product';
@@ -588,6 +855,16 @@ function homecoop_views_default_views() {
   $handler->display->display_options['arguments']['CoordinatingGroupID']['summary']['format'] = 'default_summary';
   $handler->display->display_options['arguments']['CoordinatingGroupID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
   $handler->display->display_options['arguments']['CoordinatingGroupID']['break_phrase'] = TRUE;
+  /* Display: Data export */
+  $handler = $view->new_display('views_data_export', 'Data export', 'views_data_export_1');
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['style_plugin'] = 'views_data_export_xls';
+  $handler->display->display_options['style_options']['provide_file'] = 1;
+  $handler->display->display_options['style_options']['filename'] = 'products_%timestamp-full_%2-value.xls';
+  $handler->display->display_options['style_options']['parent_sort'] = 0;
+  $handler->display->display_options['path'] = 'hccoord/products/download';
+  
   $views[$view->name] = $view;
 
   //-------------------------------------------------------------------------------------------------------------------
@@ -2115,6 +2392,14 @@ function homecoop_views_translatables() {
     t('Coop'),
     t('Producers'),
     t('Full'),
+  );
+  $translatables['homecoop_members'] = array(
+    t('Joined On'),
+    t('Login name'),
+    t('Balance'),
+    t('Balance Held'),
+    t('Payment Method'),
+    t('Email Addresses'),
   );
 }
 

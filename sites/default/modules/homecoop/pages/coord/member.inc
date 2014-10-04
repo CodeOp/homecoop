@@ -14,23 +14,26 @@ function homecoop_page_member() {
   }
   
   //editing existing
-  if(!$oRecord->LoadRecord(intval($_GET['id'])))
-  {
-      drupal_goto(Consts::URL_ACCESS_DENIED);
-      return;
+  if (isset($_GET['id'])) {
+    if(!$oRecord->LoadRecord(intval($_GET['id'])))
+    {
+        drupal_goto(Consts::URL_ACCESS_DENIED);
+        return;
+    }
+
+    switch($oRecord->LastOperationStatus)
+    {
+      case SQLBase::OPERATION_STATUS_NO_SUFFICIENT_DATA_PROVIDED:
+      case SQLBase::OPERATION_STATUS_NO_PERMISSION:
+      case SQLBase::OPERATION_STATUS_LOAD_RECORD_FAILED:
+      case SQLBase::OPERATION_STATUS_COORDINATION_GROUP_VERIFY_FAILED:
+        drupal_goto(Consts::URL_ACCESS_DENIED);
+        return;
+    }
+    
+    $oRecord->RevokeModifyPermission();
   }
   
-  switch($oRecord->LastOperationStatus)
-  {
-    case SQLBase::OPERATION_STATUS_NO_SUFFICIENT_DATA_PROVIDED:
-    case SQLBase::OPERATION_STATUS_NO_PERMISSION:
-    case SQLBase::OPERATION_STATUS_LOAD_RECORD_FAILED:
-    case SQLBase::OPERATION_STATUS_COORDINATION_GROUP_VERIFY_FAILED:
-      drupal_goto(Consts::URL_ACCESS_DENIED);
-      return;
-  }
-  
-  $oRecord->RevokeModifyPermission();
   
   $hcsettings = array(
     'ConfirmDelete' => t('Please confirm the delete operation. Note that this action will succeed only when there are no orders linked to the member. To block a member from signing in, remove hir permissions instead.'),

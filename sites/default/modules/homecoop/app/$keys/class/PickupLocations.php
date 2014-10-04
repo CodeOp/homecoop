@@ -6,7 +6,7 @@ if(realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME']))
 //faclitates the coord/pickuplocs.php coordinator's page, showing a grid of all pickup locations in the system
 //also facilitates coop order pickup locations addition
 class PickupLocations extends SQLBase {
-  public function GetTable()
+  public function GetAccess()
   {
       global $g_oMemberSession;
       $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NONE;
@@ -15,7 +15,7 @@ class PickupLocations extends SQLBase {
          Consts::PERMISSION_SCOPE_BOTH, 0, TRUE))
       {
         $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_PERMISSION;
-        return NULL;
+        return;
       }
       
       //check for add permissions
@@ -27,7 +27,7 @@ class PickupLocations extends SQLBase {
          Consts::PERMISSION_SCOPE_COOP_CODE, 0, TRUE);
 
 
-      $sSQL =   " SELECT PL.PickupLocationKeyID, PL.AddressStringKeyID, PL.fMaxBurden, PL.PublishedCommentsStringKeyID, PL.AdminCommentsStringKeyID, PL.CoordinatingGroupID," .
+      /*$sSQL =   " SELECT PL.PickupLocationKeyID, PL.AddressStringKeyID, PL.fMaxBurden, PL.PublishedCommentsStringKeyID, PL.AdminCommentsStringKeyID, PL.CoordinatingGroupID," .
                 " PL.bDisabled, PL.nRotationOrder, PL.mCachier, PL.dCachierUpdate, " . 
                        $this->ConcatStringsSelect(Consts::PERMISSION_AREA_PICKUP_LOCATIONS, 'sPickupLocation') .
                 ", " . $this->ConcatStringsSelect(Consts::PERMISSION_AREA_PICKUP_LOCATION_ADDRESS, 'sAddress') .
@@ -42,7 +42,7 @@ class PickupLocations extends SQLBase {
 
       $this->RunSQL( $sSQL );
 
-      return $this->fetch();
+      return $this->fetch();*/
   }
   
   //get pickup location list for coop order - for coordinators only

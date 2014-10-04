@@ -38,7 +38,7 @@ class Members extends SQLBase {
     return ($bEdit || $bView);   
  }
 
- public function GetTable()
+ public function GetAccess()
   {
       global $g_oMemberSession;
       $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NONE;
@@ -46,10 +46,11 @@ class Members extends SQLBase {
       if (!$this->CheckAccess())
       {
         $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_PERMISSION;
-        return NULL;
+        return;
       }
       
-      $sSearchPhrase = $this->m_aData[self::PROPERTY_SEARCH_PHRASE];
+      /*$sSearchPhrase = $this->m_aData[self::PROPERTY_SEARCH_PHRASE];
+      
 
       $sSQL =   " SELECT M.MemberID, M.sName, M.sLoginName, M.sEMail, M.PaymentMethodKeyID, M.dJoined, M.mBalance, M.fPercentOverBalance, M.sEMail2, " . 
                        " M.sEMail3, M.sEMail4, M.bDisabled, M.mBalanceHeld, M.mBalanceInvested, M.sComments, " .
@@ -80,7 +81,7 @@ class Members extends SQLBase {
 
       $this->RunSQL( $sSQL );
 
-      return $this->fetch();
+      return $this->fetch();*/
   }
   
   public function GetExportList()
