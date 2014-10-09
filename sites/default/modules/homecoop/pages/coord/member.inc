@@ -30,10 +30,9 @@ function homecoop_page_member() {
         drupal_goto(Consts::URL_ACCESS_DENIED);
         return;
     }
-    
-    $oRecord->RevokeModifyPermission();
   }
   
+  $oRecord->RevokeModifyPermission();
   
   $hcsettings = array(
     'ConfirmDelete' => t('Please confirm the delete operation. Note that this action will succeed only when there are no orders linked to the member. To block a member from signing in, remove hir permissions instead.'),
@@ -192,7 +191,83 @@ function homecoop_page_member_form($form, &$form_state, $oFormExtraData) {
     
   } //end can modify
   
+  //form input controls
+  $form['maintable']['controlstable']['txtName'] = array(
+      '#weight' => 10, 
+      '#type' => 'textfield',
+      '#title' => t('Name'),
+      '#maxlength' => 100,
+      '#size' => 25,
+      '#default_value' => check_plain($oFormExtraData['Name']),
+      '#required' => TRUE,
+      '#disabled' => $oFormExtraData['CanModify'] ? false: true,
+  );
   
+  $form['maintable']['controlstable']['txtLoginName'] = array(
+      '#weight' => 20, 
+      '#maxlength' => 30,
+      '#size' => 25,
+      '#type' => 'textfield',
+      '#title' => t('User name'),
+      '#default_value' => check_plain($oFormExtraData['LoginName']),
+      '#required' => TRUE,
+      //read only for existing record 
+      //in order to allow coordinators to identify the member
+      //throughout hir name changes
+      '#disabled' => $oFormExtraData['ID'] > 0,
+  );
+  
+  $form['maintable']['controlstable']['txtNewPassword'] = array(
+      '#weight' => 30, 
+      '#maxlength' => 64,
+      '#size' => 25,
+      '#type' => 'password_confirm',
+      '#title' => t('New Password'),
+      //no default value for better security
+      '#required' => ($oFormExtraData['ID'] == 0),
+      '#disabled' => $oFormExtraData['CanModify'] ? false: true,
+  );
+  
+  $form['maintable']['controlstable']['txtBalance'] = array(
+      '#weight' => 40, 
+      '#type' => 'textfield',
+      '#title' => t('Balance'),
+      '#maxlength' => 30,
+      '#size' => 25,
+      '#default_value' => check_plain($oFormExtraData['Balance']),
+      '#disabled' => $oFormExtraData['CanModify'] ? false: true,
+      '#rules' => array('numeric'),
+      '#number_type' => 'decimal',
+  );
+  
+  $form['maintable']['controlstable']['txtBalanceHeld'] = array(
+      '#weight' => 50, 
+      '#type' => 'textfield',
+      '#title' => t('Balance Held'),
+      '#maxlength' => 30,
+      '#size' => 25,
+      '#default_value' => check_plain($oFormExtraData['BalanceHeld']),
+      '#disabled' => $oFormExtraData['CanModify'] ? false: true,
+      '#rules' => array('numeric'),
+      '#number_type' => 'decimal',
+  );
+  
+  
+
+  
+  
+  
+  $form['maintable']['controlstable']['txtEMail'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email address'),
+    '#default_value' => check_plain($oFormExtraData['EMail']),
+    '#weight' => 90,
+    '#maxlength' => 254,
+    '#size' => 25,
+    '#required' => TRUE,
+    '#disabled' => $oFormExtraData['CanModify'] ? false: true,
+    '#rules' => array('email'),
+  );
   
   $form['#submit'][] = 'homecoop_page_member_form_submit';
   
