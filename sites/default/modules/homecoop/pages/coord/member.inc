@@ -252,7 +252,25 @@ function homecoop_page_member_form($form, &$form_state, $oFormExtraData) {
       '#number_type' => 'decimal',
   );
   
+  if ($oFormExtraData['CanModify']) {
+    $form['maintable']['controlstable']['PickupLocationKeyID'] = array(
+        '#type' => 'select',
+        '#key_type' => 'associative',
+        '#title' => t('Cashier'),
+        '#options' => $oFormExtraData['pickuplocations'],
+        '#weight' => 60,
+        '#description' => t('Cashier of balance change'),
+     );
+  }
   
+  $form['maintable']['controlstable']['PaymentMethodKeyID'] = array(
+        '#type' => 'select',
+        '#key_type' => 'associative',
+        '#title' => t('Payment Method'),
+        '#options' => $oFormExtraData['paymentmethods'],
+        '#weight' => 70,
+        '#disabled' => $oFormExtraData['CanModify'] ? false: true,
+  );
 
   
   
