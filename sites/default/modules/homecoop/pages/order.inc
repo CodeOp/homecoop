@@ -393,9 +393,7 @@ function homecoop_page_order_form_submit($form, &$form_state) {
   homecoop_page_order_get_common_form_data($form_state, $oRecord);
 
   if ( isset( $form_state['values']['membercomments'] )) {
-    $sMemberComments = trim($form_state['values']['membercomments']);
-    if (!empty($sMemberComments))
-      $oRecord->MemberComments = $sMemberComments;
+    $oRecord->MemberComments = codeop_util_null_or_trimmed_value($form_state['values']['membercomments']);
   }
 
   if ($oRecord->ID > 0) {

@@ -940,8 +940,8 @@ div.sepline {
   padding-left: 4px;
   padding-right: 4px;
   padding-bottom: 4px;
-  margin-top: 10px;
-  margin-bottom: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
   display: inline-block;
 }
 .opensum
@@ -952,6 +952,10 @@ div.sepline {
 .closedsum
 {
   background-color: #CCCCCC;
+}
+
+.tabarea {
+  margin-bottom: 10px;
 }
 
 .tabrow {

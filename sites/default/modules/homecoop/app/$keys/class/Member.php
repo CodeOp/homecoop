@@ -10,10 +10,12 @@ class Member extends SQLBase  {
   const POST_ACTION_ACTIVATE = 12;
   const POST_ACTION_DEACTIVATE = 13;
   
+  const MAX_PASSWORD_LENGTH = 64;
+  
   const PROPERTY_MEMBER_NAME = "Name";
   const PROPERTY_LOGIN_NAME = "LoginName";
   const PROPERTY_NEW_PASSWORD = "NewPassword";
-  const PROPERTY_VERIFY_PASSWORD = "VerifyPassword";
+  //const PROPERTY_VERIFY_PASSWORD = "VerifyPassword";
   const PROPERTY_EMAIL = "EMail";
   const PROPERTY_EMAIL2 = "EMail2";
   const PROPERTY_EMAIL3 = "EMail3";
@@ -53,7 +55,7 @@ class Member extends SQLBase  {
                             self::PROPERTY_PERCENT_OVER_BALANCE => DEFAULT_PERCENT_OVER_BALANCE_FOR_NEW_MEMBERS,
                             self::PROPERTY_IS_COORDINATOR => FALSE,
                             self::PROPERTY_NEW_PASSWORD => NULL,
-                            self::PROPERTY_VERIFY_PASSWORD => NULL,
+                           // self::PROPERTY_VERIFY_PASSWORD => NULL,
                             self::PROPERTY_COORDINATING_GROUP_ID => NULL,
                             self::PROPERTY_CAN_MODIFY => TRUE,
                             self::PROPERTY_IS_SYS_ADMIN => FALSE,
@@ -86,6 +88,19 @@ class Member extends SQLBase  {
       default:
         parent::__set( $name, $value );
     }
+  }
+  
+  public function GetAllProperties() {
+    $sJoinedOn = $this->JoinedOn;
+    if ($this->JoinedOn != null) {
+      $sJoinedOn = $this->JoinedOn->format(HOMECOOP_DATE_FORMAT);
+      unset($this->m_aData[self::PROPERTY_JOINED_ON]);
+    }
+    
+    return $this->m_aData + 
+        array(
+          self::PROPERTY_JOINED_ON => $sJoinedOn,
+        );
   }
   
  //access to roles screen?
@@ -274,7 +289,7 @@ class Member extends SQLBase  {
           ));
 
       $this->m_aData[self::PROPERTY_NEW_PASSWORD] = NULL; //don't send passwords back to client
-      $this->m_aData[self::PROPERTY_VERIFY_PASSWORD] = NULL;
+      //$this->m_aData[self::PROPERTY_VERIFY_PASSWORD] = NULL;
 
       $this->m_aData[self::PROPERTY_ID] = $this->GetLastInsertedID();
 
@@ -465,7 +480,7 @@ class Member extends SQLBase  {
             $this->m_aData[self::PROPERTY_PERCENT_OVER_BALANCE]);
     
     $this->m_aData[self::PROPERTY_NEW_PASSWORD] = NULL; //don't send passwords back to client
-    $this->m_aData[self::PROPERTY_VERIFY_PASSWORD] = NULL;
+    //$this->m_aData[self::PROPERTY_VERIFY_PASSWORD] = NULL;
     
     $this->m_aOriginalData = $this->m_aData;
 
@@ -566,7 +581,7 @@ class Member extends SQLBase  {
     }
     
     $this->m_aData[self::PROPERTY_NEW_PASSWORD] = NULL; //don't send passwords back to client
-    $this->m_aData[self::PROPERTY_VERIFY_PASSWORD] = NULL;
+    //$this->m_aData[self::PROPERTY_VERIFY_PASSWORD] = NULL;
     $this->PreserveFormData();
     $this->m_aOriginalData = $this->m_aData;
     
@@ -574,14 +589,14 @@ class Member extends SQLBase  {
     if ($g_oMemberSession->MemberID == $this->m_aData[self::PROPERTY_ID])
     {
       $this->m_nLastOperationStatus = parent::OPERATION_STATUS_VALIDATION_FAILED;
-      $g_oError->AddError('<!$VALIDATE_CANNOT_DELETE_OWN_USER$!>');
+      drupal_set_message('<!$VALIDATE_CANNOT_DELETE_OWN_USER$!>', 'error', false);
       return FALSE;
     }
 
     if ($this->CheckMemberPermissions() && !$g_oMemberSession->IsSysAdmin)
     {
       $this->m_nLastOperationStatus = parent::OPERATION_STATUS_VALIDATION_FAILED;
-      $g_oError->AddError('<!$VALIDATE_CANNOT_MODIFY_SYSTEM_ADMIN_WITH_LESS_PERMISSIONS$!>');
+      drupal_set_message('<!$VALIDATE_CANNOT_MODIFY_SYSTEM_ADMIN_WITH_LESS_PERMISSIONS$!>', 'error', false);
       return FALSE;
     }
     
@@ -710,7 +725,8 @@ class Member extends SQLBase  {
     
     if ($this->m_aData[self::PROPERTY_MEMBER_NAME] == NULL)
     {
-      $g_oError->AddError(sprintf('<!$FIELD_REQUIRED$!>', '<!$FIELD_MEMBER_NAME$!>'));
+      //cancel required message - already done in drupal
+      //$g_oError->AddError(sprintf('<!$FIELD_REQUIRED$!>', '<!$FIELD_MEMBER_NAME$!>'));
       $bValid = FALSE;
     }
     else
@@ -733,7 +749,8 @@ class Member extends SQLBase  {
     {
       if ($this->m_aData[self::PROPERTY_LOGIN_NAME] == NULL)
       {
-        $g_oError->AddError(sprintf('<!$FIELD_REQUIRED$!>', '<!$FIELD_LOGIN_NAME$!>'));
+        //cancel required message - already done in drupal
+        //$g_oError->AddError(sprintf('<!$FIELD_REQUIRED$!>', '<!$FIELD_LOGIN_NAME$!>'));
         $bValid = FALSE;
       }
       elseif ($bValid && !$this->IsUniqueLoginName()) //check uniqueness only if otherwise valid
@@ -747,33 +764,42 @@ class Member extends SQLBase  {
     
     if ($this->m_aData[self::PROPERTY_ID] == 0 && $this->m_aData[self::PROPERTY_NEW_PASSWORD] == NULL)
     {
-      $g_oError->AddError(sprintf('<!$FIELD_REQUIRED$!>', '<!$FIELD_NEW_PASSWORD$!>'));
+      //cancel required message - already done in drupal
+      //$g_oError->AddError(sprintf('<!$FIELD_REQUIRED$!>', '<!$FIELD_NEW_PASSWORD$!>'));
       $bValid = FALSE;
     }
     elseif ($this->m_aData[self::PROPERTY_NEW_PASSWORD] != NULL) 
     {
-      if (strlen($this->m_aData[self::PROPERTY_NEW_PASSWORD]) < PASSWORD_MIN_LENGTH )
+      $len = strlen($this->m_aData[self::PROPERTY_NEW_PASSWORD]);
+      if ($len < PASSWORD_MIN_LENGTH )
       {
         $g_oError->AddError(sprintf('<!$VALIDATE_FIELD_MIN_LENGTH$!>', '<!$FIELD_NEW_PASSWORD$!>', PASSWORD_MIN_LENGTH));
         $bValid = FALSE;
       }
-      if ($this->m_aData[self::PROPERTY_VERIFY_PASSWORD] == NULL || 
+      elseif ($len > self::MAX_PASSWORD_LENGTH) {
+        $g_oError->AddError(sprintf('<!$VALIDATE_FIELD_MAX_LENGTH$!>', '<!$FIELD_NEW_PASSWORD$!>', self::MAX_PASSWORD_LENGTH));
+        $bValid = FALSE;
+      }
+        
+      /*if ($this->m_aData[self::PROPERTY_VERIFY_PASSWORD] == NULL || 
               $this->m_aData[self::PROPERTY_VERIFY_PASSWORD] != $this->m_aData[self::PROPERTY_NEW_PASSWORD])
       {
         $g_oError->AddError('<!$VALIDATE_NEW_PASSWORD_VERIFY$!>');
         $bValid = FALSE;
-      }
+      }*/
     }
     
     if ($this->m_aData[self::PROPERTY_PAYMENT_METHOD_ID] == 0)
     {
-      $g_oError->AddError(sprintf('<!$FIELD_REQUIRED$!>', '<!$FIELD_PAYMENT_METHOD$!>'));
+      //cancel required message - already done in drupal
+      //$g_oError->AddError(sprintf('<!$FIELD_REQUIRED$!>', '<!$FIELD_PAYMENT_METHOD$!>'));
       $bValid = FALSE;
     }
     
     if ($this->m_aData[self::PROPERTY_EMAIL] == NULL)
     {
-      $g_oError->AddError(sprintf('<!$FIELD_REQUIRED$!>', '<!$FIELD_EMAIL$!>'));
+      //cancel required message - already done in drupal
+      //$g_oError->AddError(sprintf('<!$FIELD_REQUIRED$!>', '<!$FIELD_EMAIL$!>'));
       $bValid = FALSE;
     }
     elseif (!preg_match(Consts::ACCEPTED_EMAIL_REGULAR_EXPRESSION, $this->m_aData[self::PROPERTY_EMAIL]))

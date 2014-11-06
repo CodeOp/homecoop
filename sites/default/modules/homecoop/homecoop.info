@@ -4,6 +4,10 @@ core = 7.x
 package = Codeop
 php = 5.3
 
+; Controllers
+files[] = controllers/base.inc
+files[] = controllers/member.inc
+
 ; ----------
 ; Dependencies
 ; ----------
@@ -11,6 +15,7 @@ php = 5.3
 dependencies[] = codeop_util
 dependencies[] = views
 dependencies[] = views_php
+
 
 ; Core
 dependencies[] = locale

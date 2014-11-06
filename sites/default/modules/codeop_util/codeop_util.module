@@ -27,3 +27,19 @@ function codeop_util_views_api() {
     'template path' => $vpath,
   );
 }
+
+function codeop_util_null_or_trimmed_value($value) {
+  $value = trim($value);
+  if (empty($value)) {
+    return NULL;
+  }
+  return $value;
+}
+
+function codeop_util_null_or_trimmed_number($value) {
+  $value = trim($value);
+  if (empty($value)) {
+    return NULL;
+  }
+  return $value + 0;
+}

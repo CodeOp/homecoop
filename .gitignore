@@ -30,9 +30,10 @@
 /sites/default/modules/homecoop/app/?keys/img/
 /sites/default/modules/homecoop/app/?keys/php_calendar/
 
-# THESE FILES SHOULD ONLY BE UPDATED MANUALLY WHEN THERE'S A CHANGE IN STANDALONE HOMECOOP
 !/sites/default/modules/homecoop/app/?keys/settings.php
 !/sites/default/modules/homecoop/app/?keys/authenticate.php
+!/sites/default/modules/homecoop/app/?keys/strings.en.xml
+!/sites/default/modules/homecoop/app/?keys/strings.he.xml
 
 # PATCHES
 

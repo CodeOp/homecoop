@@ -1207,8 +1207,8 @@ div.sepline {
   padding-left: 4px;
   padding-right: 4px;
   padding-bottom: 4px;
-  margin-top: 10px;
-  margin-bottom: 5px;
+  margin-top: 0;
+  margin-bottom: 0;
   display: inline-block;
 }
 
@@ -1223,6 +1223,11 @@ div.sepline {
 }
 
 /* line 957, ../sass/main.scss */
+.tabarea {
+  margin-bottom: 10px;
+}
+
+/* line 961, ../sass/main.scss */
 .tabrow {
   list-style: none;
   padding: 0;
@@ -1232,12 +1237,12 @@ div.sepline {
   white-space: nowrap;
 }
 
-/* line 966, ../sass/main.scss */
+/* line 970, ../sass/main.scss */
 .subtabrow {
   margin-top: 1px;
 }
 
-/* line 969, ../sass/main.scss */
+/* line 973, ../sass/main.scss */
 .subtabrow:after {
   position: absolute;
   content: "";
@@ -1248,7 +1253,7 @@ div.sepline {
   z-index: 1;
 }
 
-/* line 978, ../sass/main.scss */
+/* line 982, ../sass/main.scss */
 .tabrow li {
   position: relative;
   z-index: 0;
@@ -1267,26 +1272,26 @@ div.sepline {
   border-top-right-radius: 10px;
 }
 
-/* line 993, ../sass/main.scss */
+/* line 997, ../sass/main.scss */
 .tabrow li.selected {
   background-color: #FFF;
   color: #000;
   z-index: 2;
 }
 
-/* line 998, ../sass/main.scss */
+/* line 1002, ../sass/main.scss */
 .subtabrow li.selected {
   border-bottom-color: #FFF;
 }
 
-/* line 1003, ../sass/main.scss */
+/* line 1007, ../sass/main.scss */
 select#selProductsView {
   margin-top: 6px;
   margin-bottom: 2px;
   vertical-align: middle;
 }
 
-/* line 1009, ../sass/main.scss */
+/* line 1013, ../sass/main.scss */
 a.LinkButton {
   text-decoration: none;
   padding: 4px;
@@ -1299,69 +1304,69 @@ a.LinkButton {
 }
 
 @-moz-document url-prefix() {
-  /* line 1021, ../sass/main.scss */
+  /* line 1025, ../sass/main.scss */
   a.LinkButton {
     border-radius: 15px;
   }
 }
 
-/* line 1027, ../sass/main.scss */
+/* line 1031, ../sass/main.scss */
 a.LinkButton:visited {
   color: #359A27;
 }
 
-/* line 1032, ../sass/main.scss */
+/* line 1036, ../sass/main.scss */
 a.LinkButton:link {
   color: #359A27;
 }
 
-/* line 1037, ../sass/main.scss */
+/* line 1041, ../sass/main.scss */
 a.LinkButton:active {
   color: #359A27;
 }
 
-/* line 1042, ../sass/main.scss */
+/* line 1046, ../sass/main.scss */
 a.LinkButton:hover {
   color: #000;
   background-color: #9ECE98;
   border: 1px solid #72B469;
 }
 
-/* line 1049, ../sass/main.scss */
+/* line 1053, ../sass/main.scss */
 a.HistoryButton {
   color: #475744;
 }
 
-/* line 1054, ../sass/main.scss */
+/* line 1058, ../sass/main.scss */
 a.HistoryButton:visited {
   color: #475744;
 }
 
-/* line 1059, ../sass/main.scss */
+/* line 1063, ../sass/main.scss */
 a.HistoryButton:link {
   color: #475744;
 }
 
-/* line 1064, ../sass/main.scss */
+/* line 1068, ../sass/main.scss */
 a.HistoryButton:active {
   color: #475744;
 }
 
-/* line 1068, ../sass/main.scss */
+/* line 1072, ../sass/main.scss */
 a.HistoryButton:hover {
   background-color: #A6A6A5;
   border-color: #414141;
   color: #000;
 }
 
-/* line 1074, ../sass/main.scss */
+/* line 1078, ../sass/main.scss */
 td a.LinkButton {
   padding-bottom: 1px;
   padding-top: 1px;
   line-height: 28px;
 }
 
-/* line 1081, ../sass/main.scss */
+/* line 1085, ../sass/main.scss */
 .nav-collapse,
 .nav-collapse * {
   -moz-box-sizing: border-box;
@@ -1369,7 +1374,7 @@ td a.LinkButton {
   box-sizing: border-box;
 }
 
-/* line 1087, ../sass/main.scss */
+/* line 1091, ../sass/main.scss */
 .nav-toggle {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -1383,33 +1388,33 @@ td a.LinkButton {
   overflow: hidden;
 }
 
-/* line 1100, ../sass/main.scss */
+/* line 1104, ../sass/main.scss */
 #tglUser {
   background: #336633 url("../img/hamburger.gif") no-repeat 50% 33%;
 }
 
-/* line 1104, ../sass/main.scss */
+/* line 1108, ../sass/main.scss */
 #tglUser:hover {
   background: #336633 url("../img/hamburger.gif") no-repeat 50% 33%;
 }
 
-/* line 1108, ../sass/main.scss */
+/* line 1112, ../sass/main.scss */
 #tglCoord {
   background: white url("../img/tools-wizard.png") no-repeat 50% 33%;
   padding: 18px 0px;
 }
 
-/* line 1113, ../sass/main.scss */
+/* line 1117, ../sass/main.scss */
 #tglCoord:hover {
   background: white url("../img/tools-wizard.png") no-repeat 50% 33%;
 }
 
-/* line 1117, ../sass/main.scss */
+/* line 1121, ../sass/main.scss */
 .nav-collapse.opened {
   max-height: 9999px;
 }
 
-/* line 1121, ../sass/main.scss */
+/* line 1125, ../sass/main.scss */
 .nav-toggle {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-touch-callout: none;
@@ -1420,19 +1425,19 @@ td a.LinkButton {
   user-select: none;
 }
 
-/* line 1132, ../sass/main.scss */
+/* line 1136, ../sass/main.scss */
 .coordmenulabel {
   font-size: 16px;
   padding-left: 5px;
   padding-right: 5px;
 }
 
-/* line 1139, ../sass/main.scss */
+/* line 1143, ../sass/main.scss */
 .resgridtitle {
   font-weight: bold;
 }
 
-/* line 1144, ../sass/main.scss */
+/* line 1148, ../sass/main.scss */
 .resgridcell {
   display: inline-block;
   vertical-align: top;
@@ -1440,42 +1445,42 @@ td a.LinkButton {
   padding-right: 10px;
 }
 
-/* line 1151, ../sass/main.scss */
+/* line 1155, ../sass/main.scss */
 .resgriddatatiny {
   width: 35px;
   white-space: normal;
 }
 
-/* line 1156, ../sass/main.scss */
+/* line 1160, ../sass/main.scss */
 .resgriddatashort {
   width: 50px;
   white-space: normal;
 }
 
-/* line 1161, ../sass/main.scss */
+/* line 1165, ../sass/main.scss */
 .resgriddata {
   width: 80px;
   white-space: normal;
 }
 
-/* line 1166, ../sass/main.scss */
+/* line 1170, ../sass/main.scss */
 .resgriddatahlong {
   width: 120px;
   white-space: normal;
 }
 
-/* line 1171, ../sass/main.scss */
+/* line 1175, ../sass/main.scss */
 .resgriddatalong {
   width: 180px;
   white-space: normal;
 }
 
-/* line 1176, ../sass/main.scss */
+/* line 1180, ../sass/main.scss */
 .inlineblock {
   display: inline-block;
 }
 
-/* line 1180, ../sass/main.scss */
+/* line 1184, ../sass/main.scss */
 .spacer4 {
   font-size: 4px;
 }
