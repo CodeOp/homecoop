@@ -26,30 +26,25 @@ class HomeCoopMemberController extends HomeCoopBaseController implements DrupalE
       global $user;
       
       // Determine if we will be inserting a new record
-      $bIsNew = empty($entity->ID);
+      $entity->IsNew = empty($entity->ID);
                   
       // Give modules the opportunity to prepare field data for
       // saving.
-      field_attach_presave(ENTNAME, $entity);
+      field_attach_presave(self::ENTNAME, $entity);
       
       //convert entity back to array to set all the class properties
-      $oMember = new Member();
-      $arrProps = (array)$entity;
-      foreach($arrProps as $key => $value) {
-        $oMember->$key = $value;
-      }
-
+      $oMember = $this->toClass($entity);
+      
       // If this is a new record...
-      if ($bIsNew) {
+      if ($entity->IsNew) {
         if (!$oMember->Add())
           return FALSE;
-                
+        $entity->ID = $oMember->ID;        
         $op = 'insert';
       }
       else {
         if (!$oMember->Edit())
           return FALSE;
-        
         $op = 'update';
       }
       
@@ -57,14 +52,14 @@ class HomeCoopMemberController extends HomeCoopBaseController implements DrupalE
             
       // Save fields.
       $function = 'field_attach_' . $op;
-      $function(ENTNAME, $entity);
+      $function(self::ENTNAME, $entity);
       
-      module_invoke_all('entity_' . $op, $entity, ENTNAME);
+      module_invoke_all('entity_' . $op, $entity, self::ENTNAME);
           
       return $entity;
     }
     catch (Exception $e) {
-      watchdog_exception(ENTNAME, $e, NULL, WATCHDOG_ERROR);
+      watchdog_exception(self::ENTNAME, $e, NULL, WATCHDOG_ERROR);
       return FALSE;
     }
   }
@@ -87,13 +82,13 @@ class HomeCoopMemberController extends HomeCoopBaseController implements DrupalE
       
       //delete fields
       foreach($entities as $entity) {        
-        field_attach_delete(ENTNAME, $entity);
+        field_attach_delete(self::ENTNAME, $entity);
 
-        module_invoke_all('entity_delete', $entity, ENTNAME);
+        module_invoke_all('entity_delete', $entity, self::ENTNAME);
       }
     }
     catch(Exception $e) {
-      watchdog_exception(ENTNAME, $e, NULL, WATCHDOG_ERROR);
+      watchdog_exception(self::ENTNAME, $e, NULL, WATCHDOG_ERROR);
       return FALSE;
     }
     
@@ -131,5 +126,14 @@ class HomeCoopMemberController extends HomeCoopBaseController implements DrupalE
     }
     
     return $entities;
+  }
+  
+  public function toClass($entity) {
+    $oMember = new Member();
+    $arrProps = (array)$oMember->GetAllProperties();
+    foreach($arrProps as $key => $value) {
+      $oMember->$key = $entity->$key;
+    }
+    return $oMember;
   }
 }

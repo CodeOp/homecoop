@@ -201,6 +201,7 @@ function homecoop_entity_info() {
         'id' => 'ID',
         'label' => 'Name',
       ),
+      'base table' => NULL, //required by entity_translation
       'view modes' => array(
         'full' => array(
           'label' => t('Default'),
@@ -420,6 +421,7 @@ function homecoop_member_load($id = NULL, $reset = FALSE) {
 }
 
 function homecoop_member_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
+  homecoop_include_app_file('authenticate');
   return entity_load('homecoop_member', $ids, $conditions, $reset);
 }
 
@@ -569,8 +571,6 @@ function homecoop_check_if_authenticated() {
     return $g_oMemberSession->Authenticate();
   }
 }
-
-
 
 function homecoop_LoadSpecificFacet(&$oFacet, &$aFacet, &$aFacetIDs, &$nFacetRemoved, $sIDField)
 {
@@ -1059,44 +1059,44 @@ function homecoop_member_tab_info($oMemberTabInfo) {
   );
 }
 
-function homecoop_member_tab_content($aMemberTabInfo) {
-  if (!isset($aMemberTabInfo) || empty($aMemberTabInfo)) {
+function homecoop_member_tab_content($entity) {
+  if (!isset($entity) || empty($entity)) {
     return array();
   }
   
   $arrContent = array(
     'tabs' => array(
       '#prefix' => '<table id="tabMember" class="tabarea" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul class="tabrow subtabrow">',
-      'maintab' => homecoop_tab_member_write_element($aMemberTabInfo['MainTabName'], 
+      'maintab' => homecoop_tab_member_write_element($entity->MainTabName, 
           url('hccoord/member', 
-              array('query' => array('id' => $aMemberTabInfo['ID']))), 
-          $aMemberTabInfo['Page'] == MemberTabInfo::PAGE_ENTRY),
+              array('query' => array('id' => $entity->ID))), 
+          $entity->Page == MemberTabInfo::PAGE_ENTRY),
       '#suffix' => '</ul></td></tr></table>',
     ),
   );
   
-  if ($aMemberTabInfo['hasmemberrolescoordpermission']) {
+  if ($entity->hasmemberrolescoordpermission) {
     $arrContent['tabs']['rolestab'] = homecoop_tab_member_write_element(t('Roles'),
-        url('hccoord/memberroles', array('query' => array('id' => $aMemberTabInfo['ID']))), 
-          $aMemberTabInfo['Page'] == MemberTabInfo::PAGE_ROLES);
+        url('hccoord/memberroles', array('query' => array('id' => $entity->ID))), 
+          $entity->Page == MemberTabInfo::PAGE_ROLES);
   }
   
-  if ($aMemberTabInfo['hasmembertransactionsviewpermission']) {
+  if ($entity->hasmembertransactionsviewpermission) {
     $arrContent['tabs']['transactionstab'] = homecoop_tab_member_write_element(t('Transactions'),
-        url('hccoord/membertransactions', array('query' => array('id' => $aMemberTabInfo['ID']))), 
-          $aMemberTabInfo['Page'] == MemberTabInfo::PAGE_TRANSACTIONS);
+        url('hccoord/membertransactions', array('query' => array('id' => $entity->ID))), 
+          $entity->Page == MemberTabInfo::PAGE_TRANSACTIONS);
   }
   
-  if ($aMemberTabInfo['hasmemberpickuplocationsviewpermission']) {
+  if ($entity->hasmemberpickuplocationsviewpermission) {
     $arrContent['tabs']['pickuplocstab'] = homecoop_tab_member_write_element(t('Pickup Locations'),
-        url('hccoord/memberpickuplocs', array('query' => array('id' => $aMemberTabInfo['ID']))), 
-          $aMemberTabInfo['Page'] == MemberTabInfo::PAGE_PICKUP_LOCATIONS);
+        url('hccoord/memberpickuplocs', array('query' => array('id' => $entity->ID))), 
+          $entity->Page == MemberTabInfo::PAGE_PICKUP_LOCATIONS);
   }
   
-  if ($aMemberTabInfo['hasmemberproducersviewpermission']) {
+  if ($entity->hasmemberproducersviewpermission) {
     $arrContent['tabs']['producerstab'] = homecoop_tab_member_write_element(t('Producers'),
-        url('hccoord/memberproducers', array('query' => array('id' => $aMemberTabInfo['ID']))), 
-          $aMemberTabInfo['Page'] == MemberTabInfo::PAGE_PRODUCERS);
+        url('hccoord/memberproducers', array('query' => array('id' => $entity->ID))), 
+          $entity->Page == MemberTabInfo::PAGE_PRODUCERS);
   }
   
   return $arrContent;

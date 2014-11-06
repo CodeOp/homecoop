@@ -70,25 +70,6 @@ class Member extends SQLBase  {
     $this->m_aData = $this->m_aDefaultData;
     $this->m_aOriginalData = $this->m_aDefaultData; 
   }
-    
-  //limit properties that can be set
-  public function __set( $name, $value ) {
-    switch ($name)
-    {
-      case self::PROPERTY_JOINED_ON:
-      case self::PROPERTY_IS_COORDINATOR:
-      case self::PROPERTY_CAN_MODIFY:
-      case self::PROPERTY_MAX_ORDER:
-        $trace = debug_backtrace();
-        trigger_error(
-          'Undefined property via __set(): ' . $name .
-          ' in class '. get_class() .', file ' . $trace[0]['file'] .
-          ' on line ' . $trace[0]['line'],
-          E_USER_NOTICE);
-      default:
-        parent::__set( $name, $value );
-    }
-  }
   
   public function GetAllProperties() {
     $sJoinedOn = $this->JoinedOn;
