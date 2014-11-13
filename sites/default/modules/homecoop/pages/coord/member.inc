@@ -8,6 +8,10 @@ function homecoop_page_member_edit($entity) {
   //close session opened in 'authenticate.php' when not required anymore
   UserSessionBase::Close();
   
+  if (!$entity->HasNoPermissions) {
+    drupal_add_js('jQuery(document).ready(function () { SetActivateOptionAsDisabled(); });', 'inline');
+  }
+  
   return drupal_get_form('homecoop_member_form', $entity);
 }
 
@@ -32,11 +36,11 @@ function homecoop_member_form($form, &$form_state, $entity) {
     homecoop_authenticated_page();
   }
   
-  $hcsettings = array(
+  /*$hcsettings = array(
     'ActivateCode' => Member::POST_ACTION_ACTIVATE,
     'ActivateDesc' => t('Restore Permissions'),
   );
-  drupal_add_js(array('homecoop' => $hcsettings), 'setting');
+  drupal_add_js(array('homecoop' => $hcsettings), 'setting');*/
   
   homecoop_add_js_file('member.js');
   
@@ -102,12 +106,10 @@ function homecoop_member_form($form, &$form_state, $entity) {
         '#weight' => 5, 
       );
       
-      $arrActions = array();
-      if ($entity->HasNoPermissions) {
-        $arrActions[Member::POST_ACTION_ACTIVATE] = t('Restore Permissions');
-      }
-      $arrActions[Member::POST_ACTION_DEACTIVATE] = t('Remove Permissions');
-      
+      $arrActions = array(
+        Member::POST_ACTION_ACTIVATE => t('Restore Permissions'),
+        Member::POST_ACTION_DEACTIVATE => t('Remove Permissions'),
+      );     
       
       $form['maintable']['buttons']['select_action'] = array(
         '#type' => 'select',
@@ -367,8 +369,8 @@ function homecoop_member_form_save($form, &$form_state) {
     $form_state['redirect'] = 'hccoord/member/' . $entity->ID;
   }
 
-  //won't work without rebuild which vanishes the header block
-  //drupal_set_message(t('Record saved successfully.'), 'status', true);
+  //won't work without rebuild while it should have (and rebuild vanishes the header...)
+  drupal_set_message(t('Record saved successfully.'), 'status', false);
 }
 
 function homecoop_page_member_get_submitted_entity(&$form_state) {

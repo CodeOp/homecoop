@@ -551,7 +551,7 @@ function homecoop_getthemepath() {
 }
 
 function homecoop_authenticated_page() {
-  drupal_get_messages(); //clear all previous errors from the queue when first entering a page
+  //drupal_get_messages(); //clear all previous errors from the queue when first entering a page
   
   homecoop_getthemepath();
   homecoop_include_app_file('authenticate');
