@@ -1484,3 +1484,9 @@ td a.LinkButton {
 .spacer4 {
   font-size: 4px;
 }
+
+/* specfic forms */
+/* line 1190, ../sass/main.scss */
+form#homecoop_member-form .form-item-select-action {
+  display: inline;
+}

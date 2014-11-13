@@ -25,11 +25,19 @@ function homecoop_page_member_add() {
 }
 
 function homecoop_member_form($form, &$form_state, $entity) {
+  global $g_oMemberSession;
+  
+  //ajax
+  if(!isset($g_oMemberSession)) {
+    homecoop_authenticated_page();
+  }
   
   $hcsettings = array(
-    'ConfirmDelete' => t('Please confirm the delete operation. Note that this action will succeed only when there are no orders linked to the member. To block a member from signing in, remove hir permissions instead.'),
+    'ActivateCode' => Member::POST_ACTION_ACTIVATE,
+    'ActivateDesc' => t('Restore Permissions'),
   );
   drupal_add_js(array('homecoop' => $hcsettings), 'setting');
+  
   homecoop_add_js_file('member.js');
   
   $form['#id'] = 'homecoop_member-form';
@@ -44,7 +52,15 @@ function homecoop_member_form($form, &$form_state, $entity) {
   $form['hidPostValue'] = array('#type' => 'value', '#value' => $entity->ID, 
     '#attributes' => array('id' => 'hidPostValue'));
   
+  //ajax injected drupal messages - on top of all controls
+  $form['ajaxmessage'] = array(
+    '#prefix' => '<div id="div_ajax_message">',
+    '#suffix' => '</div>',
+    '#weight' => 0, 
+  );
+  
   $form['maintable'] = array(
+    '#weight' => 10,
     'controlstable' => array(
       '#weight' => 50,
       'maxorder' => array(
@@ -86,49 +102,43 @@ function homecoop_member_form($form, &$form_state, $entity) {
         '#weight' => 5, 
       );
       
-      if ($entity->hasdeletepermission) {
-        $form['maintable']['buttons']['btn_delete'] = array(
-            '#type' => 'button',
-            '#name' => 'btn_delete',
-            '#id' => 'btn_delete',
-            '#value' => t('Delete'),
-            '#weight' => 20, 
-            '#attributes' => array(
-              'onclick' => 'Delete();',
-            ),
-        );
-      }
-      
-      $form['maintable']['buttons']['btnDeactivate'] = array(
-            '#type' => 'submit',
-            '#name' => 'btnDeactivate',
-            '#id' => 'btnDeactivate',
-            '#value' => t('Remove Permissions'),
-            '#submit' => array('homecoop_member_form_deactivate'),
-            '#validate' => array(),
-            '#weight' => 30, 
-            '#attributes' => array(
-              'onclick' => 'Deactivate();',
-            ),
-        );
-      
+      $arrActions = array();
       if ($entity->HasNoPermissions) {
-        $form['maintable']['buttons']['btnActivate'] = array(
-            '#type' => 'submit',
-            '#name' => 'btnActivate',
-            '#id' => 'btnActivate',
-            '#submit' => array('homecoop_member_form_activate'),
-            '#validate' => array(),
-            '#value' => t('Restore Permissions'),
-            '#weight' => 40, 
-            '#attributes' => array(
-              'onclick' => 'Activate();',
-            ),
+        $arrActions[Member::POST_ACTION_ACTIVATE] = t('Restore Permissions');
+      }
+      $arrActions[Member::POST_ACTION_DEACTIVATE] = t('Remove Permissions');
+      
+      
+      $form['maintable']['buttons']['select_action'] = array(
+        '#type' => 'select',
+        '#name' => 'select_action',
+        '#id' => 'select_action',
+        '#key_type' => 'associative',
+        '#title' => t('Select action'),
+        '#title_display' => 'attribute',
+        '#options' => $arrActions,
+        '#empty_value' => 0,
+        '#empty_option' => t('Select action'),
+        '#default_value' => 0,
+        '#weight' => 30,
+        '#ajax' => array(
+          'callback' => 'homecoop_member_form_ajax_callback',
+          'wrapper' => 'div_ajax_message',
+          'method' => 'replace',
+        ),
+      );
+      
+      if ($entity->hasdeletepermission) {
+        $form['maintable']['buttons']['lnk_delete'] = array(
+            '#markup' => l(t('Delete'), "hccoord/member/$entity->ID/delete"),
+            '#weight' => 45,
         );
       }
     }
     
   } //end can modify
+  
+  
   
   //form input controls
   $form['maintable']['controlstable']['txtName'] = array(
@@ -306,6 +316,8 @@ function homecoop_member_form($form, &$form_state, $entity) {
     '#disabled' => !$entity->CanModify,
   );
   
+  //field_attach_form('homecoop_member', $entity, $form, $form_state);
+  
   return $form;
 }
 
@@ -324,11 +336,7 @@ function homecoop_page_common_start()
 }
 
 function homecoop_member_form_validate($form, &$form_state) { 
-  //skip iterations invoked by ajax
-  if (!isset($form_state['submitted']) || !$form_state['submitted'])  {
-    return;
-  }
-  
+    
   $entity = homecoop_page_member_get_submitted_entity($form_state);
   
   $oRecord = entity_get_controller('homecoop_member')->toClass($entity);
@@ -337,14 +345,15 @@ function homecoop_member_form_validate($form, &$form_state) {
   }
   
   //Field API validation
-  field_attach_form_validate('homecoop_member', $entity, $form, $form_state);
+  //field_attach_form_validate('homecoop_member', $entity, $form, $form_state);
 }
 
 function homecoop_member_form_save($form, &$form_state) {  
+  
   $entity = $form_state['homecoop_member'];
   
   // Notify field widgets.
-  field_attach_submit('homecoop_member', $entity, $form, $form_state);
+  //field_attach_submit('homecoop_member', $entity, $form, $form_state);
 
   $entity = entity_get_controller('homecoop_member')->save($entity);
   
@@ -432,45 +441,92 @@ function homecoop_page_member_get_submitted_entity(&$form_state) {
   return $entity;
 }
 
-//todo: change to ajax
-function homecoop_member_form_delete($form, &$form_state) {
+function homecoop_page_member_delete_confirm($form, &$form_state, $entity) {  
   
-  $oRecord = new Member;
-  homecoop_page_member_get_common_form_data($form_state, $oRecord);
+  $form['MemberID'] = array('#type' => 'value', '#value' => $entity->ID);
   
-  if ( $oRecord->Delete() ) {
-      //redirect to grid
-      $form_state['redirect'] = array(
-        'hccoord/members',
-      );
-      return;
-  }
-  else if ($oRecord->LastOperationStatus != SQLBase::OPERATION_STATUS_VALIDATION_FAILED) {
+  return confirm_form($form, 
+    t('Please confirm the delete operation.'),
+    'hccoord/members',
+    t('This action will succeed only when there are no orders linked to %title. To block a member from signing in, remove hir permissions instead.',
+        array('%title' => $entity->Name)),
+    t('Delete'), 
+    t('Cancel')
+  );
+}
+
+function homecoop_page_member_delete_confirm_submit($form, &$form_state) {
+  if ($form_state['values']['confirm']) {
+    $id = $form_state['values']['MemberID'];
+    
+    if (!entity_get_controller('homecoop_member')->delete(array($id))) {
       drupal_set_message(t('The record was not deleted.'), 'error', false);
+      return;
+    }
+    
+    drupal_set_message(t('Member has been deleted.'));
+    
+    $form_state['redirect'] = 'hccoord/members';
   }
 }
 
-//todo: change to ajax
-function homecoop_member_form_activate($form, &$form_state) {
-  $oRecord = new Member;
-  homecoop_page_member_get_common_form_data($form_state, $oRecord);
-  if ( $oRecord->Activate() ) {
-    drupal_set_message(t('Permissions restored successfully'), 'status', false);
+/*
+ * Action ajax callback
+ */
+function homecoop_member_form_ajax_callback($form, &$form_state) {
+  global $g_oMemberSession;
+  
+  //ajax
+  if(!isset($g_oMemberSession)) {
+    homecoop_authenticated_page();
   }
-  else {
-    drupal_set_message(t('Permissions restore failed'), 'error', false);
+  $id = $form_state['values']['hidPostValue'];
+  $action = intval($form_state['values']['select_action']);
+  
+  $ret_val = FALSE;
+  $command = NULL;
+  //$arrScript = array();
+  
+  switch ($action) {
+    case Member::POST_ACTION_ACTIVATE:
+      $ret_val = entity_get_controller('homecoop_member')->activate(array($id));
+      if ($ret_val) {
+        drupal_set_message(t('Permissions restored successfully'), 'status', false);
+      }
+      else {
+        drupal_set_message(t('Permissions restore failed'), 'error', false);
+      }
+      $command = 'Activate';
+      break;
+    case Member::POST_ACTION_DEACTIVATE:
+      $ret_val = entity_get_controller('homecoop_member')->deactivate(array($id));
+      if ($ret_val) {
+        drupal_set_message(t('Permissions removed successfully'), 'status', false);
+      }
+      else {
+        drupal_set_message(t('Permissions remove failed'), 'error', false);
+      }
+      $command = 'Deactivate';
+      break;
+    default:
+      return array();
   }
-}
+  
+  $commands = array();
+  
+  $element = array('messages' => array(
+                      '#type' => 'markup',
+                        '#markup' => theme('status_messages'))
+        );
 
-//todo: change to ajax
-function homecoop_member_form_deactivate($form, &$form_state) {
-  $oRecord = new Member;
-  homecoop_page_member_get_common_form_data($form_state, $oRecord);
-  if ( $oRecord->Deactivate() ) {
-    drupal_set_message(t('Permissions removed successfully'), 'status', false);
-  }
-  else {
-    drupal_set_message(t('Permissions remove failed'), 'error', false);
-  }
+  $commands[] = ajax_command_html('#div_ajax_message' , render($element));
+  // This is what will call our JS command
+  $commands[] = array (
+    // The command in my JS file
+    'command' => $command,
+    'success' => $ret_val,
+  );
+
+  return array('#type' => 'ajax', '#commands' => $commands);
 }
 

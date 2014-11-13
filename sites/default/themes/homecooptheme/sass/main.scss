@@ -1184,3 +1184,10 @@ td a.LinkButton {
 .spacer4 {
  font-size: 4px;
 }
+
+/* specfic forms */
+form#homecoop_member-form {
+  .form-item-select-action {
+    display: inline;
+  }
+}

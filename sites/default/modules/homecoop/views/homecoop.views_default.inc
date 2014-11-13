@@ -153,7 +153,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['sName']['table'] = 'T_Member';
   $handler->display->display_options['fields']['sName']['field'] = 'sName';
   $handler->display->display_options['fields']['sName']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['sName']['alter']['path'] = 'hccoord/member?id=[MemberID]';
+  $handler->display->display_options['fields']['sName']['alter']['path'] = 'hccoord/member/[MemberID]';
   $handler->display->display_options['fields']['sName']['element_label_colon'] = FALSE;
   /* Field: Member: Joined On */
   $handler->display->display_options['fields']['dJoined']['id'] = 'dJoined';

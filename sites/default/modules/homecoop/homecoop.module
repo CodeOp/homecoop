@@ -183,6 +183,12 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/member.inc',
     ),
+    'hccoord/member/%homecoop_member/delete' => array(
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('homecoop_page_member_delete_confirm', 2),
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/member.inc',
+    ),  
   );
 }
 
@@ -196,7 +202,7 @@ function homecoop_entity_info() {
       'controller class' => 'HomeCoopMemberController',
       'uri callback' => 'homecoop_member_uri',
       'access callback' => 'homecoop_public_access',
-      'fieldable' => TRUE,
+      'fieldable' => FALSE, //code for fields in remarks, for better performance
       'entity keys' => array(
         'id' => 'ID',
         'label' => 'Name',

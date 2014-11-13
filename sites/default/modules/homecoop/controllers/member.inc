@@ -30,7 +30,7 @@ class HomeCoopMemberController extends HomeCoopBaseController implements DrupalE
                   
       // Give modules the opportunity to prepare field data for
       // saving.
-      field_attach_presave(self::ENTNAME, $entity);
+      //field_attach_presave(self::ENTNAME, $entity);
       
       //convert entity back to array to set all the class properties
       $oMember = $this->toClass($entity);
@@ -51,10 +51,10 @@ class HomeCoopMemberController extends HomeCoopBaseController implements DrupalE
       unset($oMember);
             
       // Save fields.
-      $function = 'field_attach_' . $op;
-      $function(self::ENTNAME, $entity);
+      //$function = 'field_attach_' . $op;
+      //$function(self::ENTNAME, $entity);
       
-      module_invoke_all('entity_' . $op, $entity, self::ENTNAME);
+      //module_invoke_all('entity_' . $op, $entity, self::ENTNAME);
           
       return $entity;
     }
@@ -68,23 +68,70 @@ class HomeCoopMemberController extends HomeCoopBaseController implements DrupalE
     if (empty($ids)) {
       return TRUE;
     }
-      
-    $entities = $this->load($ids, array());
         
     try
     {
+      //field code
+      //$entities = $this->load($ids, array());
+      
       foreach($ids as $id) {
         $oMember = new Member();
         $oMember->ID = $id;
         $oMember->Delete();
         unset($oMember);
       }
-      
-      //delete fields
-      foreach($entities as $entity) {        
-        field_attach_delete(self::ENTNAME, $entity);
 
-        module_invoke_all('entity_delete', $entity, self::ENTNAME);
+      //delete fields
+      //foreach($entities as $entity) {        
+      //  field_attach_delete(self::ENTNAME, $entity);
+
+      //  module_invoke_all('entity_delete', $entity, self::ENTNAME);
+      //}
+    }
+    catch(Exception $e) {
+      watchdog_exception(self::ENTNAME, $e, NULL, WATCHDOG_ERROR);
+      return FALSE;
+    }
+    
+    return TRUE;
+  }
+  
+  public function activate($ids) {
+    if (empty($ids)) {
+      return TRUE;
+    }
+        
+    try
+    {
+      
+      foreach($ids as $id) {
+        $oMember = new Member();
+        $oMember->ID = $id;
+        $oMember->Activate();
+        unset($oMember);
+      }
+    }
+    catch(Exception $e) {
+      watchdog_exception(self::ENTNAME, $e, NULL, WATCHDOG_ERROR);
+      return FALSE;
+    }
+    
+    return TRUE;
+  }
+  
+  public function deactivate($ids) {
+    if (empty($ids)) {
+      return TRUE;
+    }
+        
+    try
+    {
+      
+      foreach($ids as $id) {
+        $oMember = new Member();
+        $oMember->ID = $id;
+        $oMember->Deactivate();
+        unset($oMember);
       }
     }
     catch(Exception $e) {
