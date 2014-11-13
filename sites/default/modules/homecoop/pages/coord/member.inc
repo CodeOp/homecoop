@@ -36,12 +36,6 @@ function homecoop_member_form($form, &$form_state, $entity) {
     homecoop_authenticated_page();
   }
   
-  /*$hcsettings = array(
-    'ActivateCode' => Member::POST_ACTION_ACTIVATE,
-    'ActivateDesc' => t('Restore Permissions'),
-  );
-  drupal_add_js(array('homecoop' => $hcsettings), 'setting');*/
-  
   homecoop_add_js_file('member.js');
   
   $form['#id'] = 'homecoop_member-form';
@@ -91,6 +85,7 @@ function homecoop_member_form($form, &$form_state, $entity) {
         '#name' => 'btn_save',
         '#id' => 'btn_save',
         '#submit' => array('homecoop_member_form_save'),
+        '#executes_submit_callback' => true,
         '#validate' => array('homecoop_member_form_validate'),
         '#value' => t('Save'),
         '#suffix' => '&nbsp;',
@@ -370,7 +365,7 @@ function homecoop_member_form_save($form, &$form_state) {
   }
 
   //won't work without rebuild while it should have (and rebuild vanishes the header...)
-  drupal_set_message(t('Record saved successfully.'), 'status', false);
+  drupal_set_message(t('Record saved successfully.'), 'status', true);
 }
 
 function homecoop_page_member_get_submitted_entity(&$form_state) {
@@ -531,4 +526,3 @@ function homecoop_member_form_ajax_callback($form, &$form_state) {
 
   return array('#type' => 'ajax', '#commands' => $commands);
 }
-
