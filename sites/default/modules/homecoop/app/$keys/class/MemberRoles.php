@@ -73,7 +73,7 @@ class MemberRoles extends SQLBase {
     
     $this->RunSQL( $sSQL );
 
-    return $this->fetch();
+    return $this->fetchAllKeyPair();;
   }
   
   public function GetOtherRoles()
@@ -106,13 +106,9 @@ class MemberRoles extends SQLBase {
                     $this->m_aData[self::PROPERTY_ID] .
             ") ORDER BY R_S.sString;";
 
-    $this->m_bUseSecondSqlPreparedStmt = TRUE;
     $this->RunSQL( $sSQL );
 
-    $arrResult = $this->fetchAllKeyPair();
-    $this->m_bUseSecondSqlPreparedStmt = FALSE;
-    
-    return $arrResult;
+    return $this->fetchAllKeyPair();
   }
   
   public function RemoveRole($nRoleID)
@@ -146,13 +142,15 @@ class MemberRoles extends SQLBase {
       //user must be system admin
       if (!$g_oMemberSession->IsSysAdmin)
       {
-        $g_oError->AddError('<!$VALIDATE_CANNOT_MODIFY_SYSTEM_ADMIN_WITH_LESS_PERMISSIONS$!>');
+        drupal_set_message('<!$VALIDATE_CANNOT_MODIFY_SYSTEM_ADMIN_WITH_LESS_PERMISSIONS$!>', 'error');
+        $this->m_nLastOperationStatus = parent::OPERATION_STATUS_VALIDATION_FAILED;
         return FALSE;
       }
       //admin cannot remove hir own role (this addition insures there will always be at least one admin)
       if ($g_oMemberSession->MemberID == $this->m_aData[self::PROPERTY_ID])
       {
-        $g_oError->AddError('<!$VALIDATE_CANNOT_REMOVE_OWN_SYSTEM_ADMIN_PERMISSIONS$!>');
+        drupal_set_message('<!$VALIDATE_CANNOT_REMOVE_OWN_SYSTEM_ADMIN_PERMISSIONS$!>', 'error');
+        $this->m_nLastOperationStatus = parent::OPERATION_STATUS_VALIDATION_FAILED;
         return FALSE;
       }
     }
@@ -193,7 +191,8 @@ class MemberRoles extends SQLBase {
     //when adding system admin roles, must be system admin
     if ($nRoleID == Consts::ROLE_SYSTEM_ADMIN && !$g_oMemberSession->IsSysAdmin)
     {
-      $g_oError->AddError('<!$VALIDATE_CANNOT_MODIFY_SYSTEM_ADMIN_WITH_LESS_PERMISSIONS$!>');
+      drupal_set_message('<!$VALIDATE_CANNOT_MODIFY_SYSTEM_ADMIN_WITH_LESS_PERMISSIONS$!>', 'error');
+      $this->m_nLastOperationStatus = parent::OPERATION_STATUS_VALIDATION_FAILED;
       return FALSE;
     }
     

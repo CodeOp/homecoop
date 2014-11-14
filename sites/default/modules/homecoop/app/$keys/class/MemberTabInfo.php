@@ -11,7 +11,7 @@ class MemberTabInfo extends SQLBase {
   const PAGE_PICKUP_LOCATIONS = 4;
   const PAGE_PRODUCERS = 5;
   
-  const PROPERTY_MEMBER_ID = "MemberID";
+  const PROPERTY_MEMBER_ID = "ID";
   const PROPERTY_PAGE = "Page";
   const PROPERTY_MAIN_TAB_NAME = "MainTabName";
   

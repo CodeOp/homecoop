@@ -188,7 +188,12 @@ function homecoop_menu() {
       'page arguments' => array('homecoop_page_member_delete_confirm', 2),
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/member.inc',
-    ),  
+    ),
+    'hccoord/memberroles' => array(
+      'page callback' => 'homecoop_page_member_roles',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/member_roles.inc',
+    ),
   );
 }
 
@@ -408,12 +413,7 @@ function homecoop_cron() {
  */
 function homecoop_member_uri($entity) {
   return array(
-    'path' => 'hccoord/member',
-    'options' => array(
-      'query' => array(
-        'id' => $entity->ID,
-      ),
-    ),
+    'path' => "hccoord/member/$entity->ID",
   );
 }
 
@@ -1048,7 +1048,7 @@ function homecoop_get_tabs_info($oTabInfo, $oOrderTabInfo, $oPLTabInfo, $bHasCoo
 
 function homecoop_member_tab_info($oMemberTabInfo) {
   
-  if (!isset($oMemberTabInfo) || empty($oMemberTabInfo) || $oMemberTabInfo->MemberID == 0 || !$oMemberTabInfo->CheckAccess()) {
+  if (!isset($oMemberTabInfo) || empty($oMemberTabInfo) || $oMemberTabInfo->ID == 0 || !$oMemberTabInfo->CheckAccess()) {
     return array();
   }
   
@@ -1062,6 +1062,7 @@ function homecoop_member_tab_info($oMemberTabInfo) {
                MemberTabInfo::PERMISSION_MEMBER_PRODUCERS_COORD)),
     'MainTabName' => $oMemberTabInfo->MainTabName,
     'Page' => $oMemberTabInfo->Page,
+    'ID' => $oMemberTabInfo->ID,
   );
 }
 
@@ -1074,8 +1075,7 @@ function homecoop_member_tab_content($entity) {
     'tabs' => array(
       '#prefix' => '<table id="tabMember" class="tabarea" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul class="tabrow subtabrow">',
       'maintab' => homecoop_tab_member_write_element($entity->MainTabName, 
-          url('hccoord/member', 
-              array('query' => array('id' => $entity->ID))), 
+          url("hccoord/member/$entity->ID"), 
           $entity->Page == MemberTabInfo::PAGE_ENTRY),
       '#suffix' => '</ul></td></tr></table>',
     ),

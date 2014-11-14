@@ -154,11 +154,11 @@ define('APP_DIR', SITE_ROOT . "/$g_sLangDir" );
 
 //this function spares the need to include_once files when using app-level classes throught the system
 function homecoop_autoload_class( $class_name ) {
-  if (class_exists($name) || interface_exists($class_name)) {
+  if (class_exists($class_name) || interface_exists($class_name)) {
     return TRUE;
   }
  
-  if (stripos($name, '_mysql') !== FALSE) {
+  if (stripos($class_name, '_mysql') !== FALSE) {
     return FALSE;
   }
   
