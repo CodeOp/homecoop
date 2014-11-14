@@ -2,9 +2,9 @@
 
 function homecoop_page_member_roles() {
   homecoop_authenticated_page();
-  
+
   $arrPageData = array();
-  
+
   $oTable = new MemberRoles;
   $oMemberTabInfo = NULL;
   $bViewOnly = TRUE;
@@ -23,11 +23,11 @@ function homecoop_page_member_roles() {
       drupal_goto(Consts::URL_ACCESS_DENIED);
       return;
   }
-  
+
   $oMemberTabInfo = new MemberTabInfo($oTable->ID, MemberTabInfo::PAGE_ROLES);
 
   drupal_set_title(t('@name - Roles', array('@name' => htmlspecialchars($oTable->Name))));
-  
+
   $oMemberTabInfo->MainTabName = $oTable->Name;
 
   if ($oTable->HasPermission(SQLBase::PERMISSION_COORD))
@@ -35,9 +35,7 @@ function homecoop_page_member_roles() {
     $arrPageData['table_to_add'] = $oTable->GetOtherRoles();
     $bViewOnly = FALSE;
   }
-  
-  $arrPageData['OriginalData'] = $oTable->GetSerializedOriginalData();
-  
+
   return drupal_get_form('homecoop_page_member_roles_form', (object)
       ($arrPageData + homecoop_member_tab_info($oMemberTabInfo)));
 }
@@ -54,11 +52,7 @@ function homecoop_page_member_roles_form($form, &$form_state, $pageobj) {
   
   $form['#id'] = 'homecoop_member_roles-form';
   $form['#attributes']['name'] = 'homecoop_member_roles_form';
-  
-  //internal values
-  $form['hidOriginalData'] = array('#type' => 'value', '#value' => $pageobj->OriginalData, 
-    '#attributes' => array('id' => 'hidOriginalData'));
-  
+    
   $form['hidPostValue'] = array('#type' => 'value', '#value' => $pageobj->ID, 
     '#attributes' => array('id' => 'hidPostValue'));
   
@@ -84,14 +78,13 @@ function homecoop_page_member_roles_form($form, &$form_state, $pageobj) {
     'tab' => homecoop_member_tab_content($pageobj),
     '#weight' => 10,
   );
-  
 
   $weight = 10;
   foreach ( $pageobj->table as $roleid => $rolename )
   {
       $form['maintable']['controlstable']["chkRole_$roleid"] = array(
             '#weight' => $weight, 
-            '#type' => 'checbox',
+            '#type' => 'checkbox',
             '#title' => $rolename,
             '#default_value' => 1,
             '#ajax' => array(
@@ -108,7 +101,7 @@ function homecoop_page_member_roles_form($form, &$form_state, $pageobj) {
     {
         $form['maintable']['controlstable']["chkRole_$roleid"] = array(
             '#weight' => $weight, 
-            '#type' => 'checbox',
+            '#type' => 'checkbox',
             '#title' => $rolename,
             '#default_value' => 0,
             '#ajax' => array(
@@ -136,18 +129,17 @@ function homecoop_member_roles_ajax_callback($form, &$form_state) {
   if(!isset($g_oMemberSession)) {
     homecoop_authenticated_page();
   }
-  $id = intval($form_state['values']['hidPostValue']);
   $roleid = intval($form_state['values']['hidRole']);
   
   $oTable = new MemberRoles();
-  $oTable->SetSerializedData( $form_state['values']["hidOriginalData"] );
+  $oTable->ID = intval($form_state['values']['hidPostValue']);
   
   $bSuccess = false;
-  if ($form_state['values']['controlstable']["chkRole_$roleid"]) {
-    $bSuccess = $oTable->AddRole($nRoleID);
+  if ($form_state['values']["chkRole_$roleid"]) {
+    $bSuccess = $oTable->AddRole($roleid);
   }
   else {
-    $bSuccess = $oTable->RemoveRole($nRoleID);
+    $bSuccess = $oTable->RemoveRole($roleid);
   }
             
   if ($bSuccess) {
