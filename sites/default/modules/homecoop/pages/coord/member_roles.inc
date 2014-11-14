@@ -92,6 +92,9 @@ function homecoop_page_member_roles_form($form, &$form_state, $pageobj) {
               'wrapper' => 'div_ajax_result',
               'method' => 'replace',
             ),
+            '#attributes' => array(
+              'onchange' => "SetRole($roleid)",
+            ),
         );      
       $weight += 10;
   }
@@ -131,22 +134,28 @@ function homecoop_member_roles_ajax_callback($form, &$form_state) {
   }
   $roleid = intval($form_state['values']['hidRole']);
   
-  $oTable = new MemberRoles();
-  $oTable->ID = intval($form_state['values']['hidPostValue']);
-  
-  $bSuccess = false;
-  if ($form_state['values']["chkRole_$roleid"]) {
-    $bSuccess = $oTable->AddRole($roleid);
+  if ($roleid == 0) {
+    drupal_set_message(t('Record was not saved. No role was identified.'), 'error');
   }
   else {
-    $bSuccess = $oTable->RemoveRole($roleid);
-  }
-            
-  if ($bSuccess) {
-    drupal_set_message(t('Record saved successfully.'), 'status');
-  }
-  else if ($oTable->LastOperationStatus != SQLBase::OPERATION_STATUS_VALIDATION_FAILED) {
-    drupal_set_message(t('Record was not saved. You may not have sufficent permissions or an error has occured.'), 'error');
+  
+    $oTable = new MemberRoles();
+    $oTable->ID = intval($form_state['values']['hidPostValue']);
+
+    $bSuccess = false;
+    if ($form_state['values']["chkRole_$roleid"]) {
+      $bSuccess = $oTable->AddRole($roleid);
+    }
+    else {
+      $bSuccess = $oTable->RemoveRole($roleid);
+    }
+
+    if ($bSuccess) {
+      drupal_set_message(t('Record saved successfully.'), 'status');
+    }
+    else if ($oTable->LastOperationStatus != SQLBase::OPERATION_STATUS_VALIDATION_FAILED) {
+      drupal_set_message(t('Record was not saved. You may not have sufficent permissions or an error has occured.'), 'error');
+    }
   }
   
   $commands = array();
