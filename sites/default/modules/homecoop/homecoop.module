@@ -194,6 +194,11 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/member_roles.inc',
     ),
+    'hccoord/membertransactions' => array(
+      'page callback' => 'homecoop_page_member_transactions',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/member_transactions.inc',
+    ),
   );
 }
 

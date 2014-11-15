@@ -26,6 +26,176 @@ function homecoop_views_default_views() {
   $views[$view->name] = $view;
   
   //-------------------------------------------------------------------------------------------------------------------
+  // Transactions By Member
+  //-------------------------------------------------------------------------------------------------------------------
+  
+  $view = new view();
+  $view->name = 'homecoop_member_transactions';
+  $view->description = '';
+  $view->tag = 'default';
+  $view->base_table = 'T_Transaction';
+  $view->human_name = 'HomeCoop Member Transactions';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['use_more_always'] = FALSE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = HOMECOOP_PAGER_PAGES;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'TransactionID' => 'TransactionID',
+    'mAmount' => 'mAmount',
+    'sTransaction' => 'sTransaction',
+    'dDate' => 'dDate',
+  );
+  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['info'] = array(
+    'TransactionID' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'mAmount' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'sTransaction' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'dDate' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  /* Relationship: Transaction: Cashier */
+  $handler->display->display_options['relationships']['PickupLocationKeyID']['id'] = 'PickupLocationKeyID';
+  $handler->display->display_options['relationships']['PickupLocationKeyID']['table'] = 'T_Transaction';
+  $handler->display->display_options['relationships']['PickupLocationKeyID']['field'] = 'PickupLocationKeyID';
+  $handler->display->display_options['relationships']['PickupLocationKeyID']['label'] = 'TransactionPickupLocation';
+  /* Relationship: Pickup Location: Pickup Location Name */
+  $handler->display->display_options['relationships']['PickupLocationKeyID_1']['id'] = 'PickupLocationKeyID_1';
+  $handler->display->display_options['relationships']['PickupLocationKeyID_1']['table'] = 'T_PickupLocation';
+  $handler->display->display_options['relationships']['PickupLocationKeyID_1']['field'] = 'PickupLocationKeyID';
+  $handler->display->display_options['relationships']['PickupLocationKeyID_1']['relationship'] = 'PickupLocationKeyID';
+  $handler->display->display_options['relationships']['PickupLocationKeyID_1']['label'] = 'TransactionPickupLocationName';
+  /* Relationship: String: Language */
+  $handler->display->display_options['relationships']['LangID']['id'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['table'] = 'Tlng_String';
+  $handler->display->display_options['relationships']['LangID']['field'] = 'LangID';
+  $handler->display->display_options['relationships']['LangID']['relationship'] = 'PickupLocationKeyID_1';
+  $handler->display->display_options['relationships']['LangID']['label'] = 'TransactionPickupLocationNameLang';
+  /* Relationship: Transaction: Modified By Member */
+  $handler->display->display_options['relationships']['ModifiedByMemberID']['id'] = 'ModifiedByMemberID';
+  $handler->display->display_options['relationships']['ModifiedByMemberID']['table'] = 'T_Transaction';
+  $handler->display->display_options['relationships']['ModifiedByMemberID']['field'] = 'ModifiedByMemberID';
+  $handler->display->display_options['relationships']['ModifiedByMemberID']['label'] = 'ModifiedByCoordinator';
+  $handler->display->display_options['relationships']['ModifiedByMemberID']['required'] = TRUE;
+  /* Field: Transaction: Date */
+  $handler->display->display_options['fields']['dDate']['id'] = 'dDate';
+  $handler->display->display_options['fields']['dDate']['table'] = 'T_Transaction';
+  $handler->display->display_options['fields']['dDate']['field'] = 'dDate';
+  $handler->display->display_options['fields']['dDate']['label'] = 'Time';
+  $handler->display->display_options['fields']['dDate']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['dDate']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['dDate']['custom_date_format'] = HOMECOOP_DATE_TIME_FORMAT;
+  /* Field: Transaction: Transaction ID */
+  $handler->display->display_options['fields']['TransactionID']['id'] = 'TransactionID';
+  $handler->display->display_options['fields']['TransactionID']['table'] = 'T_Transaction';
+  $handler->display->display_options['fields']['TransactionID']['field'] = 'TransactionID';
+  $handler->display->display_options['fields']['TransactionID']['label'] = '';
+  $handler->display->display_options['fields']['TransactionID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['TransactionID']['element_label_colon'] = FALSE;
+  /* Field: Transaction: Pickup Location ID */
+  $handler->display->display_options['fields']['PickupLocationKeyID']['id'] = 'PickupLocationKeyID';
+  $handler->display->display_options['fields']['PickupLocationKeyID']['table'] = 'T_Transaction';
+  $handler->display->display_options['fields']['PickupLocationKeyID']['field'] = 'PickupLocationKeyID';
+  $handler->display->display_options['fields']['PickupLocationKeyID']['label'] = '';
+  $handler->display->display_options['fields']['PickupLocationKeyID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['PickupLocationKeyID']['element_label_colon'] = FALSE;
+  /* Field: Transaction: Member ID */
+  $handler->display->display_options['fields']['MemberID']['id'] = 'MemberID';
+  $handler->display->display_options['fields']['MemberID']['table'] = 'T_Transaction';
+  $handler->display->display_options['fields']['MemberID']['field'] = 'MemberID';
+  $handler->display->display_options['fields']['MemberID']['label'] = '';
+  $handler->display->display_options['fields']['MemberID']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['MemberID']['element_label_colon'] = FALSE;
+  /* Field: Language: PHP Folder */
+  $handler->display->display_options['fields']['sPhpFolder']['id'] = 'sPhpFolder';
+  $handler->display->display_options['fields']['sPhpFolder']['table'] = 'Tlng_Language';
+  $handler->display->display_options['fields']['sPhpFolder']['field'] = 'sPhpFolder';
+  $handler->display->display_options['fields']['sPhpFolder']['relationship'] = 'LangID';
+  $handler->display->display_options['fields']['sPhpFolder']['label'] = '';
+  $handler->display->display_options['fields']['sPhpFolder']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['sPhpFolder']['element_label_colon'] = FALSE;
+  /* Field: String: String */
+  $handler->display->display_options['fields']['sString']['id'] = 'sString';
+  $handler->display->display_options['fields']['sString']['table'] = 'Tlng_String';
+  $handler->display->display_options['fields']['sString']['field'] = 'sString';
+  $handler->display->display_options['fields']['sString']['relationship'] = 'PickupLocationKeyID_1';
+  $handler->display->display_options['fields']['sString']['label'] = 'Location Name';
+  $handler->display->display_options['fields']['sString']['element_label_colon'] = FALSE;
+  /* Field: Transaction: Amount */
+  $handler->display->display_options['fields']['mAmount']['id'] = 'mAmount';
+  $handler->display->display_options['fields']['mAmount']['table'] = 'T_Transaction';
+  $handler->display->display_options['fields']['mAmount']['field'] = 'mAmount';
+  $handler->display->display_options['fields']['mAmount']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['mAmount']['set_precision'] = TRUE;
+  $handler->display->display_options['fields']['mAmount']['precision'] = '2';
+  /* Field: Transaction: Comment */
+  $handler->display->display_options['fields']['sTransaction']['id'] = 'sTransaction';
+  $handler->display->display_options['fields']['sTransaction']['table'] = 'T_Transaction';
+  $handler->display->display_options['fields']['sTransaction']['field'] = 'sTransaction';
+  $handler->display->display_options['fields']['sTransaction']['label'] = 'Transaction Desc.';
+  $handler->display->display_options['fields']['sTransaction']['element_label_colon'] = FALSE;
+  /* Field: Member: Name */
+  $handler->display->display_options['fields']['sName']['id'] = 'sName';
+  $handler->display->display_options['fields']['sName']['table'] = 'T_Member';
+  $handler->display->display_options['fields']['sName']['field'] = 'sName';
+  $handler->display->display_options['fields']['sName']['relationship'] = 'ModifiedByMemberID';
+  $handler->display->display_options['fields']['sName']['label'] = 'Coordinator';
+  $handler->display->display_options['fields']['sName']['element_label_colon'] = FALSE;
+  /* Sort criterion: Transaction: TransactionID */
+  $handler->display->display_options['sorts']['dDate']['id'] = 'TransactionID';
+  $handler->display->display_options['sorts']['dDate']['table'] = 'T_Transaction';
+  $handler->display->display_options['sorts']['dDate']['field'] = 'TransactionID';
+  $handler->display->display_options['sorts']['dDate']['order'] = 'DESC';
+  /* Contextual filter: Transaction: Member ID */
+  $handler->display->display_options['arguments']['MemberID']['id'] = 'MemberID';
+  $handler->display->display_options['arguments']['MemberID']['table'] = 'T_Transaction';
+  $handler->display->display_options['arguments']['MemberID']['field'] = 'MemberID';
+  $handler->display->display_options['arguments']['MemberID']['default_action'] = 'not found';
+  $handler->display->display_options['arguments']['MemberID']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['MemberID']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['MemberID']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['MemberID']['summary_options']['items_per_page'] = HOMECOOP_RECORDS_PER_PAGE;
+  /* Filter criterion: Global: PHP */
+  $handler->display->display_options['filters']['php']['id'] = 'php';
+  $handler->display->display_options['filters']['php']['table'] = 'views';
+  $handler->display->display_options['filters']['php']['field'] = 'php';
+  $handler->display->display_options['filters']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['filters']['php']['php_filter'] = 'global $language;
+  return $row->PickupLocationKeyID != NULL && $row->sPhpFolder != $language->language;';
+  
+  $views[$view->name] = $view;
+  
+  //-------------------------------------------------------------------------------------------------------------------
   // Members
   //-------------------------------------------------------------------------------------------------------------------
   
@@ -2400,6 +2570,12 @@ function homecoop_views_translatables() {
     t('Balance Held'),
     t('Payment Method'),
     t('Email Addresses'),
+  );
+  $translatables['homecoop_member_transactions_sample'] = array(
+    t('Time'),
+    t('Amount'),
+    t('Transaction Desc.'),
+    t('Coordinator'),
   );
 }
 

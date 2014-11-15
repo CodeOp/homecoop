@@ -44,6 +44,7 @@ define('COOP_TIMEZONE',  'Europe/Athens');
 define('HOMECOOP_RECORDS_PER_PAGE', '5');
 define('HOMECOOP_PAGER_PAGES', '9');
 define('HOMECOOP_DATE_FORMAT', 'j.n.Y');
+define('HOMECOOP_DATE_TIME_FORMAT', 'j.n.Y G:i');
 
 //leave empty for no join page link
 define('JOIN_PAGE', '');

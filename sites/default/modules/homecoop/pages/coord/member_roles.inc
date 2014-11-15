@@ -26,7 +26,7 @@ function homecoop_page_member_roles() {
 
   $oMemberTabInfo = new MemberTabInfo($oTable->ID, MemberTabInfo::PAGE_ROLES);
 
-  drupal_set_title(t('@name - Roles', array('@name' => htmlspecialchars($oTable->Name))));
+  drupal_set_title(t('@name - Roles', array('@name' => check_plain($oTable->Name))));
 
   $oMemberTabInfo->MainTabName = $oTable->Name;
 
