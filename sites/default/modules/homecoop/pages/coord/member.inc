@@ -516,10 +516,11 @@ function homecoop_member_form_ajax_callback($form, &$form_state) {
                         '#markup' => theme('status_messages'))
         );
 
+  //message display command
   $commands[] = ajax_command_html('#div_ajax_message' , render($element));
-  // This is what will call our JS command
+  
+  //post script command
   $commands[] = array (
-    // The command in my JS file
     'command' => $command,
     'success' => $ret_val,
   );

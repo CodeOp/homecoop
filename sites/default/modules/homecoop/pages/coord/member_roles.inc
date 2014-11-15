@@ -7,7 +7,7 @@ function homecoop_page_member_roles() {
 
   $oTable = new MemberRoles;
   $oMemberTabInfo = NULL;
-  $bViewOnly = TRUE;
+  $arrPageData['view_only'] = TRUE;
   $sPageTitle = '';
 
   if (isset($_GET['id']))
@@ -33,7 +33,7 @@ function homecoop_page_member_roles() {
   if ($oTable->HasPermission(SQLBase::PERMISSION_COORD))
   {
     $arrPageData['table_to_add'] = $oTable->GetOtherRoles();
-    $bViewOnly = FALSE;
+    $arrPageData['view_only'] = FALSE;
   }
 
   return drupal_get_form('homecoop_page_member_roles_form', (object)
@@ -67,6 +67,10 @@ function homecoop_page_member_roles_form($form, &$form_state, $pageobj) {
   );
    
   $form['maintable'] = array(
+    'membertab' => array(
+      'tab' => homecoop_member_tab_content($pageobj),
+      '#weight' => 10,
+    ),
     '#weight' => 10,
     'controlstable' => array(
       '#type' => 'fieldset',
@@ -74,58 +78,55 @@ function homecoop_page_member_roles_form($form, &$form_state, $pageobj) {
     ),
   );
   
-  $form['maintable']['membertab'] = array(
-    'tab' => homecoop_member_tab_content($pageobj),
-    '#weight' => 10,
-  );
-
-  $weight = 10;
-  foreach ( $pageobj->table as $roleid => $rolename )
-  {
-      $form['maintable']['controlstable']["chkRole_$roleid"] = array(
-            '#weight' => $weight, 
-            '#type' => 'checkbox',
-            '#title' => $rolename,
-            '#default_value' => 1,
-            '#ajax' => array(
-              'callback' => 'homecoop_member_roles_ajax_callback',
-              'wrapper' => 'div_ajax_result',
-              'method' => 'replace',
-            ),
-            '#attributes' => array(
-              'onchange' => "SetRole($roleid)",
-            ),
-        );      
-      $weight += 10;
-  }
-  
-  if (isset($pageobj->table_to_add)) {
-    foreach ( $pageobj->table_to_add as $roleid => $rolename )
+  if (!$pageobj->view_only) {
+    $weight = 10;
+    foreach ( $pageobj->table as $roleid => $rolename )
     {
         $form['maintable']['controlstable']["chkRole_$roleid"] = array(
-            '#weight' => $weight, 
-            '#type' => 'checkbox',
-            '#title' => $rolename,
-            '#default_value' => 0,
-            '#ajax' => array(
-              'callback' => 'homecoop_member_roles_ajax_callback',
-              'wrapper' => 'div_ajax_result',
-              'method' => 'replace',
-            ),
-            '#attributes' => array(
-              'onchange' => "SetRole($roleid)",
-            ),
-        );
-        
+              '#weight' => $weight, 
+              '#type' => 'checkbox',
+              '#title' => $rolename,
+              '#default_value' => 1,
+              '#ajax' => array(
+                'callback' => 'homecoop_member_roles_ajax_callback',
+                'wrapper' => 'div_ajax_result',
+                'method' => 'replace',
+              ),
+              '#attributes' => array(
+                'onchange' => "SetRole($roleid)",
+              ),
+          );      
         $weight += 10;
     }
-  } 
+
+    if (isset($pageobj->table_to_add)) {
+      foreach ( $pageobj->table_to_add as $roleid => $rolename )
+      {
+          $form['maintable']['controlstable']["chkRole_$roleid"] = array(
+              '#weight' => $weight, 
+              '#type' => 'checkbox',
+              '#title' => $rolename,
+              '#default_value' => 0,
+              '#ajax' => array(
+                'callback' => 'homecoop_member_roles_ajax_callback',
+                'wrapper' => 'div_ajax_result',
+                'method' => 'replace',
+              ),
+              '#attributes' => array(
+                'onchange' => "SetRole($roleid)",
+              ),
+          );
+
+          $weight += 10;
+      }
+    } 
+  }
   
   return $form;
 }
 
 function homecoop_member_roles_ajax_callback($form, &$form_state) {
-  //$memberid = 
+  
   global $g_oMemberSession;
   
   //ajax
