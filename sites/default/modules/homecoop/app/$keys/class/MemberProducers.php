@@ -93,12 +93,18 @@ class MemberProducers extends SQLBase implements IMemberFacet {
     
     $this->RunSQL( $sSQL );
 
-    return $this->fetch();
+    return $this->fetchAll();
   }
   
   public function BlockFromFacet($ProducerID, $bBlock = 1, $bInsert = TRUE)
   {
     global $g_oMemberSession;
+    
+    if (!$this->CheckAccess())
+    {
+      $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_PERMISSION;
+      return FALSE;
+    }
     
     if (!$this->HasPermission(self::PERMISSION_COORD))
     {
@@ -137,6 +143,12 @@ class MemberProducers extends SQLBase implements IMemberFacet {
   public function RemoveFromFacet($ProducerID, $bRemove = 1, $bInsert = TRUE)
   {
     global $g_oMemberSession;
+    
+    if (!$this->CheckAccess())
+    {
+      $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_PERMISSION;
+      return FALSE;
+    }
     
     if ($g_oMemberSession->MemberID != $this->m_aData[self::PROPERTY_ID] && !$this->HasPermission(self::PERMISSION_EDIT))
     {
