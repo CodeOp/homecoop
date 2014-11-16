@@ -34,6 +34,11 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/login.inc',
     ),
+    'hcprofile' => array(
+       'page callback' => 'homecoop_page_profile',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/hcprofile.inc',
+    ),
     'hcorder' => array(
       'page callback' => 'homecoop_page_order',
       'access callback' => 'homecoop_public_access',

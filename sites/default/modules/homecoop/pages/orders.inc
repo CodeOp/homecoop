@@ -11,7 +11,7 @@ function homecoop_page_orders() {
     global $g_oMemberSession;
     $view = views_get_view('homecoop_my_orders_coord');
     $view->preview=TRUE;
-    $view->is_cacheable = FALSE;
+    $view->is_cacheable = $g_oMemberSession->IsOnlyMember;
     $view->init_display('default');
     $view->exposed_input['MemberID'] = $g_oMemberSession->MemberID;
     $view->pre_execute();
