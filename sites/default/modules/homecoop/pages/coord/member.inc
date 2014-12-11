@@ -62,9 +62,9 @@ function homecoop_member_form($form, &$form_state, $entity) {
     'controlstable' => array(
       '#weight' => 50,
       'maxorder' => array(
-        '#prefix' => '<label>' . t('Max. Order') . '</label><span>',
         '#markup' => $entity->MaxOrder,
-        '#suffix' => '</span>',
+        '#type' => 'item',
+        '#title' => t('Max. Order'),
         '#weight' => 70,
       ),
     ),
@@ -233,13 +233,6 @@ function homecoop_member_form($form, &$form_state, $entity) {
       '#description' => t('The percentage in which a member&#x27;s order can exceed hir balance. This rule is being applied only when the member&#x27;s payment method allows a percentage over balance.'),
   );
   
-  $form['maintable']['controlstable']['lblMaxOrder'] = array(
-    '#prefix' => '<label>' . t('Max. Order') . '</label><span>',
-    '#markup' => check_plain($entity->MaxOrder),
-    '#suffix' => '</span>',
-    '#weight' => 90,
-  );
-  
   $form['maintable']['controlstable']['txtEMail'] = array(
     '#type' => 'textfield',
     '#title' => t('Email address'),
@@ -297,9 +290,9 @@ function homecoop_member_form($form, &$form_state, $entity) {
   );
   
   $form['maintable']['controlstable']['JoinedOn'] = array(
-    '#prefix' => '<label>' . t('Joined On') . '</label><span>',
     '#markup' => $entity->JoinedOn,
-    '#suffix' => '</span>',
+    '#type' => 'item',
+    '#title' => t('Joined On'),
     '#weight' => 130,
   );
   
