@@ -19,23 +19,6 @@ function homecoop_page_profile() {
   
   return drupal_get_form('homecoop_profile_form', $entity);
   
-  /*if(!$oRecord->LoadRecord( $g_oMemberSession->MemberID ))
-  {
-      drupal_goto(Consts::URL_ACCESS_DENIED);
-      return;
-  }
-  
-  switch($oRecord->LastOperationStatus)
-  {
-    case SQLBase::OPERATION_STATUS_NO_SUFFICIENT_DATA_PROVIDED:
-    case SQLBase::OPERATION_STATUS_NO_PERMISSION:
-    case SQLBase::OPERATION_STATUS_LOAD_RECORD_FAILED:
-    case SQLBase::OPERATION_STATUS_COORDINATION_GROUP_VERIFY_FAILED:
-      drupal_goto(Consts::URL_ACCESS_DENIED);
-      return;
-  }*/
-  
-  
 }
 
 function homecoop_profile_form($form, &$form_state, $entity) {
@@ -47,6 +30,9 @@ function homecoop_profile_form($form, &$form_state, $entity) {
   
   $form['hidOriginalData'] = array('#type' => 'value', '#value' => $entity->OriginalData, 
     '#attributes' => array('id' => 'hidOriginalData'));
+  
+  $form['hidPostValue'] = array('#type' => 'value', '#value' => $entity->ID, 
+    '#attributes' => array('id' => 'hidPostValue'));
   
   $form['maintable'] = array(
     '#weight' => 10,
@@ -190,4 +176,78 @@ function homecoop_profile_form($form, &$form_state, $entity) {
   
   return $form;
   
+}
+
+
+function homecoop_profile_form_validate($form, &$form_state) { 
+    
+  $entity = homecoop_profile_form_get_submitted_entity($form_state);
+  
+  $oRecord = entity_get_controller('homecoop_member')->toClass($entity);
+  if (!$oRecord->Validate()) {  
+    return;
+  }
+  
+  //Field API validation
+  //field_attach_form_validate('homecoop_member', $entity, $form, $form_state);
+}
+
+function homecoop_profile_form_save($form, &$form_state) {  
+  
+  $entity = $form_state['homecoop_member'];
+  
+  // Notify field widgets.
+  //field_attach_submit('homecoop_member', $entity, $form, $form_state);
+
+  $entity = entity_get_controller('homecoop_member')->save($entity);
+  
+  if (!$entity) {
+    drupal_set_message(t('Record was not saved. You may not have sufficent permissions or an error has occured.'), 'error', false);
+    return;
+  }
+  
+  //won't work without rebuild while it should have (and rebuild vanishes the header...)
+  drupal_set_message(t('Record saved successfully.'), 'status', true);
+}
+
+function homecoop_profile_form_get_submitted_entity(&$form_state) {
+  $entity = $form_state['homecoop_member'];
+  if ( isset($form_state['values']['hidPostValue'] ) && !empty($form_state['values']['hidPostValue'])) {
+      $entity->ID = intval($form_state['values']['hidPostValue']);
+    }
+    
+  if ( isset( $form_state['values']['hidOriginalData'] ) ) {
+    $entity->OriginalData = $form_state['values']['hidOriginalData'];
+  }
+  
+  if ( isset( $form_state['values']['txtName'] )) {
+    $entity->Name = codeop_util_null_or_trimmed_value($form_state['values']['txtName']);
+  }
+  
+  if ( isset( $form_state['values']['txtEMail'] )) {
+    $entity->EMail = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail']);
+  }
+  
+  if ( isset( $form_state['values']['txtEMail2'] )) {
+    $entity->EMail2 = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail2']);
+  }
+  
+  if ( isset( $form_state['values']['txtEMail3'] )) {
+    $entity->EMail3 = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail3']);
+  }
+  
+  if ( isset( $form_state['values']['txtEMail4'] )) {
+    $entity->EMail4 = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail4']);
+  }
+  
+  if ( isset( $form_state['values']['txtNewPassword'] )) {
+    $entity->NewPassword = codeop_util_null_or_trimmed_value($form_state['values']['txtNewPassword']);
+  }
+  
+  if ( isset( $form_state['values']['FileFormat'] )) {
+    $entity->ExportFormat = $form_state['values']['FileFormat'] + 0;
+  }
+  
+  $form_state['homecoop_member'] = $entity;
+  return $entity;
 }

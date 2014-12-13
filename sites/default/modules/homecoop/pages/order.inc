@@ -207,9 +207,9 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
     'controlstable' => array(
       '#weight' => 50,
       'maxorder' => array(
-        '#prefix' => '<label>' . t('Max. Order') . '</label><span>',
         '#markup' => $oFormExtraData['MaxOrder'],
-        '#suffix' => '</span>',
+        '#type' => 'item',
+        '#title' => t('Max. Order'),
         '#weight' => 70,
       ),
       'membercomments' => array(
@@ -253,9 +253,9 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
     if ($bHasCoordPermission) {
       if ($oFormExtraData['hassetmaxpermission']) {
         $form['maintable']['controlstable']['balance'] = array(
-          '#prefix' => '<label>' . t('Balance') . '</label><span>',
           '#markup' => $oFormExtraData['Balance'],
-          '#suffix' => '</span>',
+          '#type' => 'item',
+          '#title' => t('Balance'),
           '#weight' => 40,
         );
         $form['maintable']['controlstable']['paymethod'] = array(
@@ -300,9 +300,9 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
       //if member found in select list
       if (isset($oFormExtraData['members'][$oFormExtraData['MemberID']])) {
         $form['maintable']['controlstable']['loginname'] = array(
-          '#prefix' => '<label>' . t('Login name') . '</label><span>',
           '#markup' => check_plain($oFormExtraData['LoginName']),
-          '#suffix' => '</span>',
+          '#type' => 'item',
+          '#title' => t('Login name'),
           '#weight' => 100,
         );
         
@@ -315,9 +315,9 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
           $sEmail .= ', ' . $oFormExtraData['EMail4'];
         
         $form['maintable']['controlstable']['email'] = array(
-          '#prefix' => '<label>' . t('Email address‏') . '</label><span>',
           '#markup' => check_plain($sEmail),
-          '#suffix' => '</span>',
+          '#type' => 'item',
+          '#title' => t('Email address'),
           '#weight' => 110,
         );
       }
@@ -325,24 +325,24 @@ function homecoop_page_order_form($form, &$form_state, $oFormExtraData) {
   }
   else {
     $form['maintable']['controlstable']['pickuploc'] = array(
-        '#prefix' => '<label>' . t('Location Name') . '</label><span>',
         '#markup' => check_plain($oFormExtraData['PickupLocationName']),
-        '#suffix' => '</span>',
+        '#type' => 'item',
+        '#title' => t('Location Name'),
         '#weight' => 10,
      );
   }
   
   if ($oFormExtraData['ID'] > 0) {
     $form['maintable']['controlstable']['pickupaddress'] = array(
-       '#prefix' => '<label>' . t('Address') . '</label><span>',
        '#markup' => check_plain($oFormExtraData['PickupLocationAddress']),
-       '#suffix' => '</span>',
+       '#type' => 'item',
+       '#title' => t('Address'),
        '#weight' => 20,
     );
     $form['maintable']['controlstable']['pickupinstruct'] = array(
-       '#prefix' => '<label>' . t('Pickup Instructions') . '</label><span>',
        '#markup' => check_plain($oFormExtraData['PublishedComments']),
-       '#suffix' => '</span>',
+       '#type' => 'item',
+       '#title' => t('Pickup Instructions'),
        '#weight' => 30,
     );
      
@@ -500,9 +500,9 @@ function homecoop_page_order_display_contacts($sContactsKey, &$oFormExtraData, &
 
       if ($sContacts != '') {
         $form['maintable']['controlstable'][$sContactsKey] = array(
-          '#prefix' => '<label>' . $sLabel . '</label><span>',
           '#markup' => check_plain($sContacts),
-          '#suffix' => '</span>',
+          '#type' => 'item',
+          '#title' => $sLabel,
           '#weight' => $Weight,
         );
       }

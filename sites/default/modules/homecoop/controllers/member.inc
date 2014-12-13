@@ -25,6 +25,8 @@ class HomeCoopMemberController extends HomeCoopBaseController implements DrupalE
     try {
       global $user;
       
+      //use user_save
+      
       // Determine if we will be inserting a new record
       $entity->IsNew = empty($entity->ID);
                   
