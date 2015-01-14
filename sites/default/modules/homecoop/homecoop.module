@@ -101,9 +101,15 @@ function homecoop_menu() {
       'page callback' => 'homecoop_page_pickuplocs',
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/pickuplocs.inc',
-    ),
+    ),    
     'hccoord/pickuploc' => array(
-      'page callback' => 'homecoop_page_pickuploc',
+      'page callback' => 'homecoop_page_pickuploc_add',
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/pickuploc.inc',
+    ),
+    'hccoord/pickuploc/%homecoop_pickup_location' => array(
+      'page callback' => 'homecoop_page_pickuploc_edit',
+      'page arguments' => array(2),
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/pickuploc.inc',
     ),
@@ -226,6 +232,24 @@ function homecoop_entity_info() {
       'label' => t('HomeCoop Member'),
       'controller class' => 'HomeCoopMemberController',
       'uri callback' => 'homecoop_member_uri',
+      'access callback' => 'homecoop_public_access',
+      'fieldable' => FALSE, //code for fields in remarks, for better performance
+      'entity keys' => array(
+        'id' => 'ID',
+        'label' => 'Name',
+      ),
+      'base table' => NULL, //required by entity_translation
+      'view modes' => array(
+        'full' => array(
+          'label' => t('Default'),
+          'custom settings' => FALSE,
+        ),
+      ),
+    ),
+    'homecoop_pickup_location' => array(
+      'label' => t('HomeCoop Pickup Location'),
+      'controller class' => 'HomeCoopPickupLocationController',
+      'uri callback' => 'homecoop_pickup_location_uri',
       'access callback' => 'homecoop_public_access',
       'fieldable' => FALSE, //code for fields in remarks, for better performance
       'entity keys' => array(
@@ -1144,6 +1168,21 @@ function homecoop_tab_member_write_element($sText, $sLink, $bIsOnPage)
   }
   
   return $arrContent;
+}
+
+function homecoop_pickup_location_tab_info($oPickupLocationTabInfo) {
+  if (!isset($oPickupLocationTabInfo) || empty($oPickupLocationTabInfo) || $oPickupLocationTabInfo->ID == 0 || !$oPickupLocationTabInfo->CheckAccess()) {
+    return array();
+  }
+  
+  return array(
+    'haspickuplocationeditpermission' => $oPickupLocationTabInfo->HasPermissions(array(PickupLocationTabInfo::PERMISSION_EDIT)),
+    'haspickuplocationcoordsetpermission' => $oPickupLocationTabInfo->HasPermissions(array(SQLBase::PERMISSION_COORD_SET)),
+    'MainTabName' => $oPickupLocationTabInfo->MainTabName,
+    'Page' => $oPickupLocationTabInfo->Page,
+    'ID' => $oPickupLocationTabInfo->ID,
+    'CoordinatingGroupID' => $oPickupLocationTabInfo->CoordinatingGroupID,
+  );
 }
 
 function homecoop_views_php_cooporder_status_pre_render($view, $handler, &$static, $row, $data, $value) {

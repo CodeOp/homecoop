@@ -1,7 +1,7 @@
 <?php
 
 function homecoop_page_member_edit($entity) {
-  homecoop_page_common_start();
+  homecoop_page_member_common_start();
   
   drupal_set_title($entity->Name);
   
@@ -16,7 +16,7 @@ function homecoop_page_member_edit($entity) {
 }
 
 function homecoop_page_member_add() {
-  homecoop_page_common_start();
+  homecoop_page_member_common_start();
   
   $entity = entity_get_controller('homecoop_member')->create();
   
@@ -311,7 +311,7 @@ function homecoop_member_form($form, &$form_state, $entity) {
   return $form;
 }
 
-function homecoop_page_common_start()
+function homecoop_page_member_common_start()
 {
   homecoop_authenticated_page();
   
