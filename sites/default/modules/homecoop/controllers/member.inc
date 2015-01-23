@@ -56,7 +56,7 @@ class HomeCoopMemberController extends HomeCoopBaseController implements DrupalE
       //$function = 'field_attach_' . $op;
       //$function(self::ENTNAME, $entity);
       
-      //module_invoke_all('entity_' . $op, $entity, self::ENTNAME);
+      module_invoke_all('entity_' . $op, $entity, self::ENTNAME);
           
       return $entity;
     }

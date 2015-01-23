@@ -165,7 +165,143 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
       '#description' => t('The maximum capacity of the pickup location in terms of the product field &quot;Burden&quot;. the sum for all products of &quot;Burden&quot; times product quantity will be compared to this value for all the members&#x27; orders that have this pickup location selected. This is only a default value and can be overwritten in the cooperative order&#x27;s pickup location settings. If not overridden in the coop order, members will not be able to place an order that exceeds the limitation set here.'),
   );
   
+  $form['maintable']['controlstable']['txtCachier'] = array(
+      '#weight' => 70, 
+      '#type' => 'textfield',
+      '#title' => t('Cashier'),
+      '#maxlength' => 10,
+      '#size' => 25,
+      '#default_value' => check_plain($entity->Cachier),
+      '#rules' => array('numeric'),
+      '#number_type' => 'decimal',
+  );
+  
+  $form['maintable']['controlstable']['txtTransaction'] = array(
+      '#weight' => 80, 
+      '#type' => 'textfield',
+      '#title' => t('Transaction Desc.'),
+      '#maxlength' => 100,
+      '#default_value' => check_plain($entity->Transaction),
+  );
+  
+  if ($entity->ID > 0) {
+    if (!empty($entity->CachierDate)) {
+      $form['maintable']['controlstable']['lblCachierDate'] = array(
+          '#weight' => 90, 
+          '#type' => 'item',
+          '#title' => t('Cashier Update'),
+          '#attributes' => array('dir' => 'ltr'),
+          '#markup' => $entity->CachierDate->format(HOMECOOP_DATE_TIME_FORMAT),
+      );
+    }
+
+    if (!empty($entity->PrevCachier)) {
+      $form['maintable']['controlstable']['lblPrevCachier'] = array(
+          '#weight' => 100, 
+          '#type' => 'item',
+          '#title' => t('Prev. Cashier'),
+          '#markup' => check_plain($entity->PrevCachier),
+          '#attributes' => array('dir' => 'ltr'),
+      );
+    }
+  }
+  
+  $form['maintable']['controlstable']['txtExportFileName'] = array(
+      '#weight' => 110, 
+      '#type' => 'textfield',
+      '#title' => t('Export File Name'),
+      '#maxlength' => PickupLocation::MAX_LENGTH_EXPORT_FILE_NAME,
+      '#default_value' => check_plain($entity->ExportFileName),
+  );
+  
+  field_attach_form('homecoop_pickup_location', $entity, $form, $form_state);
+  
   return $form;
+}
+
+function homecoop_pickup_location_form_validate($form, &$form_state) { 
+    
+  $entity = homecoop_page_pickup_location_get_submitted_entity($form_state);
+  
+  $oRecord = entity_get_controller('homecoop_pickup_location')->toClass($entity);
+  if (!$oRecord->Validate()) {  
+    return;
+  }
+  
+  //Field API validation
+  field_attach_form_validate('homecoop_pickup_location', $entity, $form, $form_state);
+}
+
+
+
+
+//todo: unfinished
+function homecoop_page_pickup_location_get_submitted_entity(&$form_state) {
+  $entity = $form_state['homecoop_pickup_location'];
+  if ( isset($form_state['values']['hidPostValue'] ) && !empty($form_state['values']['hidPostValue'])) {
+      $entity->ID = intval($form_state['values']['hidPostValue']);
+    }
+    
+  if ( isset( $form_state['values']['hidOriginalData'] ) ) {
+    $entity->OriginalData = $form_state['values']['hidOriginalData'];
+  }
+  
+  //todo: get multilingual field value
+  //if ( isset( $form_state['values']['txtName'] )) {
+    //$entity->Name = codeop_util_null_or_trimmed_value($form_state['values']['txtName']);
+  //}
+  
+    
+  /*if ( isset( $form_state['values']['selPaymentMethodID'])) {
+    $entity->PaymentMethodID = intval($form_state['values']['selPaymentMethodID']);
+  }
+  
+  if ( isset( $form_state['values']['selPickupLocationID'])) {
+    $entity->PickupLocationID = intval($form_state['values']['selPickupLocationID']);
+  }
+  
+  if ( isset( $form_state['values']['txtBalance'] )) {
+      $entity->Balance = codeop_util_null_or_trimmed_number($form_state['values']['txtBalance']);
+  }
+  
+  if ( isset( $form_state['values']['txtBalanceHeld'] )) {
+      $entity->BalanceHeld = codeop_util_null_or_trimmed_number($form_state['values']['txtBalanceHeld']);
+  }
+  
+  if ( isset( $form_state['values']['txtPercentOverBalance'] )) {
+      $entity->PercentOverBalance = codeop_util_null_or_trimmed_number($form_state['values']['txtPercentOverBalance']);
+  }
+  
+  if ( isset( $form_state['values']['txtEMail'] )) {
+    $entity->EMail = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail']);
+  }
+  
+  if ( isset( $form_state['values']['txtEMail2'] )) {
+    $entity->EMail2 = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail2']);
+  }
+  
+  if ( isset( $form_state['values']['txtEMail3'] )) {
+    $entity->EMail3 = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail3']);
+  }
+  
+  if ( isset( $form_state['values']['txtEMail4'] )) {
+    $entity->EMail4 = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail4']);
+  }
+  
+  if ( isset( $form_state['values']['ctlIsDisabled'] )) {
+    $entity->IsDisabled = (intval($form_state['values']['ctlIsDisabled']) == 1);
+  }
+    
+  if ( isset( $form_state['values']['txtComments'] )) {
+    $entity->Comments = codeop_util_null_or_trimmed_value($form_state['values']['txtComments']);
+  }
+  
+  if ( isset( $form_state['values']['txtNewPassword'] )) {
+    $entity->NewPassword = codeop_util_null_or_trimmed_value($form_state['values']['txtNewPassword']);
+  }*/
+  
+  $form_state['homecoop_pickup_location'] = $entity;
+  return $entity;
 }
 
 function homecoop_page_pickup_location_delete_confirm($form, &$form_state, $entity) {  

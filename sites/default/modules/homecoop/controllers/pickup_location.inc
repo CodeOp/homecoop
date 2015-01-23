@@ -31,7 +31,7 @@ class HomeCoopPickupLocationController extends HomeCoopBaseController implements
                   
       // Give modules the opportunity to prepare field data for
       // saving.
-      //field_attach_presave(self::ENTNAME, $entity);
+      field_attach_presave(self::ENTNAME, $entity);
       
       //convert entity back to array to set all the class properties
       $oPickupLocation = $this->toClass($entity);
@@ -52,10 +52,10 @@ class HomeCoopPickupLocationController extends HomeCoopBaseController implements
       unset($oPickupLocation);
             
       // Save fields.
-      //$function = 'field_attach_' . $op;
-      //$function(self::ENTNAME, $entity);
+      $function = 'field_attach_' . $op;
+      $function(self::ENTNAME, $entity);
       
-      //module_invoke_all('entity_' . $op, $entity, self::ENTNAME);
+      module_invoke_all('entity_' . $op, $entity, self::ENTNAME);
           
       return $entity;
     }
@@ -106,7 +106,7 @@ class HomeCoopPickupLocationController extends HomeCoopBaseController implements
     try
     {
       //field code
-      //$entities = $this->load($ids, array());
+      $entities = $this->load($ids, array());
       
       foreach($ids as $id) {
         $oPickupLocation = new PickupLocation();
@@ -116,11 +116,11 @@ class HomeCoopPickupLocationController extends HomeCoopBaseController implements
       }
 
       //delete fields
-      //foreach($entities as $entity) {        
-      //  field_attach_delete(self::ENTNAME, $entity);
+      foreach($entities as $entity) {        
+        field_attach_delete(self::ENTNAME, $entity);
 
-      //  module_invoke_all('entity_delete', $entity, self::ENTNAME);
-      //}
+        module_invoke_all('entity_delete', $entity, self::ENTNAME);
+      }
     }
     catch(Exception $e) {
       watchdog_exception(self::ENTNAME, $e, NULL, WATCHDOG_ERROR);

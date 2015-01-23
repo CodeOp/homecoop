@@ -208,7 +208,7 @@ class HtmlTextEditMultiLang {
     $arrContent += $oTextEdit->GetEditPartHtml();
     unset($oTextEdit);
     
-    $arrContent[$sFirstID]['#prefix'] = '<div class="resgridcell">';
+    $arrContent[$sFirstID]['#prefix'] = '<div class="resgridfirstcell">';
     $arrContent[$sFirstID]['#suffix'] = '</div>';
     $arrContent[$sFirstID]['#weight'] = 10; //put current language in the beginning
 

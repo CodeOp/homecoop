@@ -270,7 +270,7 @@ function homecoop_page_orderitems_form($form, &$form_state, $oFormExtraData) {
 
       //1. ProductName + link to product screen + hidden order item id to identify existing records
       $form['maintable']['controlstable'][$sRow]['product'] = array(
-        '#prefix' => '<div class="resgridcell">',
+        '#prefix' => '<div class="resgridfirstcell">',
         '#suffix' => '</div>',
         '#weight' => 10,
       );
