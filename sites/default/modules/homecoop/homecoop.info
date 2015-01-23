@@ -7,6 +7,7 @@ php = 5.3
 ; Controllers
 files[] = controllers/base.inc
 files[] = controllers/member.inc
+files[] = controllers/pickup_location.inc
 
 ; ----------
 ; Dependencies

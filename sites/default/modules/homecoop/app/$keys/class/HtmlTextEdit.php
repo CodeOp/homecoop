@@ -83,7 +83,6 @@ class HtmlTextEdit {
     $this->m_aData[self::PROPERTY_PROPERTIES][$name] = $value;
   }
   
-  //echo directly to html document to save some string concats/retrieval
   public function EchoEditPartHtml()
   {  
     $sControl = '';
@@ -167,14 +166,14 @@ class HtmlTextEdit {
       echo '</td>';
   }
   
-  //echo directly to html document to save some string concats/retrieval
   public function GetEditPartHtml()
   {  
     $sControl = '';
     $sID = $this->m_aData[self::PROPERTY_ID];
     $sMaxLength = '';
     $aCssClass = array();
-    $nEncodingFlag = ENT_COMPAT;
+    $nEncodingFlag = ENT_QUOTES; //just like check_plain
+    
     $arrContent = array($sID => array('#attributes' => array()));
     //requireddata
     switch($this->m_aData[self::PROPERTY_TYPE])
@@ -193,7 +192,7 @@ class HtmlTextEdit {
         if ($this->m_aData[self::PROPERTY_TEXTAREA_ROWS] != NULL) {
           $arrContent[$sID]['#rows'] = $this->m_aData[self::PROPERTY_TEXTAREA_ROWS];
         }
-        $nEncodingFlag = ENT_NOQUOTES;
+        $nEncodingFlag = ENT_NOQUOTES; //unlike check_plain
         break;
     }
     if ( $this->m_aData[self::PROPERTY_MAX_LENGTH] != NULL ) {
@@ -243,7 +242,7 @@ class HtmlTextEdit {
     $arrContent[$sID]['#attributes']['class'] = $aCssClass;
       
     if ($this->m_aData[self::PROPERTY_VALUE] !== NULL) {
-      $arrContent[$sID]['#default_value'] = htmlspecialchars( $this->m_aData[self::PROPERTY_VALUE] , $nEncodingFlag);
+      $arrContent[$sID]['#default_value'] = htmlspecialchars( $this->m_aData[self::PROPERTY_VALUE] , $nEncodingFlag, 'UTF-8');
     }    
     return $arrContent;
   }

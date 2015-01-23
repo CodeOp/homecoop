@@ -113,6 +113,12 @@ function homecoop_menu() {
       'access callback' => 'homecoop_public_access',
       'file' => 'pages/coord/pickuploc.inc',
     ),
+    'hccoord/pickuploc/%homecoop_pickup_location/delete' => array(
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('homecoop_page_pickup_location_delete_confirm', 2),
+      'access callback' => 'homecoop_public_access',
+      'file' => 'pages/coord/pickuploc.inc',
+    ),    
     'hccoord/cashier' => array(
       'page callback' => 'homecoop_page_cashier',
       'access callback' => 'homecoop_public_access',
@@ -265,136 +271,7 @@ function homecoop_entity_info() {
       ),
     ),
   );
-/*
-  $return['elobbyist_group'] = array(
-    'label' => t('Email Lobbyist Contact Group'),
-    'controller class' => 'ELobbyistContactGroupController',
-    'base table' => 'elobbyist_group',
-    'uri callback' => 'elobbyist_group_uri',
-    'access callback' => 'elobbyist_contact_group_access',
-    'fieldable' => TRUE,
-    'entity keys' => array(
-      'id' => 'grpid',
-      'label' => 'name',
-      'bundle' => 'type',
-    ),
-    'bundle keys' => array(
-        'bundle' => 'type',
-      ),
-    'bundles' => array(), //set later
-    'static cache' => TRUE,
-    'view modes' => array(
-        'full' => array(
-          'label' => t('Default'),
-          'custom settings' => FALSE,
-        ),
-      ),
-  );
   
-  $return['elobbyist_mailing'] = array(
-    'label' => t('Email Lobbyist Mailing'),
-    'controller class' => 'ELobbyistMailingController',
-    'base table' => 'elobbyist_mailing',
-    'uri callback' => 'elobbyist_mailing_uri',
-    'access callback' => 'elobbyist_mailing_access',
-    'fieldable' => TRUE,
-    'entity keys' => array(
-      'id' => 'mid',
-      'label' => 'name',
-    ),
-    'static cache' => TRUE,
-    'view modes' => array(
-        'full' => array(
-          'label' => t('Default'),
-          'custom settings' => FALSE,
-        ),
-      ),
-  );
-  
-  $return['elobbyist_activity'] = array(
-    'label' => t('Email Lobbyist Activity'),
-    'controller class' => 'ELobbyistActivityController',
-    'base table' => 'elobbyist_activity',
-    'uri callback' => 'elobbyist_activity_uri',
-    'access callback' => 'elobbyist_activity_access',
-    'fieldable' => TRUE,
-    'entity keys' => array(
-      'id' => 'aid',
-    ),
-    'view modes' => array(
-        'full' => array(
-          'label' => t('Default'),
-          'custom settings' => FALSE,
-        ),
-      ),
-  );
-  
-  $return['elobbyist_template'] = array(
-    'label' => t('Email Lobbyist Template'),
-    'controller class' => 'ELobbyistTemplateController',
-    'base table' => 'elobbyist_template',
-    'uri callback' => 'elobbyist_template_uri',
-    'access callback' => 'elobbyist_template_access',
-    'fieldable' => TRUE,
-    'entity keys' => array(
-      'id' => 'tid',
-      'label' => 'name',
-    ),
-    'static cache' => TRUE,
-    'view modes' => array(
-        'full' => array(
-          'label' => t('Default'),
-          'custom settings' => FALSE,
-        ),
-      ),
-  );
-  
-  $return['elobbyist_email_provider'] = array(
-    'label' => t('Email Lobbyist Email Provider'),
-    'controller class' => 'ELobbyistEmailProviderController',
-    'base table' => 'elobbyist_email_provider',
-    'uri callback' => 'elobbyist_email_provider_uri',
-    'access callback' => 'elobbyist_email_provider_access',
-    'fieldable' => TRUE,
-    'entity keys' => array(
-      'id' => 'providerid',
-      'label' => 'name',
-    ),
-    'static cache' => TRUE,
-    'view modes' => array(
-        'full' => array(
-          'label' => t('Default'),
-          'custom settings' => FALSE,
-        ),
-      ),
-  );
-  
-  foreach(elobbyist_contact_types() as $type => $info) {
-    $return['elobbyist_contact']['bundles'][$type] = array(
-      'label' => $info->name,
-      'admin' => array(
-        'path' => 'admin/structure/elobbyist_contacts/manage/%contact_type',
-        'real path' => 'admin/structure/elobbyist/contacts/manage/' . 
-        str_replace('_', '-', $type), //drupal path format
-        'bundle argument' => 4,
-        'access callback' => 'elobbyist_contact_access',
-      ),
-    );
-  }
-  
-  foreach(elobbyist_group_types() as $type => $info) {    
-    $return['elobbyist_group']['bundles'][$info->type] = array(
-      'label' => $info->name,
-      'admin' => array(
-        'path' => 'admin/structure/elobbyist_groups/manage/%contact_group_type',
-        'real path' => 'admin/structure/elobbyist/contact_groups/manage/' . 
-        str_replace('_', '-', $type), //drupal path format
-        'bundle argument' => 4,
-        'access callback' => 'elobbyist_contact_group_access',
-      ),
-    );
-  }*/
-
   return $return;
 }
 
@@ -461,6 +338,12 @@ function homecoop_member_uri($entity) {
   );
 }
 
+function homecoop_pickup_location_uri($entity) {
+  return array(
+    'path' => "hccoord/pickuploc/$entity->ID",
+  );
+}
+
 /**
  * entity load functions
  */
@@ -473,6 +356,17 @@ function homecoop_member_load($id = NULL, $reset = FALSE) {
 function homecoop_member_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
   homecoop_include_app_file('authenticate');
   return entity_load('homecoop_member', $ids, $conditions, $reset);
+}
+
+function homecoop_pickup_location_load($id = NULL, $reset = FALSE) {
+  $ids = (isset($id) ? array($id) : array());
+  $entity = homecoop_pickup_location_load_multiple($ids, array(), $reset);
+  return $entity ? reset($entity) : FALSE;
+}
+
+function homecoop_pickup_location_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
+  homecoop_include_app_file('authenticate');
+  return entity_load('homecoop_pickup_location', $ids, $conditions, $reset);
 }
 
 /**
@@ -1118,7 +1012,7 @@ function homecoop_member_tab_content($entity) {
   $arrContent = array(
     'tabs' => array(
       '#prefix' => '<table id="tabMember" class="tabarea" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul class="tabrow subtabrow">',
-      'maintab' => homecoop_tab_member_write_element($entity->MainTabName, 
+      'maintab' => homecoop_tab_write_element($entity->MainTabName, 
           url("hccoord/member/$entity->ID"), 
           $entity->Page == MemberTabInfo::PAGE_ENTRY),
       '#suffix' => '</ul></td></tr></table>',
@@ -1126,25 +1020,25 @@ function homecoop_member_tab_content($entity) {
   );
   
   if ($entity->hasmemberrolescoordpermission) {
-    $arrContent['tabs']['rolestab'] = homecoop_tab_member_write_element(t('Roles'),
+    $arrContent['tabs']['rolestab'] = homecoop_tab_write_element(t('Roles'),
         url('hccoord/memberroles', array('query' => array('id' => $entity->ID))), 
           $entity->Page == MemberTabInfo::PAGE_ROLES);
   }
   
   if ($entity->hasmembertransactionsviewpermission) {
-    $arrContent['tabs']['transactionstab'] = homecoop_tab_member_write_element(t('Transactions'),
+    $arrContent['tabs']['transactionstab'] = homecoop_tab_write_element(t('Transactions'),
         url('hccoord/membertransactions', array('query' => array('id' => $entity->ID))), 
           $entity->Page == MemberTabInfo::PAGE_TRANSACTIONS);
   }
   
   if ($entity->hasmemberpickuplocationsviewpermission) {
-    $arrContent['tabs']['pickuplocstab'] = homecoop_tab_member_write_element(t('Pickup Locations'),
+    $arrContent['tabs']['pickuplocstab'] = homecoop_tab_write_element(t('Pickup Locations'),
         url('hccoord/memberpickuplocs', array('query' => array('id' => $entity->ID))), 
           $entity->Page == MemberTabInfo::PAGE_PICKUP_LOCATIONS);
   }
   
   if ($entity->hasmemberproducersviewpermission) {
-    $arrContent['tabs']['producerstab'] = homecoop_tab_member_write_element(t('Producers'),
+    $arrContent['tabs']['producerstab'] = homecoop_tab_write_element(t('Producers'),
         url('hccoord/memberproducers', array('query' => array('id' => $entity->ID))), 
           $entity->Page == MemberTabInfo::PAGE_PRODUCERS);
   }
@@ -1152,8 +1046,63 @@ function homecoop_member_tab_content($entity) {
   return $arrContent;
 }
 
-function homecoop_tab_member_write_element($sText, $sLink, $bIsOnPage)
-{    
+function homecoop_pickup_location_tab_info($oPickupLocationTabInfo) {
+  if (!isset($oPickupLocationTabInfo) || empty($oPickupLocationTabInfo) || $oPickupLocationTabInfo->ID == 0 || !$oPickupLocationTabInfo->CheckAccess()) {
+    return array();
+  }
+  
+  return array(
+    'haspickuplocationeditpermission' => $oPickupLocationTabInfo->HasPermissions(array(PickupLocationTabInfo::PERMISSION_EDIT)),
+    'haspickuploctransactionspermission' => $oPickupLocationTabInfo->HasPermissions(array(PickupLocationTabInfo::PERMISSION_GLOBAL_TRANSACTIONS_VIEW)),
+    'haspickuplocationcoordsetpermission' => $oPickupLocationTabInfo->HasPermissions(array(SQLBase::PERMISSION_COORD_SET)),
+    'MainTabName' => $oPickupLocationTabInfo->MainTabName,
+    'Page' => $oPickupLocationTabInfo->Page,
+    'ID' => $oPickupLocationTabInfo->ID,
+    'CoordinatingGroupID' => $oPickupLocationTabInfo->CoordinatingGroupID,
+  );
+}
+
+function homecoop_pickup_location_tab_content($entity) {
+  if (!isset($entity) || empty($entity)) {
+    return array();
+  }
+  
+  $arrContent = array(
+    'tabs' => array(
+      '#prefix' => '<table id="tabPickupLocation" class="tabarea" cellpadding="0" cellspacing="0" border="0" width="100%"><tr><td><ul class="tabrow subtabrow">',
+      '#suffix' => '</ul></td></tr></table>',
+    ),
+  );
+  
+  if ($entity->haspickuplocationeditpermission) {
+    $arrContent['tabs']['maintab'] = homecoop_tab_write_element($entity->MainTabName,
+        url("hccoord/pickuploc/$entity->ID"), 
+          $entity->Page == PickupLocationTabInfo::PAGE_ENTRY);
+  }
+  
+  if ($entity->haspickuplocationeditpermission || $entity->haspickuploctransactionspermission) {
+    $arrContent['tabs']['transactionstab'] = homecoop_tab_write_element(t('Transactions'),
+        url("hccoord/pickuploctransactions", array('query' => array('id' => $entity->ID))), 
+          $entity->Page == PickupLocationTabInfo::PAGE_TRANSACTIONS);  
+  }
+  
+  if ($entity->haspickuplocationcoordsetpermission) {
+      $arrQuery = array('query' => array('rid' => $entity->ID,
+        'pa' => Consts::PERMISSION_AREA_PICKUP_LOCATIONS));
+      
+      if ($entity->CoordinatingGroupID > 0) {
+        $arrQuery['query']['id'] = $entity->CoordinatingGroupID;
+      }
+    
+      $arrContent['tabs']['coordtab'] = homecoop_tab_write_element(t('Coordination'),
+        url("hccoord/coordinate", $arrQuery), 
+          $entity->Page == PickupLocationTabInfo::PAGE_COORD); 
+  }
+    
+  return $arrContent;
+}
+
+function homecoop_tab_write_element($sText, $sLink, $bIsOnPage) {
   $arrContent = array(
     '#prefix' => '<li',
     '#markup' => ' >' . $sText,
@@ -1168,21 +1117,6 @@ function homecoop_tab_member_write_element($sText, $sLink, $bIsOnPage)
   }
   
   return $arrContent;
-}
-
-function homecoop_pickup_location_tab_info($oPickupLocationTabInfo) {
-  if (!isset($oPickupLocationTabInfo) || empty($oPickupLocationTabInfo) || $oPickupLocationTabInfo->ID == 0 || !$oPickupLocationTabInfo->CheckAccess()) {
-    return array();
-  }
-  
-  return array(
-    'haspickuplocationeditpermission' => $oPickupLocationTabInfo->HasPermissions(array(PickupLocationTabInfo::PERMISSION_EDIT)),
-    'haspickuplocationcoordsetpermission' => $oPickupLocationTabInfo->HasPermissions(array(SQLBase::PERMISSION_COORD_SET)),
-    'MainTabName' => $oPickupLocationTabInfo->MainTabName,
-    'Page' => $oPickupLocationTabInfo->Page,
-    'ID' => $oPickupLocationTabInfo->ID,
-    'CoordinatingGroupID' => $oPickupLocationTabInfo->CoordinatingGroupID,
-  );
 }
 
 function homecoop_views_php_cooporder_status_pre_render($view, $handler, &$static, $row, $data, $value) {

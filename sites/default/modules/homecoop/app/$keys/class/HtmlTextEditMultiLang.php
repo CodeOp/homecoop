@@ -14,6 +14,7 @@ class HtmlTextEditMultiLang {
   const PROPERTY_READ_ONLY = "ReadOnly";
   const PROPERTY_MAX_LENGTH = "MaxLength";
   const PROPERTY_LABEL_SLOT_IS_HTML = "UseLabelSlotAsHtml";
+  const PROPERTY_HELP = "Help";
 
   const ID_LINK = "-";
   
@@ -29,6 +30,7 @@ class HtmlTextEditMultiLang {
          self::PROPERTY_READ_ONLY => FALSE,
          self::PROPERTY_MAX_LENGTH => NULL,
          self::PROPERTY_LABEL_SLOT_IS_HTML => FALSE,
+         self::PROPERTY_HELP => NULL,
         );
   }
   
@@ -144,6 +146,87 @@ class HtmlTextEditMultiLang {
     }
     
     unset($oTextEdit);
+  }
+  
+  public function GetHtml()
+  {
+    global $g_aSupportedLanguages;
+    global $g_nCountLanguages;
+    global $g_sLangDir;
+    
+    $arrContent = array();
+       
+    $oTextEdit = NULL;
+    
+    $sFirstID = NULL;
+    $sFirstDIR = NULL;
+    $oFirstLangValue = NULL;
+    $otherLangWeight = 20; //initial weight for other languages (the first language is weight 10)
+    
+    //using language dirs?
+    if ( $g_nCountLanguages > 0 )
+    {
+      //current language setup
+      $sFirstID = $this->m_aData[self::PROPERTY_ID] . self::ID_LINK . $g_sLangDir;    
+      $sFirstDIR = $g_aSupportedLanguages[$g_sLangDir][Consts::IND_LANGUAGE_DIRECTION];
+      $oFirstLangValue = $this->GetLangPropertyVal(self::PROPERTY_VALUES,$g_sLangDir);
+      
+      //loop through other languages
+      foreach( $g_aSupportedLanguages as $lkey => $larr)
+      {
+        if ($lkey != $g_sLangDir)
+        {
+          $sID = $this->m_aData[self::PROPERTY_ID] . self::ID_LINK . $lkey;
+          
+          $oTextEdit = new HtmlTextEdit($sID, $larr[Consts::IND_LANGUAGE_DIRECTION], 
+              $this->m_aData[HtmlTextEdit::PROPERTY_TYPE], $this->GetLangPropertyVal(self::PROPERTY_VALUES, $lkey ) );
+          $oTextEdit->MaxLength = $this->m_aData[self::PROPERTY_MAX_LENGTH];
+          $oTextEdit->ReadOnly = $this->m_aData[self::PROPERTY_READ_ONLY];
+          $oTextEdit->Required = $this->m_aData[self::PROPERTY_REQUIRED] && $larr[Consts::IND_LANGUAGE_REQUIRED];     
+          $arrContent += $oTextEdit->GetEditPartHtml();
+          $arrContent[$sID]['#prefix'] = '<div class="resgridcell">';
+          $arrContent[$sID]['#suffix'] = '</div>';
+          $arrContent[$sID]['#weight'] = $otherLangWeight;
+          $arrContent[$sID]['#title'] = $larr[Consts::IND_LANGUAGE_NAME];
+          $otherLangWeight += 10;
+        }
+      }
+    }
+    else { 
+      //one language deployment setup
+      $sFirstID = $this->m_aData[self::PROPERTY_ID];
+      if (isset($this->m_aData[self::PROPERTY_VALUES][ 0 ]))
+          $oFirstLangValue = $this->m_aData[self::PROPERTY_VALUES][ 0 ];
+    }
+    
+    //process current language (for either one or many langauges deployment)
+    $oTextEdit = new HtmlTextEdit( $sFirstID, $sFirstDIR,$this->m_aData[HtmlTextEdit::PROPERTY_TYPE], $oFirstLangValue);
+      $oTextEdit->MaxLength = $this->m_aData[self::PROPERTY_MAX_LENGTH];
+      $oTextEdit->ReadOnly = $this->m_aData[self::PROPERTY_READ_ONLY];
+      $oTextEdit->Required = $this->m_aData[self::PROPERTY_REQUIRED];    
+    
+    $arrContent += $oTextEdit->GetEditPartHtml();
+    unset($oTextEdit);
+    
+    $arrContent[$sFirstID]['#prefix'] = '<div class="resgridcell">';
+    $arrContent[$sFirstID]['#suffix'] = '</div>';
+    $arrContent[$sFirstID]['#weight'] = 10; //put current language in the beginning
+
+    if ($this->m_aData[self::PROPERTY_LABEL_SLOT_IS_HTML]) {
+      $arrContent[$sFirstID]['#prefix'] += $this->m_aData[self::PROPERTY_LABEL];
+    }
+    else {
+      $arrContent[$sFirstID]['#title'] = $this->m_aData[self::PROPERTY_LABEL];
+    }
+    
+    if ($this->m_aData[self::PROPERTY_HELP] != NULL) {
+      $arrContent['helptext'] = array(
+        '#type' => 'item',
+        '#description' => $this->m_aData[self::PROPERTY_HELP],
+      );
+    }
+    
+    return $arrContent;
   }
   
   //echo directly to html document to save some string concats/retrieval

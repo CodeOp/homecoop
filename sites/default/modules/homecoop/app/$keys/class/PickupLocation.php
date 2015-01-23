@@ -84,6 +84,15 @@ class PickupLocation extends SQLBase {
     }
   }
   
+  public function GetAllProperties() {
+        
+    return $this->m_aData + 
+        array(
+          'hasdeletepermission' => (($this->m_aData[self::PROPERTY_ID] > 0) && $this->CheckDeletePermission()),
+          'Name' => $this->Name,
+        );
+  }
+  
   public function CheckAccess()
   {
      return $this->AddPermissionBridge(self::PERMISSION_PAGE_ACCESS, Consts::PERMISSION_AREA_PICKUP_LOCATIONS, Consts::PERMISSION_TYPE_MODIFY, 

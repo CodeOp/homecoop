@@ -602,7 +602,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['sString']['relationship'] = 'PickupLocationKeyID';
   $handler->display->display_options['fields']['sString']['label'] = 'Location Name';
   $handler->display->display_options['fields']['sString']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['sString']['alter']['path'] = 'hccoord/pickuploc?id=[PickupLocationKeyID]';
+  $handler->display->display_options['fields']['sString']['alter']['path'] = 'hccoord/pickuploc/[PickupLocationKeyID]';
   $handler->display->display_options['fields']['sString']['element_label_colon'] = FALSE;
   /* Field: String: String */
   $handler->display->display_options['fields']['sString_1']['id'] = 'sString_1';
@@ -632,7 +632,7 @@ function homecoop_views_default_views() {
   $handler->display->display_options['fields']['php']['field'] = 'php';
   $handler->display->display_options['fields']['php']['label'] = 'Status';
   $handler->display->display_options['fields']['php']['alter']['make_link'] = TRUE;
-  $handler->display->display_options['fields']['php']['alter']['path'] = 'hccoord/pickuploc?id=[PickupLocationKeyID]';
+  $handler->display->display_options['fields']['php']['alter']['path'] = 'hccoord/pickuploc/[PickupLocationKeyID]';
   $handler->display->display_options['fields']['php']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
   $handler->display->display_options['fields']['php']['php_output'] = '<?php print $row->bDisabled? t(\'Inactive\') : t(\'Active\'); ?>';
