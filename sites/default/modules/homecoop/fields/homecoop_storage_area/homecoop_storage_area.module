@@ -1,0 +1,131 @@
+<?php
+
+/**
+ * @file
+ * Creates a storage areas field for a pickup location
+ */
+
+define('HOMECOOP_STORAGE_AREA_DEFAULT_FIELD_LENGTH', 128);
+define('HOMECOOP_STORAGE_AREA_FIELDLENGTH_SETTING_SIZE', 5);
+define('HOMECOOP_STORAGE_AREA_FIELDLENGTH_SETTING_MAX_LENGTH', 4);
+
+/**
+ * Implements hook_field_info()
+ */
+function homecoop_storage_area_field_info() {
+  return array(
+    'homecoop_storage_area' => array(
+      'label' => t('Storage Areas'),
+      'description' => t('This field stores multiple storage areas per pickup location.'),
+      'settings' => array('max_length' => HOMECOOP_STORAGE_AREA_DEFAULT_FIELD_LENGTH,),
+      'instance_settings' => array(),
+      'default_widget' => 'text_textfield',
+      'default_formatter' => 'text_default',
+    ),
+  );
+}
+
+/**
+ * field_schema callback
+ */
+function homecoop_storage_area_field_schema($field) {
+  switch($field['type'])
+  {
+    case 'homecoop_storage_area':
+      return array(
+        'columns' => array(
+          'value' => array(
+            'type' => 'varchar',
+            'length' => $field['settings']['max_length'],
+            'not null' => TRUE,
+          ),
+          'max_burden' => array(
+            'type' => 'numeric',
+            'size' => 'normal',
+            'precision' => 10,
+            'scale' => 2,
+            'not null' => FALSE,
+          ),
+          'inactive' => array(
+            'type' => 'int',
+            'size' => 'tiny',
+            'not null' => FALSE,
+          ),
+        ),
+        'indexes' => array(
+          'value' => array('value'),
+        )
+      );
+  }
+}
+
+/**
+ * field_is_empty callback
+ */
+function homecoop_storage_area_field_is_empty($item, $field) {
+  switch($field['type'])
+  {
+    case 'homecoop_storage_area':
+      return empty($item['value']);
+  }
+}
+
+/**
+ * field_settings_form callback
+ */
+function homecoop_storage_area_field_settings_form($field, $instance, $has_data) {
+  switch($field['type'])
+  {
+    case 'homecoop_storage_area':
+      $settings = $field['settings'];
+      $form['max_length'] = array(
+        '#type' => 'textfield',
+        '#size' => HOMECOOP_STORAGE_AREA_FIELDLENGTH_SETTING_SIZE,
+        '#max_length' => HOMECOOP_STORAGE_AREA_FIELDLENGTH_SETTING_MAX_LENGTH,
+        '#title' => t('Max Length'),
+        '#default_value' => $settings['max_length'],
+        '#required' => TRUE,
+        '#description' => t('The length in characters of this field'),
+        '#rules' => array(
+            array(
+              'rule' => 'regexp[/^[1]\d{0,3}$/]',
+              'error' => t('Enter an up to 1000 positive number for %field.')
+              ),
+          ),
+      );
+      return $form;
+  }
+}
+
+/**
+ * field_validation callback
+ */
+function homecoop_storage_area_field_validate($obj_type, $object, $field, $instance,
+  $langcode, &$items, &$errors) {
+  switch($field['type'])
+  {
+    case 'homecoop_storage_area':
+      foreach($items as $delta => $item) {
+        //move on, if empty
+        if (empty($item['value'])) {
+          continue;
+        }
+        //validate length
+        if (strlen($item['value']) > $field['settings']['max_length']) {
+            $errors[$field['field_name']][$langcode][$delta][] = array(
+              'error' => 'homecoop_storage_area_max_length',
+              'message' => t(
+                  '%name may not be larger than %max',
+                  array(
+                    '%name' => $instance['label'],
+                    '%max' => $field['settings']['max_length'],
+                  )
+                ),
+            );
+        }
+        //otherwise (if length is valid)
+        //...
+      }
+      break;
+  }
+}

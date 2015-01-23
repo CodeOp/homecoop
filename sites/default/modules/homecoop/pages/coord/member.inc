@@ -353,7 +353,6 @@ function homecoop_member_form_save($form, &$form_state) {
   }
     
   if ($entity->IsNew) {
-    drupal_set_title($entity->Name);
     $form_state['redirect'] = 'hccoord/member/' . $entity->ID;
   }
 

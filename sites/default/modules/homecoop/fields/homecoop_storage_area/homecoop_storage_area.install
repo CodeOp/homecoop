@@ -1,0 +1,12 @@
+<?php
+
+/**
+ * Implements hook_uninstall()
+ */
+function homecoop_storage_area_uninstall() {
+  //delete fields by field types (if dependent modules didn't take care of it)
+  $fields = field_read_fields(array('type' => 'homecoop_storage_area'), array('include_inactive' => TRUE));
+  foreach($fields as $field) {
+    field_delete_field($field['field_name']);
+  }
+}

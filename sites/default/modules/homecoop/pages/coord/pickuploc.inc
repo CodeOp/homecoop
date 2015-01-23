@@ -232,10 +232,28 @@ function homecoop_pickup_location_form_validate($form, &$form_state) {
   field_attach_form_validate('homecoop_pickup_location', $entity, $form, $form_state);
 }
 
+function homecoop_pickup_location_form_save($form, &$form_state) {  
+  
+  $entity = $form_state['homecoop_pickup_location'];
+  
+  // Notify field widgets.
+  field_attach_submit('homecoop_pickup_location', $entity, $form, $form_state);
+  
+  $entity = entity_get_controller('homecoop_pickup_location')->save($entity); //calls field_attach_insert/update
+  
+  if (!$entity) {
+    drupal_set_message(t('Record was not saved. You may not have sufficent permissions or an error has occured.'), 'error', false);
+    return;
+  }
 
+  if ($entity->IsNew) {
+    $form_state['redirect'] = 'hccoord/pickuploc/' . $entity->ID;
+  }
 
+  //won't work without rebuild while it should have (and rebuild vanishes the header...)
+  drupal_set_message(t('Record saved successfully.'), 'status', true);
+}
 
-//todo: unfinished
 function homecoop_page_pickup_location_get_submitted_entity(&$form_state) {
   $entity = $form_state['homecoop_pickup_location'];
   if ( isset($form_state['values']['hidPostValue'] ) && !empty($form_state['values']['hidPostValue'])) {
@@ -246,59 +264,37 @@ function homecoop_page_pickup_location_get_submitted_entity(&$form_state) {
     $entity->OriginalData = $form_state['values']['hidOriginalData'];
   }
   
-  //todo: get multilingual field value
-  //if ( isset( $form_state['values']['txtName'] )) {
-    //$entity->Name = codeop_util_null_or_trimmed_value($form_state['values']['txtName']);
-  //}
+  $entity->Names = ComplexPostData::GetNames('txtName');
   
+  $entity->AddressStrings = ComplexPostData::GetNames('txtAddress');
+  
+  $entity->PublishedComments = ComplexPostData::GetNames('txtPublishedComments');
+  
+  $entity->AdminComments = ComplexPostData::GetNames('txtAdminComments');
     
-  /*if ( isset( $form_state['values']['selPaymentMethodID'])) {
-    $entity->PaymentMethodID = intval($form_state['values']['selPaymentMethodID']);
+  if ( isset( $form_state['values']['txtMaxBurden'] )) {
+      $entity->MaxBurden = codeop_util_null_or_trimmed_number($form_state['values']['txtMaxBurden']);
   }
   
-  if ( isset( $form_state['values']['selPickupLocationID'])) {
-    $entity->PickupLocationID = intval($form_state['values']['selPickupLocationID']);
+  if ( isset( $form_state['values']['txtTransaction'] )) {
+    $entity->Transaction = codeop_util_null_or_trimmed_value($form_state['values']['txtTransaction']);
   }
   
-  if ( isset( $form_state['values']['txtBalance'] )) {
-      $entity->Balance = codeop_util_null_or_trimmed_number($form_state['values']['txtBalance']);
+  if ( isset( $form_state['values']['txtRotationOrder'] )) {
+      $entity->RotationOrder = codeop_util_null_or_trimmed_number($form_state['values']['txtRotationOrder']);
   }
-  
-  if ( isset( $form_state['values']['txtBalanceHeld'] )) {
-      $entity->BalanceHeld = codeop_util_null_or_trimmed_number($form_state['values']['txtBalanceHeld']);
-  }
-  
-  if ( isset( $form_state['values']['txtPercentOverBalance'] )) {
-      $entity->PercentOverBalance = codeop_util_null_or_trimmed_number($form_state['values']['txtPercentOverBalance']);
-  }
-  
-  if ( isset( $form_state['values']['txtEMail'] )) {
-    $entity->EMail = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail']);
-  }
-  
-  if ( isset( $form_state['values']['txtEMail2'] )) {
-    $entity->EMail2 = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail2']);
-  }
-  
-  if ( isset( $form_state['values']['txtEMail3'] )) {
-    $entity->EMail3 = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail3']);
-  }
-  
-  if ( isset( $form_state['values']['txtEMail4'] )) {
-    $entity->EMail4 = codeop_util_null_or_trimmed_value($form_state['values']['txtEMail4']);
+          
+  if ( isset( $form_state['values']['txtExportFileName'] )) {
+    $entity->ExportFileName = codeop_util_null_or_trimmed_value($form_state['values']['txtExportFileName']);
   }
   
   if ( isset( $form_state['values']['ctlIsDisabled'] )) {
     $entity->IsDisabled = (intval($form_state['values']['ctlIsDisabled']) == 1);
   }
-    
-  if ( isset( $form_state['values']['txtComments'] )) {
-    $entity->Comments = codeop_util_null_or_trimmed_value($form_state['values']['txtComments']);
-  }
-  
-  if ( isset( $form_state['values']['txtNewPassword'] )) {
-    $entity->NewPassword = codeop_util_null_or_trimmed_value($form_state['values']['txtNewPassword']);
-  }*/
+                        
+  if ( isset( $form_state['values']['txtCachier'] )) {
+      $entity->Cachier = codeop_util_null_or_trimmed_number($form_state['values']['txtCachier']);
+  }   
   
   $form_state['homecoop_pickup_location'] = $entity;
   return $entity;
