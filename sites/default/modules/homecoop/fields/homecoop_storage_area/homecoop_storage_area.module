@@ -19,7 +19,7 @@ function homecoop_storage_area_field_info() {
       'description' => t('This field stores multiple storage areas per pickup location.'),
       'settings' => array('max_length' => HOMECOOP_STORAGE_AREA_DEFAULT_FIELD_LENGTH,),
       'instance_settings' => array(),
-      'default_widget' => 'text_textfield',
+      'default_widget' => 'homecoop_storage_area_widget',
       'default_formatter' => 'text_default',
     ),
   );
@@ -128,4 +128,128 @@ function homecoop_storage_area_field_validate($obj_type, $object, $field, $insta
       }
       break;
   }
+}
+
+/**
+ * 
+ * Implements hook_field_widget_info
+ */
+function homecoop_storage_area_field_widget_info() {
+  return array(
+    'homecoop_storage_area_widget' => array(
+      'label' => t('HomeCoop Storage Area Widget'),
+      'field types' => array('homecoop_storage_area'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_form
+ * 
+ * Creates the homecoop_storage_area_widget
+ */
+function homecoop_storage_area_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  
+  if ($instance['widget']['type'] != 'homecoop_storage_area_widget') {
+    return $element;
+  }
+  
+  $widget = $element;
+  $widget['#delta'] = $delta;
+  
+  $widget += array(
+    '#prefix' => '<div class="resgridrow">',
+    '#suffix' => '</div>',
+  );
+  
+  
+  
+  $element['storagearea'] = $widget;
+  
+  
+  /*$value = isset($items[$delta]['rgb']) ? $items[$delta]['rgb'] : '';
+
+  $widget = $element;
+  $widget['#delta'] = $delta;
+
+  switch ($instance['widget']['type']) {
+
+    case 'field_example_colorpicker':
+      $widget += array(
+        '#suffix' => '<div class="field-example-colorpicker"></div>',
+        '#attributes' => array('class' => array('edit-field-example-colorpicker')),
+        '#attached' => array(
+          
+          // Add Farbtastic color picker.
+          'library' => array(
+            array('system', 'farbtastic'),
+          ),
+          
+          // Add javascript to trigger the colorpicker.
+          'js' => array(drupal_get_path('module', 'field_example') . '/field_example.js'),
+        ),
+      );
+      // DELIBERATE fall-through: From here on the field_example_text and
+      // field_example_colorpicker are exactly the same.
+    case 'field_example_text':
+      $widget += array(
+        '#type' => 'textfield',
+        '#default_value' => $value,
+        
+        // Allow a slightly larger size that the field length to allow for some
+        // configurations where all characters won't fit in input field.
+        '#size' => 7,
+        '#maxlength' => 7,
+      );
+      break;
+
+    case 'field_example_3text':
+      // Convert rgb value into r, g, and b for #default_value.
+      if (!empty($value)) {
+        preg_match_all('@..@', substr($value, 1), $match);
+      }
+      else {
+        $match = array(array());
+      }
+
+      // Make this a fieldset with the three text fields.
+      $widget += array(
+        '#type' => 'fieldset',
+        '#element_validate' => array('field_example_3text_validate'),
+        
+        // #delta is set so that the validation function will be able
+        // to access external value information which otherwise would be
+        // unavailable.
+        '#delta' => $delta,
+        '#attached' => array(
+          'css' => array(drupal_get_path('module', 'field_example') . '/field_example.css'),
+        ),
+      );
+
+      // Create a textfield for saturation values for Red, Green, and Blue.
+      foreach (array(
+        'r' => t('Red'),
+        'g' => t('Green'),
+        'b' => t('Blue'),
+      ) as $key => $title) {
+        $widget[$key] = array(
+          '#type' => 'textfield',
+          '#title' => $title,
+          '#size' => 2,
+          '#default_value' => array_shift($match[0]),
+          '#attributes' => array('class' => array('rgb-entry')),
+          '#description' => t('The 2-digit hexadecimal representation of @color saturation, like "a1" or "ff"', array('@color' => $title)),
+        );
+        // Since Form API doesn't allow a fieldset to be required, we
+        // have to require each field element individually.
+        if ($instance['required'] == 1) {
+          $widget[$key]['#required'] = 1;
+        }
+      }
+      break;
+
+  }
+
+  $element['rgb'] = $widget;*/
+  return $element;
 }
