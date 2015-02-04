@@ -89,44 +89,73 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     '#prefix' => '<div class="resgridparent">',
     '#suffix' => '</div>',
   );
+    
+  $txtName = array(
+    'element' => array(
+      '#type' => 'textfield',
+      '#required' => TRUE,
+    ),
+    'title' => t('Location Name'),
+    'ID' => 'txtName',
+    'values' => $entity->Names,
+  );
   
-  $txtName = new HtmlTextEditMultiLang(t('Location Name'), 'txtName', HtmlTextEdit::TEXTBOX, $entity->Names);
-  $txtName->Required = TRUE;
   $form['maintable']['controlstable']['pickuplocname'] = array(
     '#prefix' => '<div class="resgridrow">',
-    'namerow' => $txtName->GetHtml(),
+    'namerow' => codeop_util_multilang_element(&$txtName),
     '#suffix' => '</div>',
     '#weight' => 10,
   );
   unset($txtName);
-  
-  $txtAddress = new HtmlTextEditMultiLang(t('Address'), 'txtAddress', HtmlTextEdit::TEXTAREA, $entity->AddressStrings);
-                $txtAddress->Required = TRUE;
+    
+  $txtAddress = array(
+    'element' => array(
+      '#type' => 'textarea',
+      '#required' => TRUE,
+    ),
+    'title' => t('Address'),
+    'ID' => 'txtAddress',
+    'values' => $entity->AddressStrings,
+  );           
+                
   $form['maintable']['controlstable']['pickuplocaddress'] = array(
     '#prefix' => '<div class="resgridrow">',
-    'namerow' => $txtAddress->GetHtml(),
+    'namerow' => codeop_util_multilang_element(&$txtAddress),
     '#suffix' => '</div>',
     '#weight' => 20,
   );              
   unset($txtAddress);
   
-  
-  $txtPublishedComments = new HtmlTextEditMultiLang(t('Pickup Instructions'), 'txtPublishedComments', 
-          HtmlTextEdit::TEXTAREA, $entity->PublishedComments);
+  $txtPublishedComments = array(
+    'element' => array(
+      '#type' => 'textarea',
+      '#required' => TRUE,
+    ),
+    'title' => t('Pickup Instructions'),
+    'ID' => 'txtPublishedComments',
+    'values' => $entity->PublishedComments,
+  ); 
   
   $form['maintable']['controlstable']['publishedcomments'] = array(
     '#prefix' => '<div class="resgridrow">',
-    'namerow' => $txtPublishedComments->GetHtml(),
+    'namerow' => codeop_util_multilang_element(&$txtPublishedComments),
     '#suffix' => '</div>',
     '#weight' => 30,
   );   
   unset($txtPublishedComments);
+    
+  $txtAdminComments = array(
+    'element' => array(
+      '#type' => 'textarea',
+    ),
+    'title' => t('Coordination Comments'),
+    'ID' => 'txtAdminComments',
+    'values' => $entity->AdminComments,
+  ); 
   
-  $txtAdminComments = new HtmlTextEditMultiLang(t('Coordination Comments'), 'txtAdminComments', HtmlTextEdit::TEXTAREA, 
-          $entity->AdminComments);
   $form['maintable']['controlstable']['admincomments'] = array(
     '#prefix' => '<div class="resgridrow">',
-    'namerow' => $txtAdminComments->GetHtml(),
+    'namerow' => codeop_util_multilang_element(&$txtAdminComments),
     '#suffix' => '</div>',
     '#weight' => 30,
   ); 
@@ -264,13 +293,13 @@ function homecoop_page_pickup_location_get_submitted_entity(&$form_state) {
     $entity->OriginalData = $form_state['values']['hidOriginalData'];
   }
   
-  $entity->Names = ComplexPostData::GetNames('txtName');
+  $entity->Names = codeop_util_multilang_get_names(&$form_state, 'txtName');
   
-  $entity->AddressStrings = ComplexPostData::GetNames('txtAddress');
+  $entity->AddressStrings = codeop_util_multilang_get_names(&$form_state, 'txtAddress');
   
-  $entity->PublishedComments = ComplexPostData::GetNames('txtPublishedComments');
+  $entity->PublishedComments = codeop_util_multilang_get_names(&$form_state, 'txtPublishedComments');
   
-  $entity->AdminComments = ComplexPostData::GetNames('txtAdminComments');
+  $entity->AdminComments = codeop_util_multilang_get_names(&$form_state, 'txtAdminComments');
     
   if ( isset( $form_state['values']['txtMaxBurden'] )) {
       $entity->MaxBurden = codeop_util_null_or_trimmed_number($form_state['values']['txtMaxBurden']);

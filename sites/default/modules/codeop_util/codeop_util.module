@@ -43,3 +43,142 @@ function codeop_util_null_or_trimmed_number($value) {
   }
   return $value + 0;
 }
+
+/**
+ * Gets a series of multi-language textfields, starting with the current language and wrapped in inline divs
+ * (provided that css class "resgridcell" is implemented)
+ * 
+ * @param type $info
+ * an associative array consisting of:
+ *  ID - the basic id of the textfield/textarea controls. a suffix of "-[langauge code]" will be added to each actual element
+ *  element - array of properties of the element. must have a '#type' index equal to 'textfield' or 'textarea'
+ *  title - the title of all the controls (the first one actually)
+ *  values - associative array by language code
+ *  prefix - extra html to be place in the prefix of the first element
+ *  helptext - help text for the user filling the element
+ */
+function codeop_util_multilang_element(&$info) {
+  global $language;
+
+  //initial validations of the $info parameter
+  if (empty($info['ID'])) {
+    throw new Exception(t('Error in codeop_util_multilang_textfield: @error', 
+      array('@error' => t('"ID" must be set.'))));
+  }
+  if (!is_array($info['element'])) {
+    throw new Exception(t('Error in codeop_util_multilang_textfield: @error', 
+      array('@error' => t('"element" must be an array.'))));
+  }
+  if (!isset($info['element']['#type']) || ($info['element']['#type'] != 'textfield' && $info['element']['#type'] != 'textarea')) {
+    throw new Exception(t('Error in codeop_util_multilang_textfield: @error', 
+      array('@error' => t('element "#type" must be set to textfield or textarea.'))));
+  }
+  if (!is_array($info['values'])) {
+    throw new Exception(t('Error in codeop_util_multilang_textfield: @error', 
+      array('@error' => t('"values" must be an array.'))));
+  }
+  
+  $langs = language_list();
+  
+  $encodingFlag = ENT_QUOTES; //just like check_plain
+  switch ($info['element']['#type']) {
+    case 'textarea':
+      $encodingFlag = ENT_NOQUOTES; //unlike check_plain
+      break;
+  }
+  $arrContent = array();
+  $sID = null;
+  $otherLangWeight = 20; //initial weight for other languages (the first language's weight is 10)
+  
+  foreach($langs as $lkey => $langObject) {    
+    //process any language other than current language
+    if ($lkey == $language->language) {
+      continue;
+    }
+
+    $sID = $info['ID'] . '-' . $lkey;  
+
+    //get the element dynamic properties
+    $arrContent[$sID] = $info['element'];
+    //set fixed properties
+    $arrContent[$sID]['#id'] = $sID;
+    $arrContent[$sID]['#name'] = $sID;
+    $arrContent[$sID]['#prefix'] = '<div class="resgridcell">';
+    $arrContent[$sID]['#suffix'] = '</div>';
+    $arrContent[$sID]['#weight'] = $otherLangWeight;
+    $arrContent[$sID]['#title'] = $langObject->native;
+    $arrContent[$sID]['#attributes']['dir'] = $langObject->dir;
+    if (isset($info['values'][$lkey])) {
+      $arrContent[$sID]['#default_value'] = htmlspecialchars( $info['values'][$lkey] , $encodingFlag, 'UTF-8');
+    }
+    
+    $otherLangWeight += 10;
+  }
+  
+  //process current language
+  $sID = $info['ID'] . '-' . $language->language;  
+
+  //get the element dynamic properties
+  $arrContent[$sID] = $info['element'];
+  //set fixed properties
+  $arrContent[$sID]['#id'] = $sID;
+  $arrContent[$sID]['#name'] = $sID;
+  $arrContent[$sID]['#prefix'] = '<div class="resgridfirstcell">';
+  if (isset($info['prefix'])) {
+    $arrContent[$sID]['#prefix'] .= $info['prefix'];
+  }
+  $arrContent[$sID]['#suffix'] = '</div>';
+  $arrContent[$sID]['#weight'] = 10; //place as first element
+  $arrContent[$sID]['#title'] = $info['title'];
+  $arrContent[$sID]['#attributes']['dir'] = $language->dir;
+  
+  if (isset($info['values'][$language->language])) {
+    $arrContent[$sID]['#default_value'] = htmlspecialchars( $info['values'][$language->language] , $encodingFlag, 'UTF-8');
+  }
+  
+  if (isset($info['helptext'])) {
+    $arrContent['helptext'] = array(
+      '#type' => 'item',
+      '#description' => $info['helptext'],
+    );
+  }
+   
+  return $arrContent;
+}
+
+/**
+ * get strings from multiple langauges controls
+ * @param type $sID the basic id
+ * @return array of values with langcode as index
+ */
+  function codeop_util_multilang_get_names(&$form_state, $sID)
+  {    
+    $langs = language_list();
+    
+    $aValues = array();
+
+    foreach($langs as $lkey => $langObject) {    
+        //add a new key-value pair to the array
+        $aValues[ $lkey ] = codeop_util_multilang_get_name(&$form_state,$sID, $lkey);
+    }
+
+    return $aValues;
+  }
+  
+  /**
+   * helper function: get a string, in a specific language, from multiple langauges text controls
+   * @param type $sID the basic id
+   * @param type $sLKey the language code
+   * @return string value for the given language
+   */
+  function codeop_util_multilang_get_name(&$form_state, $sID, $sLKey)
+  {
+    $sCtlName = $sID . '-' . $sLKey;
+        
+    $sString = NULL;
+    if ( isset( $form_state['values'][$sCtlName] ) ) {
+     $sString = codeop_util_null_or_trimmed_value($form_state['values'][$sCtlName]);
+    }
+
+    return $sString;
+  }

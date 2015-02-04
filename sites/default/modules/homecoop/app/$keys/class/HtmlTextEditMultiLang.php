@@ -213,7 +213,7 @@ class HtmlTextEditMultiLang {
     $arrContent[$sFirstID]['#weight'] = 10; //put current language in the beginning
 
     if ($this->m_aData[self::PROPERTY_LABEL_SLOT_IS_HTML]) {
-      $arrContent[$sFirstID]['#prefix'] += $this->m_aData[self::PROPERTY_LABEL];
+      $arrContent[$sFirstID]['#prefix'] .= $this->m_aData[self::PROPERTY_LABEL];
     }
     else {
       $arrContent[$sFirstID]['#title'] = $this->m_aData[self::PROPERTY_LABEL];

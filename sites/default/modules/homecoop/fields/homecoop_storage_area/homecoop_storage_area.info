@@ -3,3 +3,9 @@ description = Defines multiple storage areas for a pickup location
 core = 7.x
 package = Codeop
 php = 5.3
+
+; ----------
+; Dependencies
+; ----------
+
+dependencies[] = codeop_util
