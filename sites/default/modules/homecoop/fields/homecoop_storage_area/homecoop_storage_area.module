@@ -158,28 +158,15 @@ function homecoop_storage_area_field_widget_form(&$form, &$form_state, $field, $
     return $element;
   }
   
-  $widget = $element;
-  $widget['#delta'] = $delta;
-  
-  $widget += array(
-    '#prefix' => '<div class="resgridrow">',
-    '#suffix' => '</div>',
-  );
+  $element['#delta'] = $delta;
   
   $is_new = TRUE;
   $id = NULL;
   $title = NULL;
   $values = array();
-  $maxburdenid = NULL;
-  $isdisabledid = NULL;
-  $isdefaultid = NULL;
-  if (is_array($items[$delta])) {
+  if (isset($items[$delta])) {
     $is_new = FALSE;
-    $title = t('Storage area #@num', array('@num' => $delta));
-    $id = 'txtStorageAreaName_' . $delta;
-    $maxburdenid = 'txtMaxBurden_' . $delta;
-    $isdisabledid = 'ctlSAIsDisabled_' . $delta;
-    $isdefaultid = 'radDefaultStorage_' . $delta;
+    $title = t('Storage area #@num', array('@num' => ($delta + 1)));
     //prepare values:
     //note the array structure of $items[$delta] is langcode -> value, 
     //while codeop_util_multilang_control expects just values by langcode
@@ -191,14 +178,10 @@ function homecoop_storage_area_field_widget_form(&$form, &$form_state, $field, $
   }
   else { //new line
     $title = t('Storage area');
-    $id = 'txtnewStorageAreaName_' . $delta;
-    $maxburdenid = 'txtnewMaxBurden_' . $delta;
-    $isdisabledid = 'ctlnewSAIsDisabled_' . $delta;
-    $isdefaultid = 'radnewDefaultStorage_' . $delta;
   }
   
   $multilang = array(
-    'ID' => $id,
+    'ID' => 'storagename',
     'title' => $title,
     'element' => array(
       '#type' => 'textfield',
@@ -207,10 +190,10 @@ function homecoop_storage_area_field_widget_form(&$form, &$form_state, $field, $
     'values' => $values,
   );
   
-  $widget['storageareanames_' . $delta] = codeop_util_multilang_element(&$multilang) +
+  $element['value'] = codeop_util_multilang_element($multilang) +
       array('#weight' => 10);
   
-  $widget[$maxburdenid] = array(
+  $element['max_burden'] = array(
     '#type' => 'textfield',    
     '#weight' => 20, 
     '#title' => t('Max. storage'),
@@ -224,59 +207,54 @@ function homecoop_storage_area_field_widget_form(&$form, &$form_state, $field, $
       This is only a default value and can be overwritten in the cooperative order&#x27;s storage area settings.'),
   );
   
-  if (isset($items[$delta][LANGUAGE_NONE]['max_burden'])) {
-    $widget[$maxburdenid]['#default_value'] = check_plain($items[$delta][LANGUAGE_NONE]['max_burden']);
+  if (!$is_new && isset($items[$delta][LANGUAGE_NONE]['max_burden'])) {
+    $element['max_burden']['#default_value'] = check_plain($items[$delta][LANGUAGE_NONE]['max_burden']);
   }
-  
-  $id = 'thirdrow' . $delta;
-  $widget[$id] = array(
-    '#prefix' => '<div class="resgridrow">',
-    '#suffix' => '</div>',
-    '#weight' => 30,
-  );
-  
-  $widget[$id][$isdisabledid] = array(
+    
+  $element['inactive'] = array(
         '#type' => 'select',
         '#key_type' => 'associative',
         '#title' => t('Status'),
-        //#prefix is set later according to whether this element is alone in the row or not
-        '#suffix' => '</div>',
         '#options' => array(0 => t('Active'), 1 => t('Inactive')),
-        '#weight' => 20,
+        '#weight' => 40,
+        '#suffix' => '</div>',
   );
   
   if (!$is_new) {
-    $widget[$id]['chkDeleteStorageArea_' . $delta] = array(
+    $element['delete'] = array(
       '#type' => 'checkbox',
       '#title' => t('Delete'),
-      '#prefix' => '<div class="firstresgridcell">',
+      '#prefix' => '<div class="resgridrow"><div class="resgridfirstcell">',
       '#suffix' => '</div>',
-      '#weight' => 10,
+      '#attributes' => array('class' => array('resgriddatatiny')),
+      '#weight' => 30,
     );
     
-    $widget[$id][$isdisabledid]['#prefix'] = '<div class="resgridcell">';
+    $element['inactive']['#attributes'] = array('resgriddatahlong');
+    $element['inactive']['#prefix'] = '<div class="resgridcell">';
+    
+    if (isset($items[$delta][LANGUAGE_NONE]['inactive'])) {
+      $element['inactive']['#default_value'] = $items[$delta][LANGUAGE_NONE]['inactive'];
+    }
   }
   else {
-    $widget[$id][$isdisabledid]['#prefix'] = '<div class="firstresgridcell">';
-  }
-
-  if (isset($items[$delta][LANGUAGE_NONE]['inactive'])) {
-    $widget[$id][$isdisabledid]['#default_value'] = $items[$delta][LANGUAGE_NONE]['inactive'];
-  }
+    $element['inactive']['#attributes'] = array('resgriddatahlong');
+    $element['inactive']['#prefix'] = '<div class="resgridrow"><div class="resgridfirstcell">';
+  } 
   
-  $widget[$id][$isdefaultid] = array(
+  $element['default'] = array(
     '#type' => 'radio',
     '#name' => 'radDefaultStorage',
     '#title' => t('Default'),
+    '#attributes' => array('class' => array('resgriddatatiny')),
     '#prefix' => '<div class="resgridcell">',
-    '#suffix' => '</div>',
+    '#suffix' => '</div></div>',
+    '#weight' => 50,
   );
   
-  if (!$is_new) {
-    $widget[$id][$isdefaultid]['#default_value'] = $items[$delta][LANGUAGE_NONE]['default'];
+  if (!$is_new && isset($items[$delta][LANGUAGE_NONE]['default'])) {
+    $element['default']['#default_value'] = $items[$delta][LANGUAGE_NONE]['default'];
   }
-  
-  $element['storagearea_' . $delta] = $widget;
   
   return $element;
 }

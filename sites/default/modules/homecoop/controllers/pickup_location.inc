@@ -1,7 +1,7 @@
 <?php
 
 /*
- * homecoop_member entity controller
+ * homecoop_pickup_location entity controller
  * 
  */
 class HomeCoopPickupLocationController extends HomeCoopBaseController implements DrupalEntityControllerInterface {
@@ -131,11 +131,14 @@ class HomeCoopPickupLocationController extends HomeCoopBaseController implements
   }
   
   public function toClass($entity) {
-    $oMember = new Member();
-    $arrProps = (array)$oMember->GetAllProperties();
+    $oPickupLocation = new PickupLocation();
+    $arrProps = (array)$oPickupLocation->GetAllProperties();
     foreach($arrProps as $key => $value) {
-      $oMember->$key = $entity->$key;
+      $oPickupLocation->$key = $entity->$key;
     }
-    return $oMember;
+    
+    $oPickupLocation->SetSerializedOriginalData( $entity->OriginalData );
+    
+    return $oPickupLocation;
   }
 }

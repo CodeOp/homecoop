@@ -1158,6 +1158,13 @@ td a.LinkButton {
   padding-left: 0; /* RTL */
   padding-right: 10px; /* RTL */
 }
+.resgridfirstcell,
+.resgridcell {
+  label
+  {
+    display: inline-block;
+  }
+}
 .resgriddatatiny
 {
   width: 35px;

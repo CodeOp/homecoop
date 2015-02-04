@@ -89,7 +89,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     '#prefix' => '<div class="resgridparent">',
     '#suffix' => '</div>',
   );
-    
+
   $txtName = array(
     'element' => array(
       '#type' => 'textfield',
@@ -101,9 +101,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   );
   
   $form['maintable']['controlstable']['pickuplocname'] = array(
-    '#prefix' => '<div class="resgridrow">',
-    'namerow' => codeop_util_multilang_element(&$txtName),
-    '#suffix' => '</div>',
+    'namerow' => codeop_util_multilang_element($txtName),
     '#weight' => 10,
   );
   unset($txtName);
@@ -119,9 +117,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   );           
                 
   $form['maintable']['controlstable']['pickuplocaddress'] = array(
-    '#prefix' => '<div class="resgridrow">',
-    'namerow' => codeop_util_multilang_element(&$txtAddress),
-    '#suffix' => '</div>',
+    'namerow' => codeop_util_multilang_element($txtAddress),
     '#weight' => 20,
   );              
   unset($txtAddress);
@@ -137,9 +133,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   ); 
   
   $form['maintable']['controlstable']['publishedcomments'] = array(
-    '#prefix' => '<div class="resgridrow">',
-    'namerow' => codeop_util_multilang_element(&$txtPublishedComments),
-    '#suffix' => '</div>',
+    'namerow' => codeop_util_multilang_element($txtPublishedComments),
     '#weight' => 30,
   );   
   unset($txtPublishedComments);
@@ -154,10 +148,8 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   ); 
   
   $form['maintable']['controlstable']['admincomments'] = array(
-    '#prefix' => '<div class="resgridrow">',
-    'namerow' => codeop_util_multilang_element(&$txtAdminComments),
-    '#suffix' => '</div>',
-    '#weight' => 30,
+    'namerow' => codeop_util_multilang_element($txtAdminComments),
+    '#weight' => 40,
   ); 
   unset($txtAdminComments);
   
@@ -167,12 +159,12 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
         '#title' => t('Status'),
         '#default_value' => $entity->IsDisabled,
         '#options' => array(0 => t('Active'), 1 => t('Inactive')),
-        '#weight' => 40,
+        '#weight' => 50,
         '#required' => TRUE,
   );
   
   $form['maintable']['controlstable']['txtRotationOrder'] = array(
-      '#weight' => 50, 
+      '#weight' => 60, 
       '#type' => 'textfield',
       '#title' => t('Rotation Order'),
       '#maxlength' => 10,
@@ -183,7 +175,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   );
   
   $form['maintable']['controlstable']['txtMaxBurden'] = array(
-      '#weight' => 60, 
+      '#weight' => 70, 
       '#type' => 'textfield',
       '#title' => t('Delivery Capacity'),
       '#maxlength' => 10,
@@ -195,7 +187,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   );
   
   $form['maintable']['controlstable']['txtCachier'] = array(
-      '#weight' => 70, 
+      '#weight' => 75, 
       '#type' => 'textfield',
       '#title' => t('Cashier'),
       '#maxlength' => 10,
@@ -293,13 +285,13 @@ function homecoop_page_pickup_location_get_submitted_entity(&$form_state) {
     $entity->OriginalData = $form_state['values']['hidOriginalData'];
   }
   
-  $entity->Names = codeop_util_multilang_get_names(&$form_state, 'txtName');
+  $entity->Names = codeop_util_multilang_get_names($form_state, 'txtName');
   
-  $entity->AddressStrings = codeop_util_multilang_get_names(&$form_state, 'txtAddress');
+  $entity->AddressStrings = codeop_util_multilang_get_names($form_state, 'txtAddress');
   
-  $entity->PublishedComments = codeop_util_multilang_get_names(&$form_state, 'txtPublishedComments');
+  $entity->PublishedComments = codeop_util_multilang_get_names($form_state, 'txtPublishedComments');
   
-  $entity->AdminComments = codeop_util_multilang_get_names(&$form_state, 'txtAdminComments');
+  $entity->AdminComments = codeop_util_multilang_get_names($form_state, 'txtAdminComments');
     
   if ( isset( $form_state['values']['txtMaxBurden'] )) {
       $entity->MaxBurden = codeop_util_null_or_trimmed_number($form_state['values']['txtMaxBurden']);

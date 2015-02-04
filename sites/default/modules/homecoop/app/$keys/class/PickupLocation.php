@@ -176,7 +176,7 @@ class PickupLocation extends SQLBase {
     $this->m_aData[self::PROPERTY_ADMIN_STRINGS] = $this->GetKeyStrings($this->m_aData[self::PROPERTY_ADMIN_STR_ID]);
     
     //load storage areas
-    $sSQL =     " SELECT PLSA.StorageAreaKeyID, PLSA.fMaxBurden, PLSA.bDisabled, PLSA.bDefault  " .
+    /*$sSQL =     " SELECT PLSA.StorageAreaKeyID, PLSA.fMaxBurden, PLSA.bDisabled, PLSA.bDefault  " .
                 " FROM T_PickupLocationStorageArea PLSA " . 
                 " WHERE PLSA.PickupLocationKeyID = " . $this->m_aData[self::PROPERTY_ID] .
                 " ORDER BY PLSA.bDisabled, PLSA.StorageAreaKeyID;";
@@ -192,7 +192,7 @@ class PickupLocation extends SQLBase {
           $this->GetKeyStrings($rec["StorageAreaKeyID"]);
       
       $this->m_bUseSecondSqlPreparedStmt = false;
-    }
+    }*/
     
     $this->m_aOriginalData = $this->m_aData;
         
@@ -215,7 +215,7 @@ class PickupLocation extends SQLBase {
             return FALSE;
         }
         
-        $this->CollectStoragePostData();
+        //$this->CollectStoragePostData();
 
         if (!$this->Validate())
         {
@@ -289,7 +289,7 @@ class PickupLocation extends SQLBase {
           
           $this->m_aData[self::PROPERTY_ID] = $nKeyID; //needed in SaveStorageAreas
           
-          $this->SaveStorageAreas();
+          //$this->SaveStorageAreas();
           
           if ( $this->m_aData[self::PROPERTY_CACHIER] != NULL)
           {
@@ -300,7 +300,7 @@ class PickupLocation extends SQLBase {
           
           $this->m_aData[self::PROPERTY_TRANSACTION] = NULL;
           
-          $this->ApplySaveStorageAreas();
+          //$this->ApplySaveStorageAreas();
         }
         catch(Exception $e)
         {
@@ -343,7 +343,7 @@ class PickupLocation extends SQLBase {
       return FALSE;
     }
     
-    $this->CollectStoragePostData();
+    //$this->CollectStoragePostData();
         
     if (!$this->Validate())
     {
@@ -388,7 +388,7 @@ class PickupLocation extends SQLBase {
       $this->UpdateStrings(self::PROPERTY_PUBLISHED_STRINGS, $this->m_aOriginalData[self::PROPERTY_PUBLISHED_STR_ID]);
       $this->UpdateStrings(self::PROPERTY_ADMIN_STRINGS, $this->m_aOriginalData[self::PROPERTY_ADMIN_STR_ID]);
       
-      $this->SaveStorageAreas();
+      //$this->SaveStorageAreas();
       
       if ($this->m_aData[self::PROPERTY_CACHIER] != $this->m_aOriginalData[self::PROPERTY_CACHIER])
       {
@@ -399,7 +399,7 @@ class PickupLocation extends SQLBase {
       
       $this->m_aData[self::PROPERTY_TRANSACTION] = NULL;
       
-      $this->ApplySaveStorageAreas();
+      //$this->ApplySaveStorageAreas();
     }
     catch(Exception $e)
     {
@@ -482,8 +482,8 @@ class PickupLocation extends SQLBase {
     if (!$this->ValidateRequiredNames(self::PROPERTY_ADDRESS_STRINGS, '<!$FIELD_PICKUP_LOCATION_ADDRESS$!>'))
       $bValid = FALSE;
     
-    if (!$this->ValidateStorageAreas())
-      $bValid = FALSE;
+    //if (!$this->ValidateStorageAreas())
+     // $bValid = FALSE;
     
     return $bValid;
   }

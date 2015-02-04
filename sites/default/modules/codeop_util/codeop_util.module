@@ -86,7 +86,10 @@ function codeop_util_multilang_element(&$info) {
       $encodingFlag = ENT_NOQUOTES; //unlike check_plain
       break;
   }
-  $arrContent = array();
+  $arrContent = array(
+    '#prefix' => '<div class="resgridrow">',
+    '#suffix' => '</div>',
+  );
   $sID = null;
   $otherLangWeight = 20; //initial weight for other languages (the first language's weight is 10)
   
@@ -95,6 +98,7 @@ function codeop_util_multilang_element(&$info) {
     if ($lkey == $language->language) {
       continue;
     }
+
 
     $sID = $info['ID'] . '-' . $lkey;  
 
@@ -107,7 +111,7 @@ function codeop_util_multilang_element(&$info) {
     $arrContent[$sID]['#suffix'] = '</div>';
     $arrContent[$sID]['#weight'] = $otherLangWeight;
     $arrContent[$sID]['#title'] = $langObject->native;
-    $arrContent[$sID]['#attributes']['dir'] = $langObject->dir;
+    $arrContent[$sID]['#attributes']['dir'] = $langObject->direction? 'rtl': 'ltr';
     if (isset($info['values'][$lkey])) {
       $arrContent[$sID]['#default_value'] = htmlspecialchars( $info['values'][$lkey] , $encodingFlag, 'UTF-8');
     }
@@ -116,7 +120,7 @@ function codeop_util_multilang_element(&$info) {
   }
   
   //process current language
-  $sID = $info['ID'] . '-' . $language->language;  
+  $sID = $info['ID'] . '-' . $language->language;
 
   //get the element dynamic properties
   $arrContent[$sID] = $info['element'];
@@ -130,7 +134,7 @@ function codeop_util_multilang_element(&$info) {
   $arrContent[$sID]['#suffix'] = '</div>';
   $arrContent[$sID]['#weight'] = 10; //place as first element
   $arrContent[$sID]['#title'] = $info['title'];
-  $arrContent[$sID]['#attributes']['dir'] = $language->dir;
+  $arrContent[$sID]['#attributes']['dir'] = $language->direction? 'rtl': 'ltr';
   
   if (isset($info['values'][$language->language])) {
     $arrContent[$sID]['#default_value'] = htmlspecialchars( $info['values'][$language->language] , $encodingFlag, 'UTF-8');
@@ -159,7 +163,7 @@ function codeop_util_multilang_element(&$info) {
 
     foreach($langs as $lkey => $langObject) {    
         //add a new key-value pair to the array
-        $aValues[ $lkey ] = codeop_util_multilang_get_name(&$form_state,$sID, $lkey);
+        $aValues[ $lkey ] = codeop_util_multilang_get_name($form_state,$sID, $lkey);
     }
 
     return $aValues;

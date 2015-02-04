@@ -9,11 +9,80 @@
  * Implements hook_install()
  */
 function homecoop_install() {
-
+  homecoop_fields_initialize();
 }
 
 /**
  * Implements hook_uninstall()
  */
 function homecoop_uninstall() {
+  homecoop_fields_dispose();
+}
+
+function homecoop_fields_initialize() {
+  $fields = array();
+  
+  $fields[] = array(
+    'field_name' => 'storagearea',
+    'type' => 'homecoop_storage_area',
+    'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+    'translatable' => TRUE,
+    'settings' => array(
+      'max_length' => 100,
+    ),
+  );
+  
+  // Create the fields if they don't exist
+  foreach ($fields as $field) {
+    $info = field_info_field($field['field_name']);
+    if (empty($info)) {
+      field_create_field($field);
+    }
+  }
+  
+  // Create field instances for the type if they don't exist
+  $instances = array();
+  
+  $instances[] = array(
+    'field_name' => 'storagearea',
+    'cardinality' => FIELD_CARDINALITY_UNLIMITED,
+    'entity_type' => 'homecoop_pickup_location',
+    'bundle' => 'homecoop_pickup_location',
+    'label' => st('Storage area'),
+    'widget' => array(
+        'type' => 'homecoop_storage_area_widget',
+        'weight' => 200,
+    ),
+    'display' => array(
+      'default' => array(
+        'label' => 'hidden',
+        'type' => 'text_default',
+      ),
+    ),
+  );
+
+  // Create field instances if they don't exist
+  foreach ($instances as $instance) {
+    $info_instance = field_info_instance($instance['entity_type'], $instance['field_name'], $instance['bundle']);
+    if (empty($info_instance)) {
+      field_create_instance($instance);
+    }
+  }
+}
+
+function homecoop_fields_dispose() {
+   homecoop_fields_delete_instances('homecoop_pickup_location');
+}
+
+function homecoop_fields_delete_instances($entity_type) { 
+  $instances = field_read_instances(array('entity_type' => $entity_type), array('include_inactive' => TRUE));
+  $fieldnames = array();
+  foreach ($instances as $instance) {
+   field_delete_instance($instance); 
+   $fieldnames[$instance['field_name']] = 1; //create a unique list of fields
+  }
+  
+  foreach ($fieldnames as $fieldname => $val) {
+   field_delete_field($fieldname); 
+  }
 }

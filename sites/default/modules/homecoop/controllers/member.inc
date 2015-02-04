@@ -183,6 +183,7 @@ class HomeCoopMemberController extends HomeCoopBaseController implements DrupalE
     foreach($arrProps as $key => $value) {
       $oMember->$key = $entity->$key;
     }
+    $oMember->SetSerializedOriginalData( $entity->OriginalData );
     return $oMember;
   }
 }

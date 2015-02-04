@@ -1455,48 +1455,54 @@ td a.LinkButton {
   /* RTL */
 }
 
-/* line 1162, ../sass/main.scss */
+/* line 1164, ../sass/main.scss */
+.resgridfirstcell label,
+.resgridcell label {
+  display: inline-block;
+}
+
+/* line 1169, ../sass/main.scss */
 .resgriddatatiny {
   width: 35px;
   white-space: normal;
 }
 
-/* line 1167, ../sass/main.scss */
+/* line 1174, ../sass/main.scss */
 .resgriddatashort {
   width: 50px;
   white-space: normal;
 }
 
-/* line 1172, ../sass/main.scss */
+/* line 1179, ../sass/main.scss */
 .resgriddata {
   width: 80px;
   white-space: normal;
 }
 
-/* line 1177, ../sass/main.scss */
+/* line 1184, ../sass/main.scss */
 .resgriddatahlong {
   width: 120px;
   white-space: normal;
 }
 
-/* line 1182, ../sass/main.scss */
+/* line 1189, ../sass/main.scss */
 .resgriddatalong {
   width: 180px;
   white-space: normal;
 }
 
-/* line 1187, ../sass/main.scss */
+/* line 1194, ../sass/main.scss */
 .inlineblock {
   display: inline-block;
 }
 
-/* line 1191, ../sass/main.scss */
+/* line 1198, ../sass/main.scss */
 .spacer4 {
   font-size: 4px;
 }
 
 /* specfic forms */
-/* line 1197, ../sass/main.scss */
+/* line 1204, ../sass/main.scss */
 form#homecoop_member-form .form-item-select-action {
   display: inline;
 }
