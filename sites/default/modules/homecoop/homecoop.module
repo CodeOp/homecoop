@@ -257,7 +257,7 @@ function homecoop_entity_info() {
       'controller class' => 'HomeCoopPickupLocationController',
       'uri callback' => 'homecoop_pickup_location_uri',
       'access callback' => 'homecoop_public_access',
-      'fieldable' => TRUE, //for storage areas
+      'fieldable' => FALSE,
       'entity keys' => array(
         'id' => 'ID',
         'label' => 'Name',

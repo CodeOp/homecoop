@@ -73,10 +73,8 @@ function codeop_util_multilang_element(&$info) {
     throw new Exception(t('Error in codeop_util_multilang_textfield: @error', 
       array('@error' => t('element "#type" must be set to textfield or textarea.'))));
   }
-  if (!is_array($info['values'])) {
-    throw new Exception(t('Error in codeop_util_multilang_textfield: @error', 
-      array('@error' => t('"values" must be an array.'))));
-  }
+  
+  $is_empty = !isset($info['values']) || empty($info['values']) || (count($info['values']) == 0);
   
   $langs = language_list();
   
@@ -112,7 +110,7 @@ function codeop_util_multilang_element(&$info) {
     $arrContent[$sID]['#weight'] = $otherLangWeight;
     $arrContent[$sID]['#title'] = $langObject->native;
     $arrContent[$sID]['#attributes']['dir'] = $langObject->direction? 'rtl': 'ltr';
-    if (isset($info['values'][$lkey])) {
+    if (!$is_empty && isset($info['values'][$lkey])) {
       $arrContent[$sID]['#default_value'] = htmlspecialchars( $info['values'][$lkey] , $encodingFlag, 'UTF-8');
     }
     
@@ -136,7 +134,7 @@ function codeop_util_multilang_element(&$info) {
   $arrContent[$sID]['#title'] = $info['title'];
   $arrContent[$sID]['#attributes']['dir'] = $language->direction? 'rtl': 'ltr';
   
-  if (isset($info['values'][$language->language])) {
+  if (!$is_empty && isset($info['values'][$language->language])) {
     $arrContent[$sID]['#default_value'] = htmlspecialchars( $info['values'][$language->language] , $encodingFlag, 'UTF-8');
   }
   

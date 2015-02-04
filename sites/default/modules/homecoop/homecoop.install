@@ -9,18 +9,18 @@
  * Implements hook_install()
  */
 function homecoop_install() {
-  homecoop_fields_initialize();
+  //homecoop_fields_initialize();
 }
 
 /**
  * Implements hook_uninstall()
  */
 function homecoop_uninstall() {
-  homecoop_fields_dispose();
+  //homecoop_fields_dispose();
 }
 
 function homecoop_fields_initialize() {
-  $fields = array();
+  /*$fields = array();
   
   $fields[] = array(
     'field_name' => 'storagearea',
@@ -67,15 +67,15 @@ function homecoop_fields_initialize() {
     if (empty($info_instance)) {
       field_create_instance($instance);
     }
-  }
+  }*/
 }
 
 function homecoop_fields_dispose() {
-   homecoop_fields_delete_instances('homecoop_pickup_location');
+   //homecoop_fields_delete_instances('homecoop_pickup_location');
 }
 
 function homecoop_fields_delete_instances($entity_type) { 
-  $instances = field_read_instances(array('entity_type' => $entity_type), array('include_inactive' => TRUE));
+  /*$instances = field_read_instances(array('entity_type' => $entity_type), array('include_inactive' => TRUE));
   $fieldnames = array();
   foreach ($instances as $instance) {
    field_delete_instance($instance); 
@@ -84,5 +84,5 @@ function homecoop_fields_delete_instances($entity_type) {
   
   foreach ($fieldnames as $fieldname => $val) {
    field_delete_field($fieldname); 
-  }
+  }*/
 }

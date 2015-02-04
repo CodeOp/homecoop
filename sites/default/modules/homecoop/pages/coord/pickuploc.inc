@@ -235,7 +235,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
       '#default_value' => check_plain($entity->ExportFileName),
   );
   
-  field_attach_form('homecoop_pickup_location', $entity, $form, $form_state);
+  //field_attach_form('homecoop_pickup_location', $entity, $form, $form_state);
   
   return $form;
 }
@@ -250,7 +250,7 @@ function homecoop_pickup_location_form_validate($form, &$form_state) {
   }
   
   //Field API validation
-  field_attach_form_validate('homecoop_pickup_location', $entity, $form, $form_state);
+  //field_attach_form_validate('homecoop_pickup_location', $entity, $form, $form_state);
 }
 
 function homecoop_pickup_location_form_save($form, &$form_state) {  
@@ -258,7 +258,7 @@ function homecoop_pickup_location_form_save($form, &$form_state) {
   $entity = $form_state['homecoop_pickup_location'];
   
   // Notify field widgets.
-  field_attach_submit('homecoop_pickup_location', $entity, $form, $form_state);
+  //field_attach_submit('homecoop_pickup_location', $entity, $form, $form_state);
   
   $entity = entity_get_controller('homecoop_pickup_location')->save($entity); //calls field_attach_insert/update
   
