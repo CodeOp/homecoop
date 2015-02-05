@@ -123,14 +123,6 @@ abstract class SQLBase
     }
     
     public function GetAllProperties() {
-      /*$arrRes = array();
-      foreach($this->m_aData as $key => $value) {
-        if ($value != NULL && (is_object($value) || is_array($value))) {
-          continue;
-        }
-        $arrRes[$key] = $value;
-      }
-      return $arrRes;*/
       return $this->m_aData;
     }
     

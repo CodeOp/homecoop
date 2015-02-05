@@ -50,7 +50,7 @@ function codeop_util_null_or_trimmed_number($value) {
  * 
  * @param type $info
  * an associative array consisting of:
- *  ID - the basic id of the textfield/textarea controls. a suffix of "-[langauge code]" will be added to each actual element
+ *  ID - the basic id of the textfield/textarea elements. a suffix of "-[langauge code]" will be added to each actual element
  *  element - array of properties of the element. must have a '#type' index equal to 'textfield' or 'textarea'
  *  title - the title of all the controls (the first one actually)
  *  values - associative array by language code
@@ -76,8 +76,9 @@ function codeop_util_multilang_element(&$info) {
   
   $is_empty = !isset($info['values']) || empty($info['values']) || (count($info['values']) == 0);
   
-  $langs = language_list();
+  $langs = language_list('enabled');
   
+    
   $encodingFlag = ENT_QUOTES; //just like check_plain
   switch ($info['element']['#type']) {
     case 'textarea':
@@ -91,7 +92,7 @@ function codeop_util_multilang_element(&$info) {
   $sID = null;
   $otherLangWeight = 20; //initial weight for other languages (the first language's weight is 10)
   
-  foreach($langs as $lkey => $langObject) {    
+  foreach($langs['1'] as $lkey => $langObject) {    
     //process any language other than current language
     if ($lkey == $language->language) {
       continue;
@@ -155,11 +156,11 @@ function codeop_util_multilang_element(&$info) {
  */
   function codeop_util_multilang_get_names(&$form_state, $sID)
   {    
-    $langs = language_list();
+    $langs = language_list('enabled');
     
     $aValues = array();
 
-    foreach($langs as $lkey => $langObject) {    
+    foreach($langs['1'] as $lkey => $langObject) {    
         //add a new key-value pair to the array
         $aValues[ $lkey ] = codeop_util_multilang_get_name($form_state,$sID, $lkey);
     }

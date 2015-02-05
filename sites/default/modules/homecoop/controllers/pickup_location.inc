@@ -13,9 +13,7 @@ class HomeCoopPickupLocationController extends HomeCoopBaseController implements
        return (object)$values;
     $oRecord = new PickupLocation();
     return (object)($oRecord->GetAllProperties()
-        + array(
-          'OriginalData' => $oRecord->GetSerializedOriginalData(),
-        )
+        + $oRecord->GetReadOnlyExtraProperties()
       );
   }
   
@@ -90,7 +88,7 @@ class HomeCoopPickupLocationController extends HomeCoopBaseController implements
       $oPickupLocationTabInfo->MainTabName = $oRecord->Name;
       
       $entities[$id] = $this->create($oRecord->GetAllProperties() +
-          array('OriginalData' => $oRecord->GetSerializedOriginalData())
+          + $oRecord->GetReadOnlyExtraProperties()
           + homecoop_pickup_location_tab_info($oPickupLocationTabInfo)
          );
     }

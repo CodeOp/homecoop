@@ -54,44 +54,24 @@ class PickupLocation extends SQLBase {
   }
   
   public function __get( $name ) {
-    global $g_sLangDir;
+    global $language;
     switch ($name)
     {
       case self::PROPERTY_NAME:
-        if ($g_sLangDir == '')
-          return $this->m_aData[self::PROPERTY_NAMES][0];
-        else
-          return $this->GetLangPropertyVal(self::PROPERTY_NAMES,$g_sLangDir);
+          return $this->GetLangPropertyVal(self::PROPERTY_NAMES,$language->language);
       default:
         return parent::__get($name);
     }
   }
   
-  //limit properties that can be set
-  public function __set( $name, $value ) {
-    global $g_sLangDir;
-    switch ($name)
-    {
-      case self::PROPERTY_COORDINATING_GROUP_ID:
-        $trace = debug_backtrace();
-        trigger_error(
-          'Undefined property via __set(): ' . $name .
-          ' in class '. get_class() .', file ' . $trace[0]['file'] .
-          ' on line ' . $trace[0]['line'],
-          E_USER_NOTICE);
-      default:
-        parent::__set( $name, $value );
-    }
-  }
-  
-  public function GetAllProperties() {
-        
-    return $this->m_aData + 
-        array(
+  public function GetReadOnlyExtraProperties() {
+    return array(
           'hasdeletepermission' => (($this->m_aData[self::PROPERTY_ID] > 0) && $this->CheckDeletePermission()),
           'Name' => $this->Name,
+          'OriginalData' => $this->GetSerializedOriginalData(),
         );
   }
+      
   
   public function CheckAccess()
   {
@@ -176,7 +156,7 @@ class PickupLocation extends SQLBase {
     $this->m_aData[self::PROPERTY_ADMIN_STRINGS] = $this->GetKeyStrings($this->m_aData[self::PROPERTY_ADMIN_STR_ID]);
     
     //load storage areas
-    /*$sSQL =     " SELECT PLSA.StorageAreaKeyID, PLSA.fMaxBurden, PLSA.bDisabled, PLSA.bDefault  " .
+    $sSQL =     " SELECT PLSA.StorageAreaKeyID, PLSA.fMaxBurden, PLSA.bDisabled, PLSA.bDefault  " .
                 " FROM T_PickupLocationStorageArea PLSA " . 
                 " WHERE PLSA.PickupLocationKeyID = " . $this->m_aData[self::PROPERTY_ID] .
                 " ORDER BY PLSA.bDisabled, PLSA.StorageAreaKeyID;";
@@ -192,7 +172,7 @@ class PickupLocation extends SQLBase {
           $this->GetKeyStrings($rec["StorageAreaKeyID"]);
       
       $this->m_bUseSecondSqlPreparedStmt = false;
-    }*/
+    }
     
     $this->m_aOriginalData = $this->m_aData;
         
@@ -202,7 +182,6 @@ class PickupLocation extends SQLBase {
   public function Add()
     {
         global $g_oMemberSession;
-        global $g_sLangDir;
         global $g_dNow;
         
         $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NONE;
@@ -214,8 +193,6 @@ class PickupLocation extends SQLBase {
             $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_PERMISSION;
             return FALSE;
         }
-        
-        //$this->CollectStoragePostData();
 
         if (!$this->Validate())
         {
@@ -289,7 +266,7 @@ class PickupLocation extends SQLBase {
           
           $this->m_aData[self::PROPERTY_ID] = $nKeyID; //needed in SaveStorageAreas
           
-          //$this->SaveStorageAreas();
+          $this->SaveStorageAreas();
           
           if ( $this->m_aData[self::PROPERTY_CACHIER] != NULL)
           {
@@ -300,7 +277,7 @@ class PickupLocation extends SQLBase {
           
           $this->m_aData[self::PROPERTY_TRANSACTION] = NULL;
           
-          //$this->ApplySaveStorageAreas();
+          $this->ApplySaveStorageAreas();
         }
         catch(Exception $e)
         {
@@ -324,7 +301,6 @@ class PickupLocation extends SQLBase {
   
   public function Edit()
   {
-    global $g_sLangDir;
     global $g_dNow;
 
     $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NONE;
@@ -342,8 +318,6 @@ class PickupLocation extends SQLBase {
       $this->m_nLastOperationStatus = parent::OPERATION_STATUS_NO_SUFFICIENT_DATA_PROVIDED;
       return FALSE;
     }
-    
-    //$this->CollectStoragePostData();
         
     if (!$this->Validate())
     {
@@ -388,7 +362,7 @@ class PickupLocation extends SQLBase {
       $this->UpdateStrings(self::PROPERTY_PUBLISHED_STRINGS, $this->m_aOriginalData[self::PROPERTY_PUBLISHED_STR_ID]);
       $this->UpdateStrings(self::PROPERTY_ADMIN_STRINGS, $this->m_aOriginalData[self::PROPERTY_ADMIN_STR_ID]);
       
-      //$this->SaveStorageAreas();
+      $this->SaveStorageAreas();
       
       if ($this->m_aData[self::PROPERTY_CACHIER] != $this->m_aOriginalData[self::PROPERTY_CACHIER])
       {
@@ -399,7 +373,7 @@ class PickupLocation extends SQLBase {
       
       $this->m_aData[self::PROPERTY_TRANSACTION] = NULL;
       
-      //$this->ApplySaveStorageAreas();
+      $this->ApplySaveStorageAreas();
     }
     catch(Exception $e)
     {
@@ -470,10 +444,7 @@ class PickupLocation extends SQLBase {
   
   
   public function Validate()
-  {
-    global $g_oError;
-    global $g_sLangDir;
-    
+  {    
     $bValid = TRUE;
     
     if (!$this->ValidateRequiredNames(self::PROPERTY_NAMES, '<!$FIELD_PICKUP_LOCATION_NAME$!>'))
@@ -482,8 +453,8 @@ class PickupLocation extends SQLBase {
     if (!$this->ValidateRequiredNames(self::PROPERTY_ADDRESS_STRINGS, '<!$FIELD_PICKUP_LOCATION_ADDRESS$!>'))
       $bValid = FALSE;
     
-    //if (!$this->ValidateStorageAreas())
-     // $bValid = FALSE;
+    if (!$this->ValidateStorageAreas())
+      $bValid = FALSE;
     
     return $bValid;
   }
@@ -726,160 +697,16 @@ class PickupLocation extends SQLBase {
     $this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$aStorageArea['StorageAreaKeyID']]['NewStorageAreaKeyID'] = $nStorageAreaKeyID;
   }
   
-  
-  //process post data and return an unkeyed array with each element in this format
-  // StorageAreaKeyID => id
-  // Names => return value from ComplexPostData::GetNames
-  // Disabled => TRUE/FALSE
-  // Delete => TRUE/FALSE
-  protected function CollectStoragePostData()
-  {
-    global $_POST;
-    $nStorageAreaKeyID = 0;
-    $nNamePrefixLen = strlen(HtmlStorageArea::CTL_NAME_PREFIX);
-    $nDisabledPrefixLen = strlen(HtmlStorageArea::CTL_DISABLED_PREFIX);
-    $nMaxBurdenPrefixLen = strlen(HtmlStorageArea::CTL_MAX_BURDEN_PREFIX);
-    $nDeletePrefixLen = strlen(HtmlStorageArea::CTL_DELETE_PREFIX);
-    $nNewNamePrefixLen = strlen(HtmlStorageArea::CTL_NEW_NAME_PREFIX);
-    $nNewDisabledPrefixLen = strlen(HtmlStorageArea::CTL_NEW_DISABLED_PREFIX);
-    $nNewMaxBurdenPrefixLen = strlen(HtmlStorageArea::CTL_NEW_MAX_BURDEN_PREFIX);
-    $sBaseCtlName = NULL;
-    
-    
-
-    foreach($_POST as $key => $value)
-    {
-      //if found in position 0
-      if (strpos($key, HtmlStorageArea::CTL_NAME_PREFIX) === 0)
-      {
-        $nStorageAreaKeyID = $this->InitStorageMultiLangPostElement($key, $nNamePrefixLen, $sBaseCtlName,
-            self::PROPERTY_STORAGE_AREAS);
-
-        $this->m_aData[self::PROPERTY_STORAGE_AREAS][$nStorageAreaKeyID][self::PROPERTY_NAMES] = ComplexPostData::GetNames($sBaseCtlName);
-      }
-      elseif (strpos($key, HtmlStorageArea::CTL_DISABLED_PREFIX) === 0)
-      {
-        $nStorageAreaKeyID = $this->InitStoragePostElement($key, $nDisabledPrefixLen,
-            self::PROPERTY_STORAGE_AREAS);
-
-        $this->m_aData[self::PROPERTY_STORAGE_AREAS][$nStorageAreaKeyID]['bDisabled'] = (intval($value) == 1);
-      }
-      elseif (strpos($key, HtmlStorageArea::CTL_MAX_BURDEN_PREFIX) === 0)
-      {
-        $nStorageAreaKeyID = $this->InitStoragePostElement($key, $nMaxBurdenPrefixLen,
-            self::PROPERTY_STORAGE_AREAS);
-
-        if (!empty($value)) //allow null, do not allow 0
-          $this->m_aData[self::PROPERTY_STORAGE_AREAS][$nStorageAreaKeyID]['fMaxBurden'] = 0 + $value;
-      }
-      elseif (strpos($key, HtmlStorageArea::CTL_DELETE_PREFIX) === 0)
-      {
-        $nStorageAreaKeyID = $this->InitStoragePostElement($key, $nDeletePrefixLen,
-            self::PROPERTY_STORAGE_AREAS);
-
-        $this->m_aData[self::PROPERTY_STORAGE_AREAS][$nStorageAreaKeyID]['Delete'] = (intval($value) == 1);
-      }
-      elseif (strpos($key, HtmlStorageArea::CTL_NEW_NAME_PREFIX) === 0)
-      {
-        $nStorageAreaKeyID = $this->InitStorageMultiLangPostElement($key, $nNewNamePrefixLen, $sBaseCtlName,
-            self::PROPERTY_NEW_STORAGE_AREAS);
-
-        $this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$nStorageAreaKeyID][self::PROPERTY_NAMES] = ComplexPostData::GetNames($sBaseCtlName);
-      }
-      elseif (strpos($key, HtmlStorageArea::CTL_NEW_DISABLED_PREFIX) === 0)
-      {
-        $nStorageAreaKeyID = $this->InitStoragePostElement($key, $nNewDisabledPrefixLen,
-            self::PROPERTY_NEW_STORAGE_AREAS);
-
-        $this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$nStorageAreaKeyID]['bDisabled'] = (intval($value) == 1);
-      }
-      elseif (strpos($key, HtmlStorageArea::CTL_NEW_MAX_BURDEN_PREFIX) === 0)
-      {
-        $nStorageAreaKeyID = $this->InitStoragePostElement($key, $nNewMaxBurdenPrefixLen,
-            self::PROPERTY_NEW_STORAGE_AREAS);
-
-        if (!empty($value)) //allow null, do not allow 0
-          $this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$nStorageAreaKeyID]['fMaxBurden'] = 0 + $value;
-      }
-    }
-    
-    //set the Default property
-    //get default value
-    if (isset($_POST[HtmlStorageArea::CTL_DEFAULT_GROUP]))
-    {
-      $nDefaultStorageAreaID = intval($_POST[HtmlStorageArea::CTL_DEFAULT_GROUP]);
-      if ($nDefaultStorageAreaID >= HtmlStorageArea::MIN_NEW_CONTROLS_NUM)
-      {
-        $nDefaultStorageAreaID -= HtmlStorageArea::MIN_NEW_CONTROLS_NUM;
-        if (isset($this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$nDefaultStorageAreaID]))
-          $this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$nDefaultStorageAreaID]['bDefault'] = TRUE;
-      }
-      elseif (isset($this->m_aData[self::PROPERTY_STORAGE_AREAS][$nDefaultStorageAreaID]))
-        $this->m_aData[self::PROPERTY_STORAGE_AREAS][$nDefaultStorageAreaID]['bDefault'] = TRUE;
-    }
-    
-  }
-
-  protected function InitStorageMultiLangPostElement($key, $nPrefixLen, &$sBaseCtlName, $sStorageArrKey)
-  {
-    global $g_nCountLanguages;
-    $sIDPlusLang = substr($key, $nPrefixLen );
-
-    if ($g_nCountLanguages > 0)
-    {
-      $nPos = strpos($sIDPlusLang, HtmlTextEditMultiLang::ID_LINK);
-      if ($nPos > 0)
-      {
-        $nStorageAreaKeyID = 0 + substr($sIDPlusLang, 0, $nPos );
-        $sBaseCtlName = substr($key, 0, $nPrefixLen + $nPos );
-      }
-    }
-    else
-    {
-      $nStorageAreaKeyID = 0 + $sIDPlusLang;
-      $sBaseCtlName = $key;
-    }
-
-    return $this->InitStoragePostElementFromId($key, $nStorageAreaKeyID, $sStorageArrKey);
-  }
-
-  protected function InitStoragePostElement($key, $nPrefixLen, $sStorageArrKey)
-  {
-    $nStorageAreaKeyID = 0 + substr($key, $nPrefixLen );;
-
-    return $this->InitStoragePostElementFromId($key, $nStorageAreaKeyID, $sStorageArrKey);
-  }
-
-  protected function InitStoragePostElementFromId($key, $nStorageAreaKeyID, $sStorageArrKey)
-  {
-    if ($nStorageAreaKeyID == 0)
-      throw new Exception('Error in PickupLocation.InitStoragePostElementFromId: StorageAreaKeyID 0 for post key ' . $key);
-
-    if (!array_key_exists($nStorageAreaKeyID, $this->m_aData[$sStorageArrKey]))
-    {
-      $this->m_aData[$sStorageArrKey][$nStorageAreaKeyID] = array(
-        'StorageAreaKeyID' => $nStorageAreaKeyID,
-        self::PROPERTY_NAMES => NULL,
-        'fMaxBurden' => NULL,
-        'bDisabled' => FALSE,
-        'Delete' => FALSE,
-        'bDefault' => FALSE,
-      );
-    }
-
-    return $nStorageAreaKeyID;
-  }
-  
   protected function ValidateStorageAreaName($StorageAreaKeyID, $nIndex, $aStorageArea, $bNew)
   {
-    global $g_aSupportedLanguages;
-    global $g_sLangDir;
+    global $language;
     global $g_oError;
+    $langs = language_list('enabled');
     
     $bValid = TRUE;
     
     $nRes = $this->ValidateNames($aStorageArea[self::PROPERTY_NAMES]);
-        
+
     switch($nRes)
     {
       case self::VALIDATE_NAMES_EMPTY_ARRAY:
@@ -902,11 +729,11 @@ class PickupLocation extends SQLBase {
         $sNonEmptyName = '';
 
         if ($nRes == self::VALIDATE_NAMES_OTHER_LANGUAGE_EMPTY)
-          $sNonEmptyName = $aStorageArea[self::PROPERTY_NAMES][$g_sLangDir]; //get non-empty value from current language
+          $sNonEmptyName = $aStorageArea[self::PROPERTY_NAMES][$language->language]; //get non-empty value from current language
         else
         {
           //get first non-empty value
-          foreach($g_aSupportedLanguages as $Lkey => $aLang)
+          foreach($langs['1'] as $Lkey => $aLang)
           {
             if ($aStorageArea[self::PROPERTY_NAMES][$Lkey] != NULL)
             {
@@ -916,7 +743,7 @@ class PickupLocation extends SQLBase {
           }
         }
         //fill empty languages with non-empty value
-        foreach($g_aSupportedLanguages as $Lkey => $aLang)
+        foreach($langs['1'] as $Lkey => $aLang)
         {
           if ($aStorageArea[self::PROPERTY_NAMES][$Lkey] == NULL)
           {

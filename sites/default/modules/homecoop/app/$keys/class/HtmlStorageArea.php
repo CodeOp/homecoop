@@ -67,6 +67,144 @@ class HtmlStorageArea {
       }
     }
     
+    public function GetHtml(&$initWeight)
+    {
+      $arrContent = array();
+      
+      $txtStorage = array(
+        'element' => array(
+          '#type' => 'textfield',
+          '#required' => $this->m_aData[self::PROPERTY_REQUIRED],
+        )
+      );
+      $said  = 0;
+      $oNewValue = NULL;
+      $idElement = NULL;
+      $prefix = NULL;
+      $initWeight += 10;
+      if ($this->m_aData[self::PROPERTY_IS_NEW])
+      {
+        $txtStorage['ID'] = self::CTL_NEW_NAME_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER];
+        $txtStorage['title'] = '<!$LBL_NEW_STORAGE_AREA$!>';
+      }
+      else
+      {
+        $said = $this->m_aData[self::PROPERTY_STORAGE_AREA]['StorageAreaKeyID'];
+        $txtStorage['ID'] = self::CTL_NAME_PREFIX . $said;
+        $txtStorage['title'] = sprintf('<!$FIELD_STORAGE_AREA_INDEX$!>', $this->m_aData[self::PROPERTY_LINE_NUMBER]);        
+      }
+      
+      if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['Names'])) {
+        $txtStorage['values'] = $this->m_aData[self::PROPERTY_STORAGE_AREA]['Names'];
+      }
+      
+      $arrContent['storagenames_' . $txtStorage['ID']] = array(
+        '#prefix' => '<div class="resgridrow">',
+        '#suffix' => '</div>',
+        '#weight' => $initWeight,
+        'names' => codeop_util_multilang_element($txtStorage),
+      );
+      
+      
+      $initWeight += 10;
+      $oNewValue = NULL;
+      if ($this->m_aData[self::PROPERTY_IS_NEW])
+      {  
+        if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['fMaxBurden']))
+          $oNewValue = check_plain($this->m_aData[self::PROPERTY_STORAGE_AREA]['fMaxBurden']);
+        $idElement = self::CTL_NEW_MAX_BURDEN_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER];
+      }
+      else
+      {
+        $oNewValue = $this->m_aData[self::PROPERTY_STORAGE_AREA]['fMaxBurden'];
+        $idElement = self::CTL_MAX_BURDEN_PREFIX . $said;
+      }
+      
+      $arrContent[$idElement] = array(
+          '#type' => 'textfield',
+          '#weight' => $initWeight,
+          '#title' => '<!$FIELD_MAX_STORAGE_BURDEN$!>',
+          '#maxlength' => 10,
+          '#size' => 25,
+          '#default_value' => $oNewValue,
+          '#rules' => array('numeric'),
+          '#number_type' => 'decimal',
+          '#description' => '<!$TOOLTIP_STORAGE_AREA_MAX_BURDEN$!>',
+      );
+      
+      
+      $initWeight += 10;
+      $arrContent['thirdrow'] = array(
+        '#prefix' => '<div class="resgridrow">',
+        '#suffix' => '</div>',
+        '#weight' => $initWeight,
+      );
+      
+      if ($this->m_aData[self::PROPERTY_IS_NEW])
+      {
+        $oNewValue = FALSE;
+        $idElement = self::CTL_NEW_DISABLED_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER];
+        if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDisabled'])) {
+          $oNewValue = $this->m_aData[self::PROPERTY_STORAGE_AREA]['bDisabled'];
+        }
+        $prefix = '<div class="resgridfirstcell">';
+      }
+      else
+      {
+        $oNewValue = $this->m_aData[self::PROPERTY_STORAGE_AREA]['bDisabled'];
+        $idElement = self::CTL_DISABLED_PREFIX . $said;
+        $prefix = '<div class="resgridcell">';
+        
+        $arrContent['thirdrow'][self::CTL_DELETE_PREFIX .  $said] = array(
+            '#prefix' => '<div class="resgridfirstcell">',
+            '#suffix' => '</div>',
+            '#type' => 'checkbox',
+            '#title' => '<!$MARK_FOR_DELETE$!>',
+            '#weight' => 10,
+            '#attributes' => array('class' => array('resgriddatatiny')),
+        );
+      }
+      
+      $arrContent['thirdrow'][$idElement] = array(
+            '#prefix' => $prefix,
+            '#suffix' => '</div>',
+            '#type' => 'select',
+            '#key_type' => 'associative',
+            '#title' => t('Status'),
+            '#default_value' => $oNewValue,
+            '#options' => array(0 => t('Active'), 1 => t('Inactive')),
+            '#weight' => 20,
+            '#attributes' => array('class' => array('resgriddata')),
+      );
+
+      if ($this->m_aData[self::PROPERTY_IS_NEW])
+      {
+        $idElement = self::CTL_NEW_DEFAULT_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER];
+        $oNewValue = self::MIN_NEW_CONTROLS_NUM + $this->m_aData[self::PROPERTY_LINE_NUMBER];
+      }
+      else
+      {
+        $idElement = self::CTL_DEFAULT_PREFIX . $said;
+        $oNewValue = $said; 
+      }
+      
+      $arrContent['thirdrow'][$idElement] = array(
+            '#prefix' => '<div class="resgridcell">',
+            '#suffix' => '</div>',
+            '#type' => 'radio',
+            '#name' => self::CTL_DEFAULT_GROUP,
+            '#value' => $oNewValue,
+            '#title' => '<!$LBL_DEFAULT_STORAGE_AREA$!>',
+            '#weight' => 30,
+            '#attributes' => array('class' => array('resgriddatatiny')),
+      );
+      
+      if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault']) && $this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault'])
+          $arrContent['thirdrow'][$idElement]['#default_value'] = '1';
+      
+      return $arrContent;
+    }
+    
     public function EchoHtml()
     {
       echo '<tr>';

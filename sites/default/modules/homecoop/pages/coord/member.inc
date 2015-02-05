@@ -121,7 +121,6 @@ function homecoop_member_form($form, &$form_state, $entity) {
         '#ajax' => array(
           'callback' => 'homecoop_member_form_ajax_callback',
           'wrapper' => 'div_ajax_message',
-          'method' => 'replace',
         ),
       );
       

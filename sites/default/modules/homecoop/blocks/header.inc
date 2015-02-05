@@ -145,14 +145,14 @@ function homecoop_header_block() {
 }
 
 function homecoop_language_links() {
-  $langs = language_list();
+  $langs = language_list('enabled');
   
   $content = array(
     '#prefix' => '<li>',
     '#suffix' => '</li>',
   );
 
-  if (count($langs) > 1) {
+  if (count($langs['1']) > 1) {
     global $language, $base_url;
     
     $sUrl = current_path();
@@ -171,7 +171,7 @@ function homecoop_language_links() {
       $sQuery = '?' . $sQuery;
     }
   
-    foreach($langs as $lkey => $oLang) {
+    foreach($langs['1'] as $lkey => $oLang) {
       if ($language->language == $lkey) { //skip link to current language
         continue;
       }

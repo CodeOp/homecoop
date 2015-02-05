@@ -34,7 +34,8 @@ function homecoop_page_pickuploc_common_start()
   }
 }
 
-function homecoop_pickup_location_form($form, &$form_state, $entity) {
+function homecoop_pickup_location_form($form, &$form_state, $entity) {  
+  homecoop_add_js_file('pickup_location.js');
   
   $form['#id'] = 'homecoop_pickup_location-form';
   $form['#attributes']['name'] = 'homecoop_pickup_location_form';
@@ -47,6 +48,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   
   $form['hidPostValue'] = array('#type' => 'value', '#value' => $entity->ID, 
     '#attributes' => array('id' => 'hidPostValue'));
+  
   
   $form['maintable'] = array(
     '#weight' => 10,
@@ -100,9 +102,11 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     'values' => $entity->Names,
   );
   
+  $weight = 10;
+  
   $form['maintable']['controlstable']['pickuplocname'] = array(
     'namerow' => codeop_util_multilang_element($txtName),
-    '#weight' => 10,
+    '#weight' => $weight,
   );
   unset($txtName);
     
@@ -115,10 +119,11 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     'ID' => 'txtAddress',
     'values' => $entity->AddressStrings,
   );           
-                
+     
+  $weight += 10;
   $form['maintable']['controlstable']['pickuplocaddress'] = array(
     'namerow' => codeop_util_multilang_element($txtAddress),
-    '#weight' => 20,
+    '#weight' => $weight,
   );              
   unset($txtAddress);
   
@@ -132,9 +137,10 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     'values' => $entity->PublishedComments,
   ); 
   
+  $weight += 10;
   $form['maintable']['controlstable']['publishedcomments'] = array(
     'namerow' => codeop_util_multilang_element($txtPublishedComments),
-    '#weight' => 30,
+    '#weight' => $weight,
   );   
   unset($txtPublishedComments);
     
@@ -147,24 +153,27 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     'values' => $entity->AdminComments,
   ); 
   
+  $weight += 10;
   $form['maintable']['controlstable']['admincomments'] = array(
     'namerow' => codeop_util_multilang_element($txtAdminComments),
-    '#weight' => 40,
+    '#weight' => $weight,
   ); 
   unset($txtAdminComments);
   
+  $weight += 10;
   $form['maintable']['controlstable']['ctlIsDisabled'] = array(
         '#type' => 'select',
         '#key_type' => 'associative',
         '#title' => t('Status'),
         '#default_value' => $entity->IsDisabled,
         '#options' => array(0 => t('Active'), 1 => t('Inactive')),
-        '#weight' => 50,
+        '#weight' => $weight,
         '#required' => TRUE,
   );
   
+  $weight += 10;
   $form['maintable']['controlstable']['txtRotationOrder'] = array(
-      '#weight' => 60, 
+      '#weight' => $weight, 
       '#type' => 'textfield',
       '#title' => t('Rotation Order'),
       '#maxlength' => 10,
@@ -174,8 +183,9 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
       '#number_type' => 'integer',
   );
   
+  $weight += 10;
   $form['maintable']['controlstable']['txtMaxBurden'] = array(
-      '#weight' => 70, 
+      '#weight' => $weight, 
       '#type' => 'textfield',
       '#title' => t('Delivery Capacity'),
       '#maxlength' => 10,
@@ -186,8 +196,9 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
       '#description' => t('The maximum capacity of the pickup location in terms of the product field &quot;Burden&quot;. the sum for all products of &quot;Burden&quot; times product quantity will be compared to this value for all the members&#x27; orders that have this pickup location selected. This is only a default value and can be overwritten in the cooperative order&#x27;s pickup location settings. If not overridden in the coop order, members will not be able to place an order that exceeds the limitation set here.'),
   );
   
+  $weight += 10;
   $form['maintable']['controlstable']['txtCachier'] = array(
-      '#weight' => 75, 
+      '#weight' => $weight, 
       '#type' => 'textfield',
       '#title' => t('Cashier'),
       '#maxlength' => 10,
@@ -197,8 +208,9 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
       '#number_type' => 'decimal',
   );
   
+  $weight += 10;
   $form['maintable']['controlstable']['txtTransaction'] = array(
-      '#weight' => 80, 
+      '#weight' => $weight, 
       '#type' => 'textfield',
       '#title' => t('Transaction Desc.'),
       '#maxlength' => 100,
@@ -207,8 +219,9 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   
   if ($entity->ID > 0) {
     if (!empty($entity->CachierDate)) {
+      $weight += 10;
       $form['maintable']['controlstable']['lblCachierDate'] = array(
-          '#weight' => 90, 
+          '#weight' => $weight, 
           '#type' => 'item',
           '#title' => t('Cashier Update'),
           '#attributes' => array('dir' => 'ltr'),
@@ -217,8 +230,9 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     }
 
     if (!empty($entity->PrevCachier)) {
+      $weight += 10;
       $form['maintable']['controlstable']['lblPrevCachier'] = array(
-          '#weight' => 100, 
+          '#weight' => $weight, 
           '#type' => 'item',
           '#title' => t('Prev. Cashier'),
           '#markup' => check_plain($entity->PrevCachier),
@@ -227,14 +241,101 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     }
   }
   
+  $weight += 10;
   $form['maintable']['controlstable']['txtExportFileName'] = array(
-      '#weight' => 110, 
+      '#weight' => $weight, 
       '#type' => 'textfield',
       '#title' => t('Export File Name'),
       '#maxlength' => PickupLocation::MAX_LENGTH_EXPORT_FILE_NAME,
       '#default_value' => check_plain($entity->ExportFileName),
   );
   
+  // Storage Areas
+  $oStorageAreaRow = NULL;
+  $nTotalCount = 0;
+  $nStorageCount = 0;
+
+  if ($entity->ID > 0) 
+  {
+    foreach($entity->StorageAreas as $sa)
+    {
+      $weight += 10;
+      $form['maintable']['controlstable']['sep'] = array(
+        '#prefix' => '<div class="sepline">',
+        '#suffix' => '</div>',
+        '#weight' => $weight,
+      );
+
+      $nStorageCount++;
+      $oStorageAreaRow = new HtmlStorageArea($sa, $nStorageCount);
+      $form['maintable']['controlstable'] += $oStorageAreaRow->GetHtml($weight);
+    }
+  }
+  $nTotalCount += $nStorageCount;
+  //restore unsaved new entries after validation errors
+  if (count($entity->NewStorageAreas) > 0)
+  {
+    foreach($entity->NewStorageAreas as $sa)
+    {
+      $weight += 10;
+      $form['maintable']['controlstable']['sep'] = array(
+        '#prefix' => '<div class="sepline">',
+        '#suffix' => '</div>',
+        '#weight' => $weight,
+      );
+
+      $nStorageCount++;
+      $nTotalCount++;
+
+      $oStorageAreaRow = new HtmlStorageArea($sa, $nStorageCount);
+      $oStorageAreaRow->IsNew = TRUE;
+      $oStorageAreaRow->Required = ($nTotalCount == 1);
+      $form['maintable']['controlstable'] += $oStorageAreaRow->GetHtml($weight);
+    }
+  }
+  //default behaviour for new form with no unsaved new entries to restore
+  elseif ($entity->ID == 0)
+  {
+    $nStorageCount = 1;
+    //add default storage area if not added
+    $oStorageAreaRow = new HtmlStorageArea();
+    $oStorageAreaRow->IsNew = TRUE;
+    $form['maintable']['controlstable'] += $oStorageAreaRow->GetHtml($weight);
+  }
+  unset($oStorageAreaRow);
+  
+  $weight += 10;
+  $form['maintable']['controlstable']['trPlaceHolder'] = array(
+    '#prefix' => '<div class="resgridrow" id="trPlaceHolder" name="trPlaceHolder">',
+    '#suffix' => '</div>',
+    '#weight' => $weight,
+  );
+  
+  $weight += 10;
+  $form['maintable']['controlstable']['sep_after'] = array(
+    '#prefix' => '<div class="sepline">',
+    '#suffix' => '</div>',
+    '#weight' => $weight,
+  );
+  
+  $weight += 10;
+  $form['maintable']['controlstable']['btn_add_storage'] = array(
+    '#prefix' => '<div class="resgridrow">',
+    '#type' => 'button',
+    '#name' => 'btn_add_storage',
+    '#id' => 'btn_add_storage',
+    '#weight' => $weight,
+    '#ajax' => array(
+         'callback' => 'homecoop_pickup_location_addstoragearea_ajax_callback',
+         'wrapper' => 'trPlaceHolder',
+       ),
+    '#suffix' => '</div>',
+    '#value' => t('Add storage area'),
+  );
+  
+  $form['hidStorageAreaCount'] = array('#type' => 'hidden', '#default_value' => $nStorageCount, 
+    '#attributes' => array('id' => 'hidStorageAreaCount'));
+     
   //field_attach_form('homecoop_pickup_location', $entity, $form, $form_state);
   
   return $form;
@@ -315,10 +416,200 @@ function homecoop_page_pickup_location_get_submitted_entity(&$form_state) {
                         
   if ( isset( $form_state['values']['txtCachier'] )) {
       $entity->Cachier = codeop_util_null_or_trimmed_number($form_state['values']['txtCachier']);
-  }   
+  }
+  
+  homecoop_page_pickup_location_get_storageareas($form_state, $entity);
   
   $form_state['homecoop_pickup_location'] = $entity;
   return $entity;
+}
+
+//process post data and return an unkeyed array with each element in this format
+// StorageAreaKeyID => id
+// Names => return value from ComplexPostData::GetNames
+// Disabled => TRUE/FALSE
+// Delete => TRUE/FALSE
+function homecoop_page_pickup_location_get_storageareas(&$form_state, $entity)
+{
+  $nStorageAreaKeyID = 0;
+  $nNamePrefixLen = strlen(HtmlStorageArea::CTL_NAME_PREFIX);
+  $nDisabledPrefixLen = strlen(HtmlStorageArea::CTL_DISABLED_PREFIX);
+  $nMaxBurdenPrefixLen = strlen(HtmlStorageArea::CTL_MAX_BURDEN_PREFIX);
+  $nDeletePrefixLen = strlen(HtmlStorageArea::CTL_DELETE_PREFIX);
+  $nNewNamePrefixLen = strlen(HtmlStorageArea::CTL_NEW_NAME_PREFIX);
+  $nNewDisabledPrefixLen = strlen(HtmlStorageArea::CTL_NEW_DISABLED_PREFIX);
+  $nNewMaxBurdenPrefixLen = strlen(HtmlStorageArea::CTL_NEW_MAX_BURDEN_PREFIX);
+  $sBaseCtlName = NULL;
+
+
+  foreach($form_state['values'] as $key => $value)
+  {
+    //if found in position 0
+    if (strpos($key, HtmlStorageArea::CTL_NAME_PREFIX) === 0)
+    {
+      $nStorageAreaKeyID = homecoop_page_pickup_location_get_storagearea_names_id($key, $nNamePrefixLen, $sBaseCtlName,
+          'StorageAreas', $entity);
+
+      $entity->StorageAreas[$nStorageAreaKeyID]['Names'] = 
+          codeop_util_multilang_get_names($form_state,$sBaseCtlName);
+    }
+    elseif (strpos($key, HtmlStorageArea::CTL_DISABLED_PREFIX) === 0)
+    {
+      $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nDisabledPrefixLen,
+          'StorageAreas', $entity);
+
+      $entity->StorageAreas[$nStorageAreaKeyID]['bDisabled'] = (intval($value) == 1);
+    }
+    elseif (strpos($key, HtmlStorageArea::CTL_MAX_BURDEN_PREFIX) === 0)
+    {
+      $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nMaxBurdenPrefixLen,
+          'StorageAreas', $entity);
+
+      if (!empty($value)) //allow null, do not allow 0
+        $entity->StorageAreas[$nStorageAreaKeyID]['fMaxBurden'] = 0 + $value;
+    }
+    elseif (strpos($key, HtmlStorageArea::CTL_DELETE_PREFIX) === 0)
+    {
+      $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nDeletePrefixLen,
+          'StorageAreas', $entity);
+
+      $entity->StorageAreas[$nStorageAreaKeyID]['Delete'] = (intval($value) == 1);
+    }
+    elseif (strpos($key, HtmlStorageArea::CTL_NEW_NAME_PREFIX) === 0)
+    {
+      $nStorageAreaKeyID = homecoop_page_pickup_location_get_storagearea_names_id($key, $nNewNamePrefixLen, $sBaseCtlName,
+          'NewStorageAreas', $entity);
+
+      $entity->NewStorageAreas[$nStorageAreaKeyID]['Names'] = 
+          codeop_util_multilang_get_names($form_state,$sBaseCtlName);
+    }
+    elseif (strpos($key, HtmlStorageArea::CTL_NEW_DISABLED_PREFIX) === 0)
+    {
+      $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nNewDisabledPrefixLen,
+          'NewStorageAreas', $entity);
+
+      $entity->NewStorageAreas[$nStorageAreaKeyID]['bDisabled'] = (intval($value) == 1);
+    }
+    elseif (strpos($key, HtmlStorageArea::CTL_NEW_MAX_BURDEN_PREFIX) === 0)
+    {
+      $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nNewMaxBurdenPrefixLen,
+          'NewStorageAreas', $entity);
+
+      if (!empty($value)) //allow null, do not allow 0
+        $entity->NewStorageAreas[$nStorageAreaKeyID]['fMaxBurden'] = 0 + $value;
+    }
+  }
+
+  //set the Default property
+  //get default value
+  if (isset($form_state['values'][HtmlStorageArea::CTL_DEFAULT_GROUP]))
+  {
+    $nDefaultStorageAreaID = intval($form_state['values'][HtmlStorageArea::CTL_DEFAULT_GROUP]);
+    if ($nDefaultStorageAreaID >= HtmlStorageArea::MIN_NEW_CONTROLS_NUM)
+    {
+      $nDefaultStorageAreaID -= HtmlStorageArea::MIN_NEW_CONTROLS_NUM;
+      if (isset($entity->NewStorageAreas[$nDefaultStorageAreaID]))
+        $entity->NewStorageAreas[$nDefaultStorageAreaID]['bDefault'] = TRUE;
+    }
+    elseif (isset($entity->StorageAreas[$nDefaultStorageAreaID]))
+      $entity->StorageAreas[$nDefaultStorageAreaID]['bDefault'] = TRUE;
+  }
+
+}
+
+function homecoop_page_pickup_location_get_storagearea_names_id($key, $nPrefixLen, &$sBaseCtlName, $sStorageArrKey, $entity)
+{
+  $sIDPlusLang = substr($key, $nPrefixLen );
+
+  $nPos = strpos($sIDPlusLang, '-');
+  if ($nPos > 0)
+  {
+    $nStorageAreaKeyID = 0 + substr($sIDPlusLang, 0, $nPos );
+    $sBaseCtlName = substr($key, 0, $nPrefixLen + $nPos );
+  }
+
+  return homecoop_page_pickup_location_init_storagearea_by_id($key, $nStorageAreaKeyID, $sStorageArrKey, $entity);
+}
+
+function homecoop_page_pickup_location_init_storagearea($key, $nPrefixLen, $sStorageArrKey, $entity)
+{
+  $nStorageAreaKeyID = 0 + substr($key, $nPrefixLen );;
+
+  return homecoop_page_pickup_location_init_storagearea_by_id($key, $nStorageAreaKeyID, $sStorageArrKey, $entity);
+}
+
+function homecoop_page_pickup_location_init_storagearea_by_id($key, $nStorageAreaKeyID, $sStorageArrKey, $entity)
+{
+  if ($nStorageAreaKeyID == 0)
+    throw new Exception('Error in homecoop_page_pickup_location_init_storagearea: StorageAreaKeyID 0 for key ' . $key);
+
+  if (!array_key_exists($nStorageAreaKeyID, $entity->$sStorageArrKey))
+  {
+    $entity->$sStorageArrKey[$nStorageAreaKeyID] = array(
+      'StorageAreaKeyID' => $nStorageAreaKeyID,
+      'Names' => NULL,
+      'fMaxBurden' => NULL,
+      'bDisabled' => FALSE,
+      'Delete' => FALSE,
+      'bDefault' => FALSE,
+    );
+  }
+
+  return $nStorageAreaKeyID;
+}
+
+function homecoop_pickup_location_addstoragearea_ajax_callback($form, &$form_state) {
+  global $g_oMemberSession;
+  
+  //ajax
+  if(!isset($g_oMemberSession)) {
+    homecoop_authenticated_page();
+  }
+  
+  $commands = array();
+  
+  $weight = 0;
+  $element = array(
+    'sep_before' => array(
+      '#prefix' => '<div class="sepline">',
+      '#suffix' => '</div>',
+      '#weight' => $weight,
+    )
+  );
+  
+  $form['maintable']['controlstable']['sep'] = array(
+        '#prefix' => '<div class="sepline">',
+        '#suffix' => '</div>',
+        '#weight' => $weight,
+      );
+
+  $nStorageCount = $form_state['values']['hidStorageAreaCount'];
+  $nStorageCount++;
+  
+  $form['hidStorageAreaCount']['#value'] =  $nStorageCount;
+  //add default storage area if not added
+  $oStorageAreaRow = new HtmlStorageArea(NULL, $nStorageCount);
+  $oStorageAreaRow->IsNew = TRUE;
+  $weight += 10;
+  $element += $oStorageAreaRow->GetHtml($weight);
+    
+  $weight += 10;
+  $element['trPlaceHolder'] = array(
+    '#prefix' => '<div class="resgridrow" id="trPlaceHolder" name="trPlaceHolder">',
+    '#suffix' => '</div>',
+    '#weight' => $weight,
+  );
+
+  //message display command
+  $commands[] = ajax_command_html('#trPlaceHolder' , render($element));
+  
+  //post script command
+  $commands[] = array (
+    //'command' => 'AddStorageArea',
+    'success' => TRUE,
+  );
+
+  return array('#type' => 'ajax', '#commands' => $commands);
 }
 
 function homecoop_page_pickup_location_delete_confirm($form, &$form_state, $entity) {  
