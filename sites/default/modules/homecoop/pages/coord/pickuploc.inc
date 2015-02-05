@@ -130,7 +130,6 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   $txtPublishedComments = array(
     'element' => array(
       '#type' => 'textarea',
-      '#required' => TRUE,
     ),
     'title' => t('Pickup Instructions'),
     'ID' => 'txtPublishedComments',
@@ -251,6 +250,13 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   );
   
   // Storage Areas
+  $weight += 10;
+  $form['maintable']['controlstable']['sep_before'] = array(
+    '#prefix' => '<div class="sepline">',
+    '#suffix' => '</div>',
+    '#weight' => $weight,
+  );
+  
   $oStorageAreaRow = NULL;
   $nTotalCount = 0;
   $nStorageCount = 0;
@@ -436,85 +442,77 @@ function homecoop_page_pickup_location_get_storageareas(&$form_state, $entity)
   $nDisabledPrefixLen = strlen(HtmlStorageArea::CTL_DISABLED_PREFIX);
   $nMaxBurdenPrefixLen = strlen(HtmlStorageArea::CTL_MAX_BURDEN_PREFIX);
   $nDeletePrefixLen = strlen(HtmlStorageArea::CTL_DELETE_PREFIX);
+  $nDefaultPrefixLen = strlen(HtmlStorageArea::CTL_DEFAULT_PREFIX);
   $nNewNamePrefixLen = strlen(HtmlStorageArea::CTL_NEW_NAME_PREFIX);
   $nNewDisabledPrefixLen = strlen(HtmlStorageArea::CTL_NEW_DISABLED_PREFIX);
   $nNewMaxBurdenPrefixLen = strlen(HtmlStorageArea::CTL_NEW_MAX_BURDEN_PREFIX);
+  $nNewDefaultPrefixLen = strlen(HtmlStorageArea::CTL_NEW_DEFAULT_PREFIX);
   $sBaseCtlName = NULL;
 
 
   foreach($form_state['values'] as $key => $value)
   {
     //if found in position 0
-    if (strpos($key, HtmlStorageArea::CTL_NAME_PREFIX) === 0)
-    {
+    if (strpos($key, HtmlStorageArea::CTL_NAME_PREFIX) === 0) {
       $nStorageAreaKeyID = homecoop_page_pickup_location_get_storagearea_names_id($key, $nNamePrefixLen, $sBaseCtlName,
           'StorageAreas', $entity);
 
       $entity->StorageAreas[$nStorageAreaKeyID]['Names'] = 
           codeop_util_multilang_get_names($form_state,$sBaseCtlName);
     }
-    elseif (strpos($key, HtmlStorageArea::CTL_DISABLED_PREFIX) === 0)
-    {
+    elseif (strpos($key, HtmlStorageArea::CTL_DISABLED_PREFIX) === 0) {
       $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nDisabledPrefixLen,
           'StorageAreas', $entity);
 
       $entity->StorageAreas[$nStorageAreaKeyID]['bDisabled'] = (intval($value) == 1);
     }
-    elseif (strpos($key, HtmlStorageArea::CTL_MAX_BURDEN_PREFIX) === 0)
-    {
+    elseif (strpos($key, HtmlStorageArea::CTL_MAX_BURDEN_PREFIX) === 0) {
       $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nMaxBurdenPrefixLen,
           'StorageAreas', $entity);
 
       if (!empty($value)) //allow null, do not allow 0
         $entity->StorageAreas[$nStorageAreaKeyID]['fMaxBurden'] = 0 + $value;
     }
-    elseif (strpos($key, HtmlStorageArea::CTL_DELETE_PREFIX) === 0)
-    {
+    elseif (strpos($key, HtmlStorageArea::CTL_DELETE_PREFIX) === 0) {
       $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nDeletePrefixLen,
           'StorageAreas', $entity);
 
       $entity->StorageAreas[$nStorageAreaKeyID]['Delete'] = (intval($value) == 1);
     }
-    elseif (strpos($key, HtmlStorageArea::CTL_NEW_NAME_PREFIX) === 0)
-    {
+    elseif (strpos($key, HtmlStorageArea::CTL_DEFAULT_PREFIX) === 0) {
+      $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nDefaultPrefixLen,
+          'StorageAreas', $entity);
+      
+      $entity->StorageAreas[$nStorageAreaKeyID]['bDefault'] = (intval($value) == 1);
+    }
+    elseif (strpos($key, HtmlStorageArea::CTL_NEW_NAME_PREFIX) === 0) {
       $nStorageAreaKeyID = homecoop_page_pickup_location_get_storagearea_names_id($key, $nNewNamePrefixLen, $sBaseCtlName,
           'NewStorageAreas', $entity);
 
       $entity->NewStorageAreas[$nStorageAreaKeyID]['Names'] = 
           codeop_util_multilang_get_names($form_state,$sBaseCtlName);
     }
-    elseif (strpos($key, HtmlStorageArea::CTL_NEW_DISABLED_PREFIX) === 0)
-    {
+    elseif (strpos($key, HtmlStorageArea::CTL_NEW_DISABLED_PREFIX) === 0) {
       $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nNewDisabledPrefixLen,
           'NewStorageAreas', $entity);
 
       $entity->NewStorageAreas[$nStorageAreaKeyID]['bDisabled'] = (intval($value) == 1);
     }
-    elseif (strpos($key, HtmlStorageArea::CTL_NEW_MAX_BURDEN_PREFIX) === 0)
-    {
+    elseif (strpos($key, HtmlStorageArea::CTL_NEW_MAX_BURDEN_PREFIX) === 0) {
       $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nNewMaxBurdenPrefixLen,
           'NewStorageAreas', $entity);
 
       if (!empty($value)) //allow null, do not allow 0
         $entity->NewStorageAreas[$nStorageAreaKeyID]['fMaxBurden'] = 0 + $value;
     }
-  }
-
-  //set the Default property
-  //get default value
-  if (isset($form_state['values'][HtmlStorageArea::CTL_DEFAULT_GROUP]))
-  {
-    $nDefaultStorageAreaID = intval($form_state['values'][HtmlStorageArea::CTL_DEFAULT_GROUP]);
-    if ($nDefaultStorageAreaID >= HtmlStorageArea::MIN_NEW_CONTROLS_NUM)
-    {
-      $nDefaultStorageAreaID -= HtmlStorageArea::MIN_NEW_CONTROLS_NUM;
-      if (isset($entity->NewStorageAreas[$nDefaultStorageAreaID]))
-        $entity->NewStorageAreas[$nDefaultStorageAreaID]['bDefault'] = TRUE;
+    elseif (strpos($key, HtmlStorageArea::CTL_NEW_DEFAULT_PREFIX) === 0) {
+      $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nNewDefaultPrefixLen,
+          'NewStorageAreas', $entity);
+      
+      $entity->NewStorageAreas[$nStorageAreaKeyID]['bDefault'] = (intval($value) == 1);
     }
-    elseif (isset($entity->StorageAreas[$nDefaultStorageAreaID]))
-      $entity->StorageAreas[$nDefaultStorageAreaID]['bDefault'] = TRUE;
+    
   }
-
 }
 
 function homecoop_page_pickup_location_get_storagearea_names_id($key, $nPrefixLen, &$sBaseCtlName, $sStorageArrKey, $entity)
@@ -545,7 +543,7 @@ function homecoop_page_pickup_location_init_storagearea_by_id($key, $nStorageAre
 
   if (!array_key_exists($nStorageAreaKeyID, $entity->$sStorageArrKey))
   {
-    $entity->$sStorageArrKey[$nStorageAreaKeyID] = array(
+    $entity->{$sStorageArrKey}[$nStorageAreaKeyID] = array(
       'StorageAreaKeyID' => $nStorageAreaKeyID,
       'Names' => NULL,
       'fMaxBurden' => NULL,

@@ -20,9 +20,7 @@ class HtmlStorageArea {
   const CTL_DEFAULT_GROUP = 'radDefaultStorage';
   const CTL_DEFAULT_PREFIX = 'radDefaultStorage_';
   const CTL_NEW_DEFAULT_PREFIX = 'radnewDefaultStorage_';
-  
-  const MIN_NEW_CONTROLS_NUM = 2000000000;
-  
+    
   protected $m_aData = array( self::PROPERTY_STORAGE_AREA => NULL,
                               self::PROPERTY_LINE_NUMBER => 1,
                               self::PROPERTY_IS_NEW => FALSE,
@@ -82,6 +80,7 @@ class HtmlStorageArea {
       $idElement = NULL;
       $prefix = NULL;
       $initWeight += 10;
+      $is_cheched = FALSE;
       if ($this->m_aData[self::PROPERTY_IS_NEW])
       {
         $txtStorage['ID'] = self::CTL_NEW_NAME_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER];
@@ -159,6 +158,7 @@ class HtmlStorageArea {
             '#prefix' => '<div class="resgridfirstcell">',
             '#suffix' => '</div>',
             '#type' => 'checkbox',
+            '#id' => self::CTL_DELETE_PREFIX .  $said,
             '#title' => '<!$MARK_FOR_DELETE$!>',
             '#weight' => 10,
             '#attributes' => array('class' => array('resgriddatatiny')),
@@ -168,6 +168,7 @@ class HtmlStorageArea {
       $arrContent['thirdrow'][$idElement] = array(
             '#prefix' => $prefix,
             '#suffix' => '</div>',
+            '#id' => $idElement,
             '#type' => 'select',
             '#key_type' => 'associative',
             '#title' => t('Status'),
@@ -177,137 +178,48 @@ class HtmlStorageArea {
             '#attributes' => array('class' => array('resgriddata')),
       );
 
+      $is_cheched = FALSE;
       if ($this->m_aData[self::PROPERTY_IS_NEW])
       {
         $idElement = self::CTL_NEW_DEFAULT_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER];
-        $oNewValue = self::MIN_NEW_CONTROLS_NUM + $this->m_aData[self::PROPERTY_LINE_NUMBER];
+        
+        if (!isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault']) 
+            || !$this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault']) {
+              $is_cheched = TRUE;
+        }
       }
       else
       {
         $idElement = self::CTL_DEFAULT_PREFIX . $said;
-        $oNewValue = $said; 
+
+        if ($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault']) {
+          $is_cheched = TRUE;
+        }
       }
       
       $arrContent['thirdrow'][$idElement] = array(
             '#prefix' => '<div class="resgridcell">',
             '#suffix' => '</div>',
+            '#id' => $idElement,
             '#type' => 'radio',
+            '#default_value' => 1,
             '#name' => self::CTL_DEFAULT_GROUP,
-            '#value' => $oNewValue,
             '#title' => '<!$LBL_DEFAULT_STORAGE_AREA$!>',
             '#weight' => 30,
-            '#attributes' => array('class' => array('resgriddatatiny')),
+            '#attributes' => array(
+              'class' => array('resgriddatatiny'),
+            ),
       );
+      
+      if($is_cheched) {
+        $arrContent['thirdrow'][$idElement]['#attributes']['checked'] = 'true';
+      }
       
       if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault']) && $this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault'])
           $arrContent['thirdrow'][$idElement]['#default_value'] = '1';
       
       return $arrContent;
-    }
-    
-    public function EchoHtml()
-    {
-      echo '<tr>';
-      
-      $txtStorage = NULL;
-      $said  = 0;
-      $oNewValue = NULL;
-      if ($this->m_aData[self::PROPERTY_IS_NEW])
-      {
-        $oNewValue = array();
-        if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['Names']))
-          $oNewValue = $this->m_aData[self::PROPERTY_STORAGE_AREA]['Names'];
-        $txtStorage = new HtmlTextEditMultiLang('<!$LBL_NEW_STORAGE_AREA$!>', 
-          self::CTL_NEW_NAME_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER], HtmlTextEdit::TEXTBOX, 
-            $oNewValue
-            );
-      }
-      else
-      {
-        $said = $this->m_aData[self::PROPERTY_STORAGE_AREA]['StorageAreaKeyID'];
-        $txtStorage = new HtmlTextEditMultiLang(sprintf('<!$FIELD_STORAGE_AREA_INDEX$!>', $this->m_aData[self::PROPERTY_LINE_NUMBER]), 
-          self::CTL_NAME_PREFIX . $said, HtmlTextEdit::TEXTBOX, $this->m_aData[self::PROPERTY_STORAGE_AREA]['Names']);
-        
-      }
-      
-      $txtStorage->Required = $this->m_aData[self::PROPERTY_REQUIRED];
-      $txtStorage->EchoHtml();
-      
-      echo '<td></td></tr><tr>';
-      
-      if ($this->m_aData[self::PROPERTY_IS_NEW])
-      {
-        $oNewValue = NULL;
-        if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['fMaxBurden']))
-          $oNewValue = $this->m_aData[self::PROPERTY_STORAGE_AREA]['fMaxBurden'];
-        
-        $txtMaxBurden = new HtmlTextEditNumeric('<!$FIELD_MAX_STORAGE_BURDEN$!>', 
-            self::CTL_NEW_MAX_BURDEN_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER], $oNewValue);
-        $txtMaxBurden->EchoHtml();
-      }
-      else
-      {
-        $txtMaxBurden = new HtmlTextEditNumeric('<!$FIELD_MAX_STORAGE_BURDEN$!>', 
-            self::CTL_MAX_BURDEN_PREFIX . $said, $this->m_aData[self::PROPERTY_STORAGE_AREA]['fMaxBurden']);
-        $txtMaxBurden->EchoHtml();
-      }
-      
-      HtmlTextEditMultiLang::EchoHelpText('<!$TOOLTIP_STORAGE_AREA_MAX_BURDEN$!>', $said);
-      HtmlTextEditMultiLang::OtherLangsEmptyCells();
-
-      echo '</tr><tr>';
-      
-      if ($this->m_aData[self::PROPERTY_IS_NEW])
-      {
-        $oNewValue = FALSE;
-        if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDisabled']))
-          $oNewValue = $this->m_aData[self::PROPERTY_STORAGE_AREA]['bDisabled'];
-        
-        $selIsDisabled = new HtmlSelectBoolean(self::CTL_NEW_DISABLED_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER], '', $oNewValue, '<!$FIELD_VALUE_DISABLED$!>', 
-            '<!$FIELD_VALUE_ENABLED$!>');
-      }
-      else
-      {
-        $selIsDisabled = new HtmlSelectBoolean(self::CTL_DISABLED_PREFIX . $said, 
-
-          '<input type="checkbox" value="1" id="' . self::CTL_DELETE_PREFIX . $said .
-          '" name="' . self::CTL_DELETE_PREFIX .  $said . '"><!$MARK_FOR_DELETE$!></input>',
-
-          $this->m_aData[self::PROPERTY_STORAGE_AREA]['bDisabled'], '<!$FIELD_VALUE_DISABLED$!>', 
-              '<!$FIELD_VALUE_ENABLED$!>');
-      }
-      
-      $selIsDisabled->UseLabelSlotAsHtml = TRUE;
-
-      $selIsDisabled->EchoHtml();
-      
-      if ($this->m_aData[self::PROPERTY_IS_NEW])
-      {
-        $oNewValue = ' checked="true" ';
-        if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault']) && !$this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault'])
-          $oNewValue = '';
-        
-        echo '<td><input type="radio" value="', (self::MIN_NEW_CONTROLS_NUM + $this->m_aData[self::PROPERTY_LINE_NUMBER]), 
-            '" id="', self::CTL_NEW_DEFAULT_PREFIX, $this->m_aData[self::PROPERTY_LINE_NUMBER],'" name="',
-            self::CTL_DEFAULT_GROUP, '" ', $oNewValue ,  ' /><span><!$LBL_DEFAULT_STORAGE_AREA$!></span></td>';
-      }
-      else
-      {
-        echo '<td><input type="radio" value="', $said, 
-            '" id="', self::CTL_DEFAULT_PREFIX, $said,'" name="',
-            self::CTL_DEFAULT_GROUP, '" ';
-        if ($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault'])
-          echo ' checked="true" ';
-        echo '/><span><!$LBL_DEFAULT_STORAGE_AREA$!></span></td>';
-        
-      }
-      
-      HtmlTextEditMultiLang::OtherLangsEmptyCells();
-      
-      echo '</tr>';
-    }
-    
-    
+    }  
 }
 
 ?>

@@ -563,8 +563,14 @@ abstract class SQLBase
     
     protected function InsertString($nKeyID, $nLangID, $sString)
     {
-      if ($nKeyID == 0)
+      if ($nKeyID == 0) {
         throw new Exception("InsertString failed. String key was not set for insert operation of: " . $sString);
+      }
+      
+      //convert null to empty string (sString field cannot accept null)
+      if ($sString === NULL) {
+        $sString = '';
+      }
       
       $sSQL =  " INSERT INTO Tlng_String( KeyID, LangID, sString ) ";
       $sSQL .= " VALUES (:key , :lang , :str ); ";

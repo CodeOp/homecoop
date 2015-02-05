@@ -87,7 +87,7 @@ class HomeCoopPickupLocationController extends HomeCoopBaseController implements
       
       $oPickupLocationTabInfo->MainTabName = $oRecord->Name;
       
-      $entities[$id] = $this->create($oRecord->GetAllProperties() +
+      $entities[$id] = $this->create($oRecord->GetAllProperties()
           + $oRecord->GetReadOnlyExtraProperties()
           + homecoop_pickup_location_tab_info($oPickupLocationTabInfo)
          );

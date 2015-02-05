@@ -545,7 +545,7 @@ class PickupLocation extends SQLBase {
     foreach($this->m_aData[self::PROPERTY_STORAGE_AREAS] as $StorageAreaKeyID => $aStorageArea)
     {
       $nIndex++;
-      if ($aStorageArea['Delete'])
+      if (isset($aStorageArea['Delete']) && $aStorageArea['Delete'])
       {
         //transform deleted storages to inactive ones, if cannot delete them, issue warning
         if (!$this->StorageAreaDependencyCheck($StorageAreaKeyID))
@@ -555,7 +555,7 @@ class PickupLocation extends SQLBase {
         }
       }
       
-      if (!$aStorageArea['Delete'])
+      if (!isset($aStorageArea['Delete']) || !$aStorageArea['Delete'])
       {
         if (!$this->m_aData[self::PROPERTY_STORAGE_AREAS][$StorageAreaKeyID]['bDisabled'])
         {
@@ -579,9 +579,10 @@ class PickupLocation extends SQLBase {
             $bValid = FALSE;
         
         //previous validation may mark some empty rows as ignored - so do not count them
-        if (!$this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$StorageAreaKeyID]['Delete'] &&
-            !$this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$StorageAreaKeyID]['bDisabled'])
-        {
+        if ( (!isset($this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$StorageAreaKeyID]['Delete']) ||
+              !$this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$StorageAreaKeyID]['Delete']
+             ) 
+             && !$this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS][$StorageAreaKeyID]['bDisabled']) {
           $nCount++;
           if ($aStorageArea['bDefault'])
             $nDefaultCount++;
@@ -610,7 +611,7 @@ class PickupLocation extends SQLBase {
     //first, process existing ones: DELETE, UPDATE
     foreach($this->m_aData[self::PROPERTY_STORAGE_AREAS] as $nStorageAreaKeyID => $aStorageArea)
     {
-      if ($aStorageArea['Delete'])
+      if (isset($aStorageArea['Delete']) && $aStorageArea['Delete'])
         $this->DeleteStorageArea($aStorageArea);
       else 
         $this->UpdateStorageArea($aStorageArea);
@@ -618,7 +619,7 @@ class PickupLocation extends SQLBase {
     //second, process new ones: INSERT
     foreach($this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS] as $nStorageAreaKeyID => $aStorageArea)
     {
-      if (!$aStorageArea['Delete'])
+      if (!isset($aStorageArea['Delete']) || !$aStorageArea['Delete'])
         $this->InsertStorageArea($aStorageArea);
     }
   }
@@ -629,13 +630,13 @@ class PickupLocation extends SQLBase {
     //first, process existing ones: DELETE, UPDATE
     foreach($this->m_aData[self::PROPERTY_STORAGE_AREAS] as $nStorageAreaKeyID => $aStorageArea)
     {
-      if ($aStorageArea['Delete'])
+      if (isset($aStorageArea['Delete']) && $aStorageArea['Delete'])
         unset($this->m_aData[self::PROPERTY_STORAGE_AREAS][$nStorageAreaKeyID]);
     }
     //second, process new ones: INSERT
     foreach($this->m_aData[self::PROPERTY_NEW_STORAGE_AREAS] as $nStorageAreaKeyID => $aStorageArea)
     {
-      if (!$aStorageArea['Delete'])
+      if (!isset($aStorageArea['Delete']) || !$aStorageArea['Delete'])
       {
         $this->m_aData[self::PROPERTY_STORAGE_AREAS][$aStorageArea['NewStorageAreaKeyID']] = $aStorageArea;
         //replace the temp NewStorageAreaKeyID - with StorageAreaKeyID
