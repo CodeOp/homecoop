@@ -311,11 +311,19 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   unset($oStorageAreaRow);
   
   $weight += 10;
-  $form['maintable']['controlstable']['trPlaceHolder'] = array(
-    '#prefix' => '<div class="resgridrow" id="trPlaceHolder" name="trPlaceHolder">',
-    '#suffix' => '</div>',
-    '#weight' => $weight,
-  );
+  
+  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#id'] == 'btn_add_storage') {
+     $form['maintable']['controlstable']['trPlaceHolder'] = 
+         homecoop_page_pickup_location_new_storage_area_element($form_state);
+  }
+  else {
+    $form['maintable']['controlstable']['trPlaceHolder'] = array(
+      '#prefix' => '<div class="resgridrow" id="trPlaceHolder" name="trPlaceHolder">',
+      '#suffix' => '</div>',
+      '#weight' => $weight,
+    );
+  }
+  
   
   $weight += 10;
   $form['maintable']['controlstable']['sep_after'] = array(
@@ -349,6 +357,10 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
 
 function homecoop_pickup_location_form_validate($form, &$form_state) { 
     
+  if (!isset($form_state['submitted']) || !$form_state['submitted'])  {
+    return;
+  }
+  
   $entity = homecoop_page_pickup_location_get_submitted_entity($form_state);
   
   $oRecord = entity_get_controller('homecoop_pickup_location')->toClass($entity);
@@ -556,16 +568,21 @@ function homecoop_page_pickup_location_init_storagearea_by_id($key, $nStorageAre
   return $nStorageAreaKeyID;
 }
 
-function homecoop_pickup_location_addstoragearea_ajax_callback($form, &$form_state) {
-  global $g_oMemberSession;
-  
-  //ajax
-  if(!isset($g_oMemberSession)) {
-    homecoop_authenticated_page();
-  }
-  
+function homecoop_pickup_location_addstoragearea_ajax_callback($form, &$form_state) {  
   $commands = array();
+
+  //message display command
+  $commands[] = ajax_command_html('#trPlaceHolder' , render($form['maintable']['controlstable']['trPlaceHolder']));
   
+  //post script command
+  $commands[] = array (
+    'success' => TRUE,
+  );
+
+  return array('#type' => 'ajax', '#commands' => $commands);
+}
+
+function homecoop_page_pickup_location_new_storage_area_element(&$form_state) {
   $weight = 0;
   $element = array(
     'sep_before' => array(
@@ -597,17 +614,8 @@ function homecoop_pickup_location_addstoragearea_ajax_callback($form, &$form_sta
     '#suffix' => '</div>',
     '#weight' => $weight,
   );
-
-  //message display command
-  $commands[] = ajax_command_html('#trPlaceHolder' , render($element));
   
-  //post script command
-  $commands[] = array (
-    //'command' => 'AddStorageArea',
-    'success' => TRUE,
-  );
-
-  return array('#type' => 'ajax', '#commands' => $commands);
+  return $element;
 }
 
 function homecoop_page_pickup_location_delete_confirm($form, &$form_state, $entity) {  

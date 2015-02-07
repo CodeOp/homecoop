@@ -326,6 +326,10 @@ function homecoop_page_member_common_start()
 
 function homecoop_member_form_validate($form, &$form_state) { 
     
+  if (!isset($form_state['submitted']) || !$form_state['submitted'])  {
+    return;
+  }
+  
   $entity = homecoop_page_member_get_submitted_entity($form_state);
   
   $oRecord = entity_get_controller('homecoop_member')->toClass($entity);
