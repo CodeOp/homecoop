@@ -34,7 +34,8 @@ function homecoop_page_pickuploc_common_start()
   }
 }
 
-function homecoop_pickup_location_form($form, &$form_state, $entity) {  
+function homecoop_pickup_location_form($form, &$form_state, $entity) { 
+    
   homecoop_add_js_file('pickup_location.js');
   
   $form['#id'] = 'homecoop_pickup_location-form';
@@ -48,6 +49,13 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   
   $form['hidPostValue'] = array('#type' => 'value', '#value' => $entity->ID, 
     '#attributes' => array('id' => 'hidPostValue'));
+  
+  //ajax injected drupal messages - on top of all controls
+  $form['ajaxmessage'] = array(
+    '#prefix' => '<div id="div_ajax_message">',
+    '#suffix' => '</div>',
+    '#weight' => 0, 
+  );
   
   
   $form['maintable'] = array(
@@ -462,8 +470,7 @@ function homecoop_page_pickup_location_get_storageareas(&$form_state, $entity)
   $sBaseCtlName = NULL;
 
 
-  foreach($form_state['values'] as $key => $value)
-  {
+  foreach($form_state['values'] as $key => $value) {
     //if found in position 0
     if (strpos($key, HtmlStorageArea::CTL_NAME_PREFIX) === 0) {
       $nStorageAreaKeyID = homecoop_page_pickup_location_get_storagearea_names_id($key, $nNamePrefixLen, $sBaseCtlName,
@@ -523,7 +530,6 @@ function homecoop_page_pickup_location_get_storageareas(&$form_state, $entity)
       
       $entity->NewStorageAreas[$nStorageAreaKeyID]['bDefault'] = (intval($value) == 1);
     }
-    
   }
 }
 
@@ -570,8 +576,16 @@ function homecoop_page_pickup_location_init_storagearea_by_id($key, $nStorageAre
 
 function homecoop_pickup_location_addstoragearea_ajax_callback($form, &$form_state) {  
   $commands = array();
+  
+  $element = array('messages' => array(
+                      '#type' => 'markup',
+                        '#markup' => theme('status_messages'))
+        );
 
   //message display command
+  $commands[] = ajax_command_html('#div_ajax_message' , render($element));
+
+  //storage area display command
   $commands[] = ajax_command_html('#trPlaceHolder' , render($form['maintable']['controlstable']['trPlaceHolder']));
   
   //post script command

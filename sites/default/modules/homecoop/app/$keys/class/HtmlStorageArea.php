@@ -20,6 +20,9 @@ class HtmlStorageArea {
   const CTL_DEFAULT_GROUP = 'radDefaultStorage';
   const CTL_DEFAULT_PREFIX = 'radDefaultStorage_';
   const CTL_NEW_DEFAULT_PREFIX = 'radnewDefaultStorage_';
+  const CTL_THIRDROW = 'thirdrow_';
+  
+  const MIN_NEW_CONTROLS_NUM = 2000000000;
     
   protected $m_aData = array( self::PROPERTY_STORAGE_AREA => NULL,
                               self::PROPERTY_LINE_NUMBER => 1,
@@ -81,14 +84,18 @@ class HtmlStorageArea {
       $prefix = NULL;
       $initWeight += 10;
       $is_cheched = FALSE;
+      
+      $idnumber = NULL;
       if ($this->m_aData[self::PROPERTY_IS_NEW])
       {
         $txtStorage['ID'] = self::CTL_NEW_NAME_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER];
+        $idnumber = $this->m_aData[self::PROPERTY_LINE_NUMBER];
         $txtStorage['title'] = '<!$LBL_NEW_STORAGE_AREA$!>';
       }
       else
       {
         $said = $this->m_aData[self::PROPERTY_STORAGE_AREA]['StorageAreaKeyID'];
+        $idnumber = $said;
         $txtStorage['ID'] = self::CTL_NAME_PREFIX . $said;
         $txtStorage['title'] = sprintf('<!$FIELD_STORAGE_AREA_INDEX$!>', $this->m_aData[self::PROPERTY_LINE_NUMBER]);        
       }
@@ -131,30 +138,30 @@ class HtmlStorageArea {
           '#description' => '<!$TOOLTIP_STORAGE_AREA_MAX_BURDEN$!>',
       );
       
+      $thirdrow= self::CTL_THIRDROW .  $idnumber;
       
       $initWeight += 10;
-      $arrContent['thirdrow'] = array(
+      $arrContent[$thirdrow] = array(
         '#prefix' => '<div class="resgridrow">',
         '#suffix' => '</div>',
         '#weight' => $initWeight,
       );
       
-      if ($this->m_aData[self::PROPERTY_IS_NEW])
-      {
+      if ($this->m_aData[self::PROPERTY_IS_NEW]) {
         $oNewValue = FALSE;
         $idElement = self::CTL_NEW_DISABLED_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER];
         if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDisabled'])) {
           $oNewValue = $this->m_aData[self::PROPERTY_STORAGE_AREA]['bDisabled'];
         }
+        
         $prefix = '<div class="resgridfirstcell">';
       }
-      else
-      {
+      else {
         $oNewValue = $this->m_aData[self::PROPERTY_STORAGE_AREA]['bDisabled'];
         $idElement = self::CTL_DISABLED_PREFIX . $said;
         $prefix = '<div class="resgridcell">';
         
-        $arrContent['thirdrow'][self::CTL_DELETE_PREFIX .  $said] = array(
+        $arrContent[$thirdrow][self::CTL_DELETE_PREFIX .  $said] = array(
             '#prefix' => '<div class="resgridfirstcell">',
             '#suffix' => '</div>',
             '#type' => 'checkbox',
@@ -165,7 +172,7 @@ class HtmlStorageArea {
         );
       }
       
-      $arrContent['thirdrow'][$idElement] = array(
+      $arrContent[$thirdrow][$idElement] = array(
             '#prefix' => $prefix,
             '#suffix' => '</div>',
             '#id' => $idElement,
@@ -181,11 +188,10 @@ class HtmlStorageArea {
       $is_cheched = FALSE;
       if ($this->m_aData[self::PROPERTY_IS_NEW])
       {
+        $idnumber += self::MIN_NEW_CONTROLS_NUM;
         $idElement = self::CTL_NEW_DEFAULT_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER];
-        
-        if (!isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault']) 
-            || !$this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault']) {
-              $is_cheched = TRUE;
+        if ($this->m_aData[self::PROPERTY_LINE_NUMBER] == 1) {
+          $is_cheched = TRUE;
         }
       }
       else
@@ -197,26 +203,26 @@ class HtmlStorageArea {
         }
       }
       
-      $arrContent['thirdrow'][$idElement] = array(
+      $arrContent[$thirdrow][$idElement] = array(
             '#prefix' => '<div class="resgridcell">',
             '#suffix' => '</div>',
             '#id' => $idElement,
             '#type' => 'radio',
-            '#default_value' => 1,
             '#name' => self::CTL_DEFAULT_GROUP,
             '#title' => '<!$LBL_DEFAULT_STORAGE_AREA$!>',
             '#weight' => 30,
             '#attributes' => array(
               'class' => array('resgriddatatiny'),
+              'value' => $idnumber,
             ),
       );
       
       if($is_cheched) {
-        $arrContent['thirdrow'][$idElement]['#attributes']['checked'] = 'true';
+        $arrContent[$thirdrow][$idElement]['#attributes']['checked'] = 'true';
       }
       
       if (isset($this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault']) && $this->m_aData[self::PROPERTY_STORAGE_AREA]['bDefault'])
-          $arrContent['thirdrow'][$idElement]['#default_value'] = '1';
+          $arrContent[$thirdrow][$idElement]['#default_value'] = '1';
       
       return $arrContent;
     }  

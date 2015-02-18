@@ -1,10 +1,5 @@
-/*(function($) {
-  Drupal.ajax.prototype.commands.AddStorageArea = function(ajax, response, status) {
-    if (response.success) {
-      var nCount = document.getElementById("hidStorageAreaCount").value;
-      nCount++;
-      document.getElementById("hidStorageAreaCount").value = nCount;
-    }
-  };
-}(jQuery));
-*/
+function ClickDefaultRadio(id) {
+  alert('event click. value before:' + id + ':' + document.getElementById(id).value);
+  document.getElementById(id).value = (document.getElementById(id).value == 1? 0 : 1);
+  alert('event click. value after:' + document.getElementById(id).value);
+}
