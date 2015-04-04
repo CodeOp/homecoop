@@ -40,8 +40,15 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   
   $form['#id'] = 'homecoop_pickup_location-form';
   $form['#attributes']['name'] = 'homecoop_pickup_location_form';
-  // Save the entity for later, in case we need it.
-  $form_state['homecoop_pickup_location'] = $entity;
+  
+  if (isset($form_state['homecoop_pickup_location'])) {
+    //Get data entered to redraw the form accurately (including unsaved storage areas)
+    $entity = homecoop_page_pickup_location_get_submitted_entity($form_state);
+  }
+  else {
+    //save the entity for later use
+    $form_state['homecoop_pickup_location'] = $entity;
+  }
   
   //internal values
   $form['hidOriginalData'] = array('#type' => 'value', '#value' => $entity->OriginalData, 
@@ -49,6 +56,9 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   
   $form['hidPostValue'] = array('#type' => 'value', '#value' => $entity->ID, 
     '#attributes' => array('id' => 'hidPostValue'));
+  
+  $form['hidStorageAreaCount'] = array('#type' => 'hidden', '#default_value' => 0, 
+    '#attributes' => array('id' => 'hidStorageAreaCount'));
   
   //ajax injected drupal messages - on top of all controls
   $form['ajaxmessage'] = array(
@@ -258,13 +268,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   );
   
   // Storage Areas
-  $weight += 10;
-  $form['maintable']['controlstable']['sep_before'] = array(
-    '#prefix' => '<div class="sepline">',
-    '#suffix' => '</div>',
-    '#weight' => $weight,
-  );
-  
+ 
   $oStorageAreaRow = NULL;
   $nTotalCount = 0;
   $nStorageCount = 0;
@@ -274,7 +278,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     foreach($entity->StorageAreas as $sa)
     {
       $weight += 10;
-      $form['maintable']['controlstable']['sep'] = array(
+      $form['maintable']['controlstable']['sep_' . $weight] = array(
         '#prefix' => '<div class="sepline">',
         '#suffix' => '</div>',
         '#weight' => $weight,
@@ -292,7 +296,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     foreach($entity->NewStorageAreas as $sa)
     {
       $weight += 10;
-      $form['maintable']['controlstable']['sep'] = array(
+      $form['maintable']['controlstable']['sep_' . $weight] = array(
         '#prefix' => '<div class="sepline">',
         '#suffix' => '</div>',
         '#weight' => $weight,
@@ -320,9 +324,12 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
   
   $weight += 10;
   
+  $form['hidStorageAreaCount']['#default_value'] = $nStorageCount;
+  
   if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#id'] == 'btn_add_storage') {
      $form['maintable']['controlstable']['trPlaceHolder'] = 
          homecoop_page_pickup_location_new_storage_area_element($form_state);
+     $form['hidStorageAreaCount']['#value'] = $form_state['values']['hidStorageAreaCount'];
   }
   else {
     $form['maintable']['controlstable']['trPlaceHolder'] = array(
@@ -355,8 +362,7 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
     '#value' => t('Add storage area'),
   );
   
-  $form['hidStorageAreaCount'] = array('#type' => 'hidden', '#default_value' => $nStorageCount, 
-    '#attributes' => array('id' => 'hidStorageAreaCount'));
+ 
      
   //field_attach_form('homecoop_pickup_location', $entity, $form, $form_state);
   
@@ -364,12 +370,11 @@ function homecoop_pickup_location_form($form, &$form_state, $entity) {
 }
 
 function homecoop_pickup_location_form_validate($form, &$form_state) { 
-    
   if (!isset($form_state['submitted']) || !$form_state['submitted'])  {
     return;
   }
   
-  $entity = homecoop_page_pickup_location_get_submitted_entity($form_state);
+  $entity = $form_state['homecoop_pickup_location'];
   
   $oRecord = entity_get_controller('homecoop_pickup_location')->toClass($entity);
   if (!$oRecord->Validate()) {  
@@ -599,23 +604,17 @@ function homecoop_pickup_location_addstoragearea_ajax_callback($form, &$form_sta
 function homecoop_page_pickup_location_new_storage_area_element(&$form_state) {
   $weight = 0;
   $element = array(
-    'sep_before' => array(
+    'sep_before_new' => array(
       '#prefix' => '<div class="sepline">',
       '#suffix' => '</div>',
       '#weight' => $weight,
     )
   );
-  
-  $form['maintable']['controlstable']['sep'] = array(
-        '#prefix' => '<div class="sepline">',
-        '#suffix' => '</div>',
-        '#weight' => $weight,
-      );
 
   $nStorageCount = $form_state['values']['hidStorageAreaCount'];
   $nStorageCount++;
   
-  $form['hidStorageAreaCount']['#value'] =  $nStorageCount;
+  $form_state['values']['hidStorageAreaCount'] =  $nStorageCount;
   //add default storage area if not added
   $oStorageAreaRow = new HtmlStorageArea(NULL, $nStorageCount);
   $oStorageAreaRow->IsNew = TRUE;

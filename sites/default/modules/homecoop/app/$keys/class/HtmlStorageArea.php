@@ -38,6 +38,11 @@ class HtmlStorageArea {
   public function __get( $name ) {
       switch ($name)
       {
+        /*case 'ID':
+          if ($this->m_aData[self::PROPERTY_IS_NEW]) {
+            return $this->m_aData[self::PROPERTY_LINE_NUMBER];
+          }
+          return $this->m_aData[self::PROPERTY_STORAGE_AREA]['StorageAreaKeyID'];*/
         default:
           if ( array_key_exists( $name, $this->m_aData) )
             return $this->m_aData[$name];
