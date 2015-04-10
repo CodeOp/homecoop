@@ -458,6 +458,8 @@ function homecoop_page_pickup_location_get_submitted_entity(&$form_state) {
 // Delete => TRUE/FALSE
 function homecoop_page_pickup_location_get_storageareas(&$form_state, $entity)
 {
+  global $_POST; //drupal doesn't handle radio groups selected radio well
+  
   $nStorageAreaKeyID = 0;
   $nNamePrefixLen = strlen(HtmlStorageArea::CTL_NAME_PREFIX);
   $nDisabledPrefixLen = strlen(HtmlStorageArea::CTL_DISABLED_PREFIX);
@@ -499,12 +501,6 @@ function homecoop_page_pickup_location_get_storageareas(&$form_state, $entity)
 
       $entity->StorageAreas[$nStorageAreaKeyID]['Delete'] = (intval($value) == 1);
     }
-    elseif (strpos($key, HtmlStorageArea::CTL_DEFAULT_PREFIX) === 0) {
-      $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nDefaultPrefixLen,
-          'StorageAreas', $entity);
-      
-      $entity->StorageAreas[$nStorageAreaKeyID]['bDefault'] = (intval($value) == 1);
-    }
     elseif (strpos($key, HtmlStorageArea::CTL_NEW_NAME_PREFIX) === 0) {
       $nStorageAreaKeyID = homecoop_page_pickup_location_get_storagearea_names_id($key, $nNewNamePrefixLen, $sBaseCtlName,
           'NewStorageAreas', $entity);
@@ -525,12 +521,28 @@ function homecoop_page_pickup_location_get_storageareas(&$form_state, $entity)
       if (!empty($value)) //allow null, do not allow 0
         $entity->NewStorageAreas[$nStorageAreaKeyID]['fMaxBurden'] = 0 + $value;
     }
-    elseif (strpos($key, HtmlStorageArea::CTL_NEW_DEFAULT_PREFIX) === 0) {
-      $nStorageAreaKeyID = homecoop_page_pickup_location_init_storagearea($key, $nNewDefaultPrefixLen,
-          'NewStorageAreas', $entity);
-      
-      $entity->NewStorageAreas[$nStorageAreaKeyID]['bDefault'] = (intval($value) == 1);
+  }
+  
+  if (isset($_POST[HtmlStorageArea::CTL_DEFAULT_GROUP]))
+  {
+    //nullify previous data
+    foreach($entity->StorageAreas as $sid => $sa) {
+      $entity->StorageAreas[$sid]['bDefault'] = FALSE;
     }
+    
+    foreach($entity->NewStorageAreas as $sid => $sa) {
+      $entity->NewStorageAreas[$sid]['bDefault'] = FALSE;
+    }
+    
+    $nDefaultStorageAreaID = intval($_POST[HtmlStorageArea::CTL_DEFAULT_GROUP]);
+    if ($nDefaultStorageAreaID >= HtmlStorageArea::MIN_NEW_CONTROLS_NUM)
+    {
+      $nDefaultStorageAreaID -= HtmlStorageArea::MIN_NEW_CONTROLS_NUM;
+      if (isset($entity->NewStorageAreas[$nDefaultStorageAreaID]))
+        $entity->NewStorageAreas[$nDefaultStorageAreaID]['bDefault'] = TRUE;
+    }
+    elseif (isset($entity->StorageAreas[$nDefaultStorageAreaID]))
+      $entity->StorageAreas[$nDefaultStorageAreaID]['bDefault'] = TRUE;
   }
 }
 
