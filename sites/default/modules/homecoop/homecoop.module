@@ -15,7 +15,7 @@ homecoop_include_app_file('settings');
  */
 function homecoop_help($path, $args) {
   if ($path == 'admin/help#homecoop') {
-    return t('Local Consumer Cooperatives Web Ordering System');
+    return t('Local consumer cooperative web ordering system');
   } 
 }
 
