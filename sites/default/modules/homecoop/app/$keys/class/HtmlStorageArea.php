@@ -21,6 +21,7 @@ class HtmlStorageArea {
   const CTL_DEFAULT_PREFIX = 'radDefaultStorage_';
   const CTL_NEW_DEFAULT_PREFIX = 'radnewDefaultStorage_';
   const CTL_THIRDROW = 'thirdrow_';
+  const CTL_THIRDROWNEW = 'thirdrownew_';
   
   const MIN_NEW_CONTROLS_NUM = 2000000000;
     
@@ -95,12 +96,14 @@ class HtmlStorageArea {
       {
         $txtStorage['ID'] = self::CTL_NEW_NAME_PREFIX . $this->m_aData[self::PROPERTY_LINE_NUMBER];
         $idnumber = $this->m_aData[self::PROPERTY_LINE_NUMBER];
+        $thirdrow= self::CTL_THIRDROWNEW .  $idnumber;
         $txtStorage['title'] = '<!$LBL_NEW_STORAGE_AREA$!>';
       }
       else
       {
         $said = $this->m_aData[self::PROPERTY_STORAGE_AREA]['StorageAreaKeyID'];
         $idnumber = $said;
+        $thirdrow= self::CTL_THIRDROW .  $idnumber;
         $txtStorage['ID'] = self::CTL_NAME_PREFIX . $said;
         $txtStorage['title'] = sprintf('<!$FIELD_STORAGE_AREA_INDEX$!>', $this->m_aData[self::PROPERTY_LINE_NUMBER]);        
       }
@@ -142,8 +145,6 @@ class HtmlStorageArea {
           '#number_type' => 'decimal',
           '#description' => '<!$TOOLTIP_STORAGE_AREA_MAX_BURDEN$!>',
       );
-      
-      $thirdrow= self::CTL_THIRDROW .  $idnumber;
       
       $initWeight += 10;
       $arrContent[$thirdrow] = array(
